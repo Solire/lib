@@ -1,0 +1,17 @@
+<div class="line form-line">
+    <div class="line">
+        <label for="<?php echo $this->id; ?>">
+            <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
+        </label>
+
+
+        <div id="<?php echo $this->id; ?>" class="gmap" style="padding:0; width:885px; background-color:red;">
+            <div style="width:885px; height:500px;" class="gmap-component"></div>
+        </div>
+
+        <input type="hidden" name="champ<?php echo $this->champ['id']; ?>[]" value="" />
+        <input type="hidden" name="champ<?php echo $this->champ['id']; ?>_lat[]" class="gmap_lat" value="<?php echo $this->value["lat"]; ?>" />
+        <input type="hidden" name="champ<?php echo $this->champ['id']; ?>_lng[]" class="gmap_lng" value="<?php echo $this->value["lng"]; ?>" />
+        <input type="hidden" name="champ<?php echo $this->champ['id']; ?>_zoom[]" class="gmap_zoom" value="<?php echo $this->value["zoom"]; ?>" />
+    </div>
+</div>

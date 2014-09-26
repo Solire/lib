@@ -1,0 +1,57 @@
+<div class="line">
+    <label for="<?php echo $this->id; ?>">
+        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
+    </label>
+
+    <div class="champ-image" style="float:left;">
+<?php
+    $style = $src = $minSrc = $size = $href = '';
+    if ($this->value == '') {
+        $style = ' display:none;';
+    } else {
+        $ext = pathinfo($this->value, PATHINFO_EXTENSION);
+        $href   = $this->idGabPage . '/' . $this->value;
+        $path = 'upload/' . $href;
+        if (Slrfw\Model\fileManager::isImage($path)) {
+            $minSrc = $this->idGabPage . '/mini/' . $this->value;
+            $sizes = getimagesize('upload/' . $href);
+            $size  = $sizes[0] . ' x ' . $sizes[1];
+        } else {
+            $size  = Slrfw\Format\Number::formatSize(filesize($path));
+            $minSrc = 'app/back/img/filetype/' . $ext . '.png';
+        }
+    }
+?>
+        <a class="previsu" style="cursor:pointer;<?php echo $style; ?>" href="<?php echo $href; ?>">
+            <div class="fl" style="margin-left:0px;">
+                <img style="max-height:80px;width:auto;height:auto;max-width: 80px;" src="<?php echo $minSrc; ?>" class="img-polaroid champ-image-vignette">
+            </div>
+            <div class="fl" style="margin-left:0px;width:315px">
+                <dl class="dl-horizontal">
+                    <dt>Nom de fichier</dt>
+                    <dd class="champ-image-value"><span><?php echo $this->value; ?></span></dd>
+
+                    <dt>Taille</dt>
+                    <dd class="champ-image-size"><?php echo $size; ?></dd>
+                </dl>
+            </div>
+        </a>
+
+        <div class="input-append" style="clear:both;">
+            <input
+                data-min-width="<?php  echo $this->params["CROP.WIDTH.MIN"]; ?>"
+                data-min-height="<?php  echo $this->params["CROP.HEIGHT.MIN"]; ?>"
+                type="text"
+                name="champ<?php echo $this->champ['id']; ?>[]"
+                id="<?php echo $this->id; ?>" class="<?php echo $this->classes; ?>"
+                value="<?php echo $this->value; ?>"
+                data-visuel-id="<?php echo $this->champ['id']; ?>"
+            />
+            <!--<a title="Prévisualisation" <?php echo $this->value != '' ? '' : 'style="display:none;"'?> href="<?php echo ($this->value ? $this->idGabPage . DIRECTORY_SEPARATOR . $this->value : '') ?>" target="_blank" class="btn previsu"><i class="icon-camera"></i></a>-->
+            <a title="Recadrer" <?php echo $this->isImage ? '' : 'style="display:none;"'?>  class="btn  crop" href="#"><i class="icon-fullscreen"></i></a>
+        </div>
+    </div>
+
+    <input type="hidden" class="extensions" value="<?php  echo $this->params["EXTENSIONS.ALLOW"]; ?>" />
+</div>
+<div class="clearfix"></div>

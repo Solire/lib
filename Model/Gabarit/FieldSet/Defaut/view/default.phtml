@@ -1,0 +1,48 @@
+        <fieldset>
+            <legend><?php echo $this->gabarit->getLabel(); ?></legend>
+            <div style="display:none;" class="sort-box">
+                <div style="background-color: white; padding: 0px 5px; font-size: 11px; display: block; margin-top: -25px;" class="expand-collapse fr"><a style="font-size:11px" href="#" class="expand disabled">Tout déplier</a> / <a style="font-size:11px" href="#" class="collapse">Tout replier</a></div>
+<?php
+    foreach ($this->values as $value) {
+        if (count($this->values) == 1
+            && (!isset($value['id']) || $value['id'] == 0)
+        ) {
+            $visible = true;
+        } else {
+            $visible = $value['visible'];
+        }
+
+        $this->_buildChamps($value);
+?>
+                <fieldset class="sort-elmt">
+                    <legend><?php echo $this->valueLabel; ?></legend>
+
+                    <div>
+                        <div class="line" style="display:none;">
+                            <label for="visible-<?php echo $this->gabarit->getId() . '-' . (isset($value['id']) ? $value['id'] : 0) . '-' . (isset($value['id_version']) ? $value['id_version'] : 1) ?>">Visible</label>
+                            <input type="checkbox" id="visible-<?php echo $this->gabarit->getId() . '-' . (isset($value['id']) ? $value['id'] : 0) . '-' . (isset($value['id_version']) ? $value['id_version'] : 1) ?>" class="changevisible"<?php echo $visible ? ' checked="checked"' : ''; ?> />
+                            <input type="hidden" value="<?php echo $visible ? 1 : 0; ?>" name="visible[]" />
+                        </div>
+
+                        <div<?php echo $visible ? '' : ' class="translucide"'; ?>>
+                            <input type="hidden" name="id_<?php echo $this->gabarit->getTable() . '[]" value="' . (isset($value['id']) ? $value['id'] : '') ?>" />
+
+                            <?php echo $this->champsHTML; ?>
+                        </div>
+                    </div>
+                    <div style="float:left; margin-left:8px;">
+                        <div class="btn-toolbar">
+                            <div class="btn-group btn-bloc-action">
+                                <a href="#" class="btn btn-small btn-info sort-move <?php echo ( count($this->values) > 1 ? '' : 'to-remove' ) ?>" title="Déplacer" <?php echo ( count($this->values) > 1 ? '' : ' style="display: inline-bloc;"' ) ?>><i class="icon-retweet"></i></a>
+                                <a href="#" class="btn btn-small btn-changevisible<?php echo $visible ? ' btn-success' : ' btn-default'; ?>" title="Visible sur le site"><i class="<?php echo $visible ? 'icon-eye-open' : 'icon-eye-close'; ?>"></i></a>
+                                <a href="#" class="btn btn-small btn-warning delBloc <?php echo ( count($this->values) > 1 ? '' : 'to-remove' ) ?>" title="Supprimer" <?php echo ( count($this->values) > 1 ? '' : ' style="display: inline-bloc;"' ) ?>><i class="icon-trash"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+<?php
+    }
+?>
+                <a class="btn btn-small btn-info addBloc" style="float:right;" href="#"><i class="icon-plus"></i>Ajouter un bloc "<?php echo $this->gabarit->getLabel(); ?>"</a>
+            </div>
+        </fieldset>

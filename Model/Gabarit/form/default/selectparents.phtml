@@ -1,0 +1,139 @@
+<?php
+    $min = $this->_gabarit->getData('creable_min');
+    $max = $this->_gabarit->getData('creable_max');
+
+    if ($this->_gabarit->getIdParent() > 0
+        && (is_a($this->getParent(0), "\Slrfw\Model\gabaritPage") || !$this->getMeta('id'))
+    ) {
+?>
+                                <div class="line">
+                                    <label for="id_parent"><?php echo $this->_gabarit->getGabaritParent("label"); ?><?php if ($this->_gabarit->getId() != $this->_gabarit->getIdParent() || $min > 0) { echo ' <span class="required">*</span>'; } ?></label>
+<?php
+        if ($this->getMeta('id')) {
+?>
+                                    <select disabled="disabled">
+                                        <option><?php echo $this->getParent(0)->getMeta("titre"); ?></option>
+                                    </select>
+                                    <input type="hidden" name="id_parent" value="<?php echo $this->getParent(0)->getMeta("id"); ?>" />
+<?php
+        } else {
+            $nbChoixParents = 0;
+            ob_start();
+            foreach ($this->_gabarit->getParents() as $p) {
+
+                $NIVEAU = 1;
+
+                $child = $p->getFirstChild();
+
+                $disabled = '';
+                if ($NIVEAU < $min
+                    || ($NIVEAU > $max && $max > 0)
+                    || ($child && $child->getMeta('id_gabarit') != $this->_gabarit->getId())
+                    || $this->_gabarit->getIdParent() != $p->getMeta('id_gabarit')
+                ) {
+                    $disabled = ' disabled="disabled"';
+                } else {
+                    $nbChoixParents++;
+                }
+
+                $enfants = '';
+                $nbEnfants = $p->getMeta('nbre_enfants');
+                if ($nbEnfants > 0) {
+                    $enfants = ' (comporte ' . $nbEnfants . ' contenu';
+                    if ($nbEnfants > 1) {
+                        $enfants .= 's';
+                    }
+                    $enfants .= ')';
+                }
+?>
+                                        <option value="<?php echo $p->getMeta('id'); ?>"<?php echo $disabled; ?> class="option1"><?php echo $p->getMeta('titre') . $enfants; ?></option>
+<?php
+                foreach ($p->getChildren() as $q) {
+
+                    $NIVEAU = 2;
+
+                    $child = $q->getFirstChild();
+
+                    $disabled = '';
+                    if ($NIVEAU < $min
+                        || ($NIVEAU > $max && $max > 0)
+                        || ($child && $child->getMeta('id_gabarit') != $this->_gabarit->getId())
+                        || $this->_gabarit->getIdParent() != $q->getMeta('id_gabarit')
+                    ) {
+                        $disabled = ' disabled="disabled"';
+                    } else {
+                        $nbChoixParents++;
+                    }
+
+                    $enfants = '';
+                    $nbEnfants = $q->getMeta('nbre_enfants');
+                    if ($nbEnfants > 0) {
+                        $enfants = ' (comporte ' . $nbEnfants . ' contenu';
+                        if ($nbEnfants > 1) {
+                            $enfants .= 's';
+                        }
+                        $enfants .= ')';
+                    }
+?>
+                                        <option value="<?php echo $q->getMeta('id'); ?>"<?php echo $disabled; ?> class="option2"><?php echo $q->getMeta('titre') . $enfants; ?></option>
+<?php
+                    foreach ($q->getChildren() as $r) {
+
+                        $NIVEAU = 3;
+
+                        $disabled = '';
+                        if ($NIVEAU < $min
+                            || ($NIVEAU > $max && $max > 0)
+                            || $this->_gabarit->getIdParent() != $r->getMeta('id_gabarit')
+                        ) {
+                            $disabled = ' disabled="disabled"';
+                        } else {
+                            $nbChoixParents++;
+                        }
+
+                        $enfants = '';
+                        $nbEnfants = $r->getMeta('nbre_enfants');
+                        if ($nbEnfants > 0) {
+                            $enfants = ' (comporte ' . $nbEnfants . ' contenu';
+                            if ($nbEnfants > 1) {
+                                $enfants .= 's';
+                            }
+                            $enfants .= ')';
+                        }
+?>
+                                        <option value="<?php echo $r->getMeta('id'); ?>"<?php echo $disabled; ?> class="option3"><?php echo $r->getMeta('titre') . $enfants; ?></option>
+<?php
+                    }
+                }
+            }
+
+            $parentsOptions = ob_get_clean();
+
+            if (/** Il y a un choix a faire entre les pages parents */
+                $nbChoixParents > 1
+                /** Ou on a le droit de créer au niveau 0 */
+                || ($min == 0 && ($this->_gabarit->getIdParent() == $this->_gabarit->getId() || $this->_gabarit->getIdParent() == 0))
+            ) {
+?>
+                                    <select name="id_parent" id="id_parent-<?php echo $this->view['metaLang']; ?>"<?php if ($this->_gabarit->getId() != $this->_gabarit->getIdParent() || $min > 0) { echo ' class="form-controle form-oblig form-notnul"'; } ?>>
+                                        <option value="0">---</option>
+<?php
+                echo $parentsOptions;
+?>
+                                    </select>
+<?php
+            } else {
+?>
+                                    <select name="id_parent" id="id_parent-<?php echo $this->view['metaLang']; ?>"<?php if ($this->_gabarit->getId() != $this->_gabarit->getIdParent() || $min > 0) { echo ' class="form-controle form-oblig form-notnul"'; } ?>>
+<?php
+                echo $parentsOptions;
+?>
+                                    </select>
+<?php
+            }
+        }
+?>
+                                </div>
+<?php
+    }
+?>
