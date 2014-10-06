@@ -17,27 +17,47 @@ namespace Solire\Lib;
 class TranslateMysql
 {
     /**
+     * Instance (pour pouvoir utiliser la classe partout) avec la méthode
+     * statique TranslateMysql::trad()
      *
      * @var TranslateMysql
      */
     protected static $self;
 
+    /**
+     * Tableau des traductions
+     *
+     * @var array
+     */
     protected $translate = array();
+
+    /**
+     * Identifiant de la version
+     *
+     * @var int
+     */
     protected $locale = false;
+
+    /**
+     * Identifiant de l'api courante
+     *
+     * @var int
+     */
     protected $api = 1;
+
+    /**
+     * Tableau des identifiants de versions
+     *
+     * @var int[]
+     */
     protected $versions = array();
 
     /**
+     * Connection à la bdd
      *
      * @var MyPDO
      */
     protected $db = null;
-
-    /**
-     * Langue par défaut
-     */
-    const DEFAULT_LANG = 1;
-    const DEBUG = true;
 
     /**
      * Module de traduction
@@ -87,23 +107,22 @@ class TranslateMysql
             return $this->translate[$this->locale][$stringSha];
         }
 
-        if (!self::DEBUG) {
-            return $string;
-        }
-
         if (count($this->versions) == 0) {
-            $query  = 'SELECT id FROM version WHERE id_api =' . intval($this->api);
-            $this->versions = $this->db->query($query)->fetchAll(\PDO::FETCH_COLUMN);
+            $query = 'SELECT id FROM version '
+                   . 'WHERE id_api =' . $this->api;
+            $this->versions = $this->db->query($query)->fetchAll(
+                \PDO::FETCH_COLUMN
+            );
         }
 
         foreach ($this->versions as $versionId) {
-            $query  = 'INSERT IGNORE INTO traduction SET'
-                    . ' `cle_sha` =  '     . $this->db->quote($stringSha) . ','
-                    . ' id_version =  ' . $versionId . ','
-                    . ' id_api =  ' . intval($this->api) . ','
-                    . ' cle = ' . $this->db->quote($string) . ','
-                    . ' valeur = ' . $this->db->quote($string) . ','
-                    . ' aide = ' . $this->db->quote($aide);
+            $query = 'INSERT IGNORE INTO traduction SET'
+                   . ' `cle_sha` =  ' . $this->db->quote($stringSha) . ','
+                   . ' id_version =  ' . $versionId . ','
+                   . ' id_api =  ' . $this->api . ','
+                   . ' cle = ' . $this->db->quote($string) . ','
+                   . ' valeur = ' . $this->db->quote($string) . ','
+                   . ' aide = ' . $this->db->quote($aide);
             $this->db->exec($query);
         }
 
@@ -155,10 +174,10 @@ class TranslateMysql
      */
     protected function loadTranslationData($locale)
     {
-        $query  = 'SELECT cle_sha, valeur'
-                . ' FROM traduction'
-                . ' WHERE id_api = ' . $this->api
-                . ' AND id_version = ' . $locale;
+        $query = 'SELECT cle_sha, valeur'
+               . ' FROM traduction'
+               . ' WHERE id_api = ' . $this->api
+               . ' AND id_version = ' . $locale;
         $this->translate[$locale] = $this->db->query($query)->fetchAll(
             \PDO::FETCH_UNIQUE | \PDO::FETCH_COLUMN
         );
