@@ -4,6 +4,10 @@
   "description": "",
   "keywords": [""],
   "license": "CC by-nc",
+  "require-dev": {
+    "squizlabs/php_codesniffer": "~1.5",
+    "siwayll/phpcs-norme-dpsi": "~3.0"
+  },
   "require": {
     "php": ">=5.5.0",
     "ensepar/html2pdf": "1.0.1",
