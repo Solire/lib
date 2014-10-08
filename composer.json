@@ -5,7 +5,7 @@
   "keywords": [""],
   "license": "CC by-nc",
   "require-dev": {
-    "squizlabs/php_codesniffer": "~1.5",
+    "m6web/coke": "~1.2",
     "siwayll/phpcs-norme-dpsi": "~3.0"
   },
   "require": {
