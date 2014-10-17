@@ -31,11 +31,19 @@ class FrontController
     public static $envConfig;
 
     /**
-     * Nom de l'application en cours d'utilisation
+     * Nom de l'application en cours d'utilisation (exemple "Front",
+     * "Catalogue")
      *
      * @var string
      */
     public static $appName;
+
+    /**
+     * Préfix url pour l'application (exemple "catalogue")
+     *
+     * @var string
+     */
+    public static $appUrl = '';
 
     /**
      * Id api utilisé par page du front
@@ -114,7 +122,7 @@ class FrontController
     const VIEW_FILE_NOT_EXISTS = 3;
 
     /**
-     * instantiation du frontController
+     * Instantiation du frontController
      */
     private function __construct()
     {
@@ -299,6 +307,7 @@ class FrontController
                     $idApi = $conf->get('fx', 'idApi');
                     if (!empty($idApi)) {
                         self::$idApiRew = $idApi;
+                        self::$appUrl = $ctrl;
                         unset($idApi, $conf);
                         continue;
                     }
