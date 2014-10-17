@@ -322,39 +322,68 @@ class Controller
      */
     public function check301()
     {
-        $url = preg_replace('`^/' . Registry::get('baseroot') . '`', '', $_SERVER['REQUEST_URI']);
+        $appUrl = \Slrfw\FrontController::$appUrl;
+        if (!empty($appUrl)) {
+            $appUrl .= '/';
+        }
+
+        $urlsToTest = array();
+
+        $mask = '`'
+              . '^/'
+              . \Slrfw\FrontController::$envConfig->get('base', 'root')
+              . $appUrl
+              . '`';
+        $url = preg_replace($mask, '', $_SERVER['REQUEST_URI']);
         $urlParts = explode('/', $url);
-        $urlsToTest[] = $url;
+
+        if (substr($url, -1) == '/') {
+            unset($urlParts[count($urlParts) - 1]);
+            $urlParts[count($urlParts) - 1] .= '/';
+        }
+
+        $url = '';
+        do {
+            $urlPart = array_shift($urlParts);
+
+            $url .= $urlPart;
+
+            $urlFollowing = '';
+            if (!empty($urlParts)) {
+                $urlFollowing = implode('/', $urlParts);
+                $url .= '/';
+            }
+
+            $urlsToTest[] = array(
+                $url,
+                $urlFollowing
+            );
+        } while (!empty($urlParts));
 
         // On ajoute aussi l'url entière à tester
-        $urlsToTest[] = FrontController::getCurrentUrl();
+        $urlsToTest[] = array(
+            FrontController::getCurrentURL(),
+            ''
+        );
 
-        $ajustLen = 0;
-        if (substr($url, -1) == '/') {
-            $ajustLen = 1;
-            unset($urlParts[count($urlParts) - 1]);
-        }
-
-        $urlPartsReverse = array_reverse($urlParts);
-        for ($index = 0; $index < count($urlPartsReverse) - 1; $index++) {
-            $url = substr($url, 0, -strlen($urlPartsReverse[$index]) - $ajustLen);
-            $urlsToTest[] = $url;
-            $ajustLen = 1;
-        }
+        $urlsToTest = array_reverse($urlsToTest);
 
         $urlPartRedirect = '';
         $redirection301 = false;
-        foreach ($urlsToTest as $key => $urlToTest) {
+        foreach ($urlsToTest as $key => $row) {
+            list($urlToTest, $urlFollowing) = $row;
+
             $query = 'SELECT new '
                     . 'FROM redirection '
                     . 'WHERE id_version = ' . ID_VERSION . ' '
-                    . ' AND id_api = ' . ID_API . ' '
-                    . ' AND old LIKE ' . $this->db->quote($urlToTest) . ' '
+                    . ' AND id_api = ' . \Slrfw\FrontController::$idApiRew . ' '
+                    . ' AND old LIKE ' . $this->_db->quote($urlToTest) . ' '
                     . 'LIMIT 1';
-            $redirection301 = $this->db->query($query)->fetch(\PDO::FETCH_COLUMN);
+
+            $redirection301  = $this->_db->query($query)->fetch(\PDO::FETCH_COLUMN);
+
             if ($redirection301 !== false) {
-                $keyChange = $key;
-                $urlPartRedirect = $urlToTest;
+                $redirection301 .= $urlFollowing;
                 break;
             }
         }
@@ -366,7 +395,7 @@ class Controller
             ) {
                 $redirection301 = $redirection301;
             } else {
-                $redirection301 = $this->url . $redirection301;
+                $redirection301 = $this->_url . $appUrl . $redirection301;
             }
         }
 
