@@ -3,7 +3,7 @@
     <?php
     foreach ($this->champs as $champ) {
         $id_champ = (isset($this->meta['id_version']) ? $this->meta['id_version'] : '') . (isset($value['id']) ? $value['id'] : 0);
-        $form = $this->_buildChamp($champ, $this->values, $id_champ, $this->idGabPage, $this->gabarit);
+        $form = $this->buildChamp($champ, $this->values, $id_champ, $this->idGabPage, $this->gabarit);
         echo $form["html"];
     }
     ?>

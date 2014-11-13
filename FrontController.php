@@ -383,29 +383,43 @@ class FrontController
     {
         $appLibDir = self::$mainConfig->get('appLibDir');
 
-        $initialPath = $path;
+        /*
+         * @todo voir boulot de steph pour eolia
+         */
         if ($current === true) {
-            $path = DS . strtolower(self::$appName) . DS . $path;
+            $appDirs = [
+                DS . self::$appName,
+                DS . strtolower(self::$appName),
+            ];
         } else {
-            $path = DS . $path;
+            $appDirs = [
+                '',
+            ];
         }
+
         foreach (self::$appDirs as $app) {
-            if ($current === true) {
-                $dir = $app['dir'] . DS . strtolower(self::$appName);
-            } else {
-                $dir = $app['dir'];
-            }
-            $fooPath = $app['dir'] . $path;
+            $fooPaths = \array_map(function($appDir) use($path, $app, $appLibDir) {
+                $dir = $app['dir'] . $appDir;
 
-            // Permet de faire correspondre des répertoires d'application
-            if ($appLibDir && isset($appLibDir[$dir])) {
-                $dir = $appLibDir[$dir];
-                $fooPath = $dir . DS . $initialPath;
-            }
+                /*
+                 * Permet de faire correspondre des répertoires d'application
+                 */
+                if (!empty($appLibDir)
+                    && isset($appLibDir[$dir])
+                ) {
+                    $dir = $appLibDir[$dir];
+                }
 
-            $testPath = new Path($fooPath, Path::SILENT);
-            if ($testPath->get() !== false) {
-                return $testPath->get();
+                return $dir . DS . $path;
+            }, $appDirs);
+
+            foreach ($fooPaths as $fooPath) {
+//                echo $fooPath, "\n<br>";
+
+                $testPath = new Path($fooPath, Path::SILENT);
+                if ($testPath->get() !== false) {
+                    return $testPath->get();
+                }
             }
         }
 
@@ -475,7 +489,7 @@ class FrontController
         foreach (self::$appDirs as $app) {
             $testPath = new Path($app['dir'] . DS . $ctrl, Path::SILENT);
             if ($testPath->get()) {
-                return ucfirst($app['dir']);
+                return $app['dir'];
             }
         }
 
@@ -864,8 +878,8 @@ class FrontController
      */
     public function debug($id, $params)
     {
-        if ($this->debug['enable']) {
-            $errors = array(
+//        if ($this->debug['enable']) {
+            $errors = [
                 self::CONTROLLER_FILE_NOT_EXISTS => 'Le fichier de '
                     . 'contr&ocirc;leur <strong>%s</strong> n\'existe pas.',
                 self::CONTROLLER_CLASS_NOT_EXISTS => 'La classe de '
@@ -875,13 +889,15 @@ class FrontController
                     . '<strong>%s</strong> dans le fichier <strong>%s</strong>.',
                 self::VIEW_FILE_NOT_EXISTS => 'Le fichier de vue '
                     . '<strong>%s</strong> n\'existe pas.',
-            );
-            $message = sprintf($errors[$id], $params);
+            ];
+
+            $message = vsprintf($errors[$id], $params);
+            echo $message;die;
             throw new Exception\Marvin(new \Exception($message));
-        } else {
-            $error = new Exception\HttpError('');
-            $error->http(404);
-            throw $error;
-        }
+//        } else {
+//            $error = new Exception\HttpError('');
+//            $error->http(404);
+//            throw $error;
+//        }
     }
 }

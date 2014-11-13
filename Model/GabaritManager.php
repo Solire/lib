@@ -8,13 +8,15 @@
 
 namespace Solire\Lib\Model;
 
+use Solire\Lib\Hook;
+
 /**
  * Description of gabaritmanager
  *
  * @author  Thomas <thansen@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class GabaritManager extends manager
+class GabaritManager extends Manager
 {
 
     /**
@@ -270,7 +272,7 @@ class GabaritManager extends manager
             }
         }
 
-        $hook = new \Solire\Lib\Hook();
+        $hook = new Hook();
         $hook->setSubdirName('gabarit');
 
         $hook->page = $page;
@@ -367,7 +369,7 @@ class GabaritManager extends manager
         $query = 'SELECT * FROM `gab_gabarit` WHERE `id` = ' . $id_gabarit;
         $row = $this->db->query($query)->fetch(\PDO::FETCH_ASSOC);
 
-        $gabarit = new gabarit($row);
+        $gabarit = new Gabarit($row);
 
         if ($row['id_api'] > 0) {
             $query = 'SELECT *'
@@ -606,7 +608,7 @@ class GabaritManager extends manager
 
         $type = $bloc->getGabarit()->getData('type');
         if (!empty($type)) {
-            $hook = new \Solire\Lib\Hook();
+            $hook = new Hook();
             $hook->setSubdirName('gabarit');
 
             $hook->bloc = $bloc;
@@ -1790,7 +1792,7 @@ class GabaritManager extends manager
         $this->deleteUsedFile($id_version, $id_gab_page);
         $this->saveUsedFile($id_version, $id_gab_page, $filesUsed);
 
-        $hook = new \Solire\Lib\Hook();
+        $hook = new Hook();
         $hook->setSubdirName('gabarit');
 
         $hook->data = $donnees;
@@ -1907,7 +1909,7 @@ class GabaritManager extends manager
             }
         }
 
-        $hook = new \Solire\Lib\Hook();
+        $hook = new Hook();
         $hook->setSubdirName('gabarit');
 
         $hook->data = $donnees;

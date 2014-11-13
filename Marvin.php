@@ -38,19 +38,19 @@ class Marvin
      */
     public function __construct($title, $error)
     {
-        $this->_config = new Config(self::CONFIG_PATH);
+        $this->config = new Config(self::CONFIG_PATH);
         if (method_exists($error, 'getPrevious') && $error->getPrevious()) {
             $this->exc = $error->getPrevious();
         } else {
             $this->exc = $error;
         }
-        $this->contact = $this->_config->get('contact', 'mail');
+        $this->contact = $this->config->get('contact', 'mail');
         $this->headers = 'Content-type: text/html; charset=utf-8' . "\r\n"
                        . 'From: Marvin <marvin@solire.fr>' . "\r\n";
 
         /* = Couleurs :
           ------------------------------- */
-        $colors = $this->_config->get('color');
+        $colors = $this->config->get('color');
         foreach ($colors as $key => $value) {
             $this->{'color' . $key} = $value;
         }

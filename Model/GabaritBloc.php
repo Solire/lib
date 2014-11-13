@@ -240,12 +240,12 @@ class GabaritBloc
             $type = strtolower('simple');
         }
 
-        $className = 'Model\\Gabarit\\Fieldset\\' . ucfirst($type) . '\\' . ucfirst($type);
+        $className = 'Model\\Gabarit\\FieldSet\\' . ucfirst($type) . '\\' . ucfirst($type);
         $className = \Solire\Lib\FrontController::searchClass($className);
 
 
         if ($className === false) {
-            $className = '\Solire\Lib\Model\Gabarit\Fieldset\\' . $type . '\\' . $type . 'fieldset';
+            $className = '\\Solire\\Lib\\Model\\Gabarit\\FieldSet\\' . ucfirst($type) . '\\' . ucfirst($type) . 'FieldSet';
         }
 
         $fieldset = new $className($this, $idGabPage, $versionId);
@@ -293,8 +293,8 @@ class GabaritBloc
         $classNameType = \Solire\Lib\FrontController::searchClass($classNameType);
 
         if ($classNameType === false) {
-            $classNameType = '\Solire\Lib\Model\Gabarit\Field\\' . $type . '\\'
-            . $type . 'field';
+            $classNameType = '\\Solire\\Lib\\Model\\Gabarit\\Field\\' . ucfirst($type) . '\\'
+            . ucfirst($type) . 'Field';
         }
 
         $field = new $classNameType($champ, $label, $value, $id, $classes, $idGabPage, $idVersion);

@@ -27,7 +27,7 @@
 
 <h1>Détails <?php echo $this->config["table"]["title_item"] ?></h1>
 
-<?php echo $this->_beforeHTML; ?>
+<?php echo $this->beforeHTML; ?>
 
 
 
@@ -57,7 +57,7 @@
         ?>
         <?php
         if (((isset($column["show"]) && $column["show"]) || (isset($column["show_detail"]) && $column["show_detail"]))) {
-            
+
             $value = isset($this->data[$realIndex]) ? $this->data[$realIndex] : "";
             if ($value != "" && (!isset($column["show_page_detail"]) || $column["show_page_detail"] == true)) {
                 ?>
@@ -71,7 +71,7 @@
                 </blockquote>
                 <?php
             }
-            
+
             $realIndex++;
         }
     }
@@ -83,8 +83,8 @@
 <?php
 if (!isset($_GET["nojs"]) || !$_GET["nojs"]) {
     echo '
-            ' . $this->_css . '
-            ' . $this->_javascript;
+            ' . $this->css . '
+            ' . $this->javascript;
 }
 ?>
 

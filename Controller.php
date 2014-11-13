@@ -377,10 +377,10 @@ class Controller
                     . 'FROM redirection '
                     . 'WHERE id_version = ' . ID_VERSION . ' '
                     . ' AND id_api = ' . \Slrfw\FrontController::$idApiRew . ' '
-                    . ' AND old LIKE ' . $this->_db->quote($urlToTest) . ' '
+                    . ' AND old LIKE ' . $this->db->quote($urlToTest) . ' '
                     . 'LIMIT 1';
 
-            $redirection301  = $this->_db->query($query)->fetch(\PDO::FETCH_COLUMN);
+            $redirection301  = $this->db->query($query)->fetch(\PDO::FETCH_COLUMN);
 
             if ($redirection301 !== false) {
                 $redirection301 .= $urlFollowing;
@@ -395,7 +395,7 @@ class Controller
             ) {
                 $redirection301 = $redirection301;
             } else {
-                $redirection301 = $this->_url . $appUrl . $redirection301;
+                $redirection301 = $this->url . $appUrl . $redirection301;
             }
         }
 

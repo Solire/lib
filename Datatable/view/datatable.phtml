@@ -1,7 +1,7 @@
 
 <div id="myDatatable-<?php echo $this->name ?>">
 
-    <?php echo $this->_css; ?>
+    <?php echo $this->css; ?>
     <style>
 
         div.innerDetails { display: none }
@@ -302,9 +302,9 @@
     }
     ?>
 
-    <?php echo $this->_beforeHTML; ?>
+    <?php echo $this->beforeHTML; ?>
 
-    <?php echo $this->_beforeTableHTML; ?>
+    <?php echo $this->beforeTableHTML; ?>
 
     <table cellpadding="0" width="100%" cellspacing="0" border="0" class="display" style="margin-top:0px;" class="shin-datatable" id="tableau-<?php echo $this->name ?>">
         <thead>
@@ -439,7 +439,7 @@
         </tfoot>
     </table>
 
-    <?php echo $this->_afterTableHTML; ?>
+    <?php echo $this->afterTableHTML; ?>
 
     <script type="text/javascript">
         var anOpen_<?php echo $this->name ?> = [];
@@ -1192,8 +1192,8 @@ if (isset($this->config["table"]["fixedheader"]) && $this->config["table"]["fixe
     <?php
     if (!isset($_GET["nojs"]) || !$_GET["nojs"]) {
         echo '
-            ' . $this->_css . '
-            ' . $this->_javascript;
+            ' . $this->css . '
+            ' . $this->javascript;
     }
     ?>
 
