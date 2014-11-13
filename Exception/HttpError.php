@@ -23,13 +23,13 @@ class HttpError extends \Exception
      * Code HTTP
      * @var int
      */
-    private $code = 500;
+    protected $code = 500;
 
     /**
      * Url de redirection
      * @var string
      */
-    private $url = null;
+    protected $url = null;
 
     /**
      * Ajoute un code HTTP à l'erreur

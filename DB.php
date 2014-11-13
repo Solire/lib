@@ -111,9 +111,9 @@ class DB
          * Modifie l'encodage du buffer de sortie de la base qui est par
          * defaut en ISO pour être en accord avec l'encodage de la base.
          */
-        if (isset($ini['utf8']) && $ini['utf8'] == true) {
+//        if (isset($ini['utf8']) && $ini['utf8'] == true) {
             self::$present[$ini['name']]->exec('SET NAMES UTF8');
-        }
+//        }
 
         /** Cache */
         if (isset($ini['nocache']) && $ini['nocache'] == true) {

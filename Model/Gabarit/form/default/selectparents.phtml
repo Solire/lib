@@ -1,13 +1,13 @@
 <?php
-    $min = $this->_gabarit->getData('creable_min');
-    $max = $this->_gabarit->getData('creable_max');
+    $min = $this->gabarit->getData('creable_min');
+    $max = $this->gabarit->getData('creable_max');
 
-    if ($this->_gabarit->getIdParent() > 0
-        && (is_a($this->getParent(0), "\Slrfw\Model\gabaritPage") || !$this->getMeta('id'))
+    if ($this->gabarit->getIdParent() > 0
+        && (is_a($this->getParent(0), '\\Solire\\Lib\\Model\\GabaritPage') || !$this->getMeta('id'))
     ) {
 ?>
                                 <div class="line">
-                                    <label for="id_parent"><?php echo $this->_gabarit->getGabaritParent("label"); ?><?php if ($this->_gabarit->getId() != $this->_gabarit->getIdParent() || $min > 0) { echo ' <span class="required">*</span>'; } ?></label>
+                                    <label for="id_parent"><?php echo $this->gabarit->getGabaritParent("label"); ?><?php if ($this->gabarit->getId() != $this->gabarit->getIdParent() || $min > 0) { echo ' <span class="required">*</span>'; } ?></label>
 <?php
         if ($this->getMeta('id')) {
 ?>
@@ -19,7 +19,7 @@
         } else {
             $nbChoixParents = 0;
             ob_start();
-            foreach ($this->_gabarit->getParents() as $p) {
+            foreach ($this->gabarit->getParents() as $p) {
 
                 $NIVEAU = 1;
 
@@ -28,8 +28,8 @@
                 $disabled = '';
                 if ($NIVEAU < $min
                     || ($NIVEAU > $max && $max > 0)
-                    || ($child && $child->getMeta('id_gabarit') != $this->_gabarit->getId())
-                    || $this->_gabarit->getIdParent() != $p->getMeta('id_gabarit')
+                    || ($child && $child->getMeta('id_gabarit') != $this->gabarit->getId())
+                    || $this->gabarit->getIdParent() != $p->getMeta('id_gabarit')
                 ) {
                     $disabled = ' disabled="disabled"';
                 } else {
@@ -57,8 +57,8 @@
                     $disabled = '';
                     if ($NIVEAU < $min
                         || ($NIVEAU > $max && $max > 0)
-                        || ($child && $child->getMeta('id_gabarit') != $this->_gabarit->getId())
-                        || $this->_gabarit->getIdParent() != $q->getMeta('id_gabarit')
+                        || ($child && $child->getMeta('id_gabarit') != $this->gabarit->getId())
+                        || $this->gabarit->getIdParent() != $q->getMeta('id_gabarit')
                     ) {
                         $disabled = ' disabled="disabled"';
                     } else {
@@ -84,7 +84,7 @@
                         $disabled = '';
                         if ($NIVEAU < $min
                             || ($NIVEAU > $max && $max > 0)
-                            || $this->_gabarit->getIdParent() != $r->getMeta('id_gabarit')
+                            || $this->gabarit->getIdParent() != $r->getMeta('id_gabarit')
                         ) {
                             $disabled = ' disabled="disabled"';
                         } else {
@@ -112,10 +112,10 @@
             if (/** Il y a un choix a faire entre les pages parents */
                 $nbChoixParents > 1
                 /** Ou on a le droit de créer au niveau 0 */
-                || ($min == 0 && ($this->_gabarit->getIdParent() == $this->_gabarit->getId() || $this->_gabarit->getIdParent() == 0))
+                || ($min == 0 && ($this->gabarit->getIdParent() == $this->gabarit->getId() || $this->gabarit->getIdParent() == 0))
             ) {
 ?>
-                                    <select name="id_parent" id="id_parent-<?php echo $this->view['metaLang']; ?>"<?php if ($this->_gabarit->getId() != $this->_gabarit->getIdParent() || $min > 0) { echo ' class="form-controle form-oblig form-notnul"'; } ?>>
+                                    <select name="id_parent" id="id_parent-<?php echo $this->view['metaLang']; ?>"<?php if ($this->gabarit->getId() != $this->gabarit->getIdParent() || $min > 0) { echo ' class="form-controle form-oblig form-notnul"'; } ?>>
                                         <option value="0">---</option>
 <?php
                 echo $parentsOptions;
@@ -124,7 +124,7 @@
 <?php
             } else {
 ?>
-                                    <select name="id_parent" id="id_parent-<?php echo $this->view['metaLang']; ?>"<?php if ($this->_gabarit->getId() != $this->_gabarit->getIdParent() || $min > 0) { echo ' class="form-controle form-oblig form-notnul"'; } ?>>
+                                    <select name="id_parent" id="id_parent-<?php echo $this->view['metaLang']; ?>"<?php if ($this->gabarit->getId() != $this->gabarit->getIdParent() || $min > 0) { echo ' class="form-controle form-oblig form-notnul"'; } ?>>
 <?php
                 echo $parentsOptions;
 ?>

@@ -22,15 +22,15 @@
     ?>
 </h1>
 
-<?php echo $this->_beforeHTML; ?>
+<?php echo $this->beforeHTML; ?>
 
 <?php include("bootstrap-form.phtml"); ?>
 
 <?php
 if (!isset($_GET["nojs"]) || !$_GET["nojs"]) {
     echo '
-            ' . $this->_css . '
-            ' . $this->_javascript;
+            ' . $this->css . '
+            ' . $this->javascript;
 }
 ?>
 <script src="back/js/tiny_mce/tiny_mce.js" type="text/javascript"></script>

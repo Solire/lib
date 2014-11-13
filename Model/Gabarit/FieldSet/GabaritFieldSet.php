@@ -225,7 +225,7 @@ abstract class GabaritFieldSet
                 $id_champ .= 0;
             }
 
-            $champArray = $this->_buildChamp(
+            $champArray = $this->buildChamp(
                 $champ,
                 $value_champ,
                 $id_champ,

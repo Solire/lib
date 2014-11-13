@@ -25,12 +25,12 @@ class DatatableShinForm extends \Solire\Lib\Form\ShinForm {
         $configShinForm = $this->convertConfig();
         parent::__construct(null, $db, $configShinForm);
 
-        $this->_javascript = $this->oDatatable->getJavascriptLoader();
-        $this->_css = $this->oDatatable->getCssLoader();
+        $this->javascript = $this->oDatatable->getJavascriptLoader();
+        $this->css = $this->oDatatable->getCssLoader();
 //
-        $this->_javascript->addLibrary("app/back/js/datatable/jquery/jquery.validate.js");
-        $this->_javascript->addLibrary("app/back/js/datatable/jquery/additional-methods.js");
-        $this->_css->addLibrary("back/css/datatable/jquery.validate.css");
+        $this->javascript->addLibrary("app/back/js/datatable/jquery/jquery.validate.js");
+        $this->javascript->addLibrary("app/back/js/datatable/jquery/additional-methods.js");
+        $this->css->addLibrary("back/css/datatable/jquery.validate.css");
     }
 
     public function convertConfig() {

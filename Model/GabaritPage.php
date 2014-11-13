@@ -406,12 +406,12 @@ class GabaritPage extends GabaritBloc
         $this->view['api'] = $this->gabarit->getApi();
 
         ob_start();
-        $customForm = \Solire\Lib\FrontController::search('model/gabarit/form/default/default.phtml', false);
+        $customForm = \Solire\Lib\FrontController::search('Model/Gabarit/form/default/default.phtml', false);
 
         if ($customForm !== false) {
             include $customForm;
         } else {
-            include __DIR__ . '/gabarit/form/default/default.phtml';
+            include __DIR__ . '/Gabarit/form/default/default.phtml';
         }
 
         $form = ob_get_clean();
@@ -426,9 +426,9 @@ class GabaritPage extends GabaritBloc
      */
     public function selectParents()
     {
-        $path = '/gabarit/form/default/selectparents.phtml';
+        $path = '/Gabarit/form/default/selectparents.phtml';
 
-        $customForm = \Solire\Lib\FrontController::search('model' . $path, false);
+        $customForm = \Solire\Lib\FrontController::search('Model' . $path, false);
 
         if ($customForm !== false) {
             include $customForm;
