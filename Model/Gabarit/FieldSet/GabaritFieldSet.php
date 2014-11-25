@@ -151,8 +151,8 @@ abstract class GabaritFieldSet
         $classNameType = \Solire\Lib\FrontController::searchClass($classNameType);
 
         if ($classNameType === false) {
-            $classNameType  = '\Solire\Lib\Model\Gabarit\Field\\' . $type . '\\'
-                            . $type . 'field';
+            $classNameType  = '\Solire\Lib\Model\Gabarit\Field\\' . ucfirst($type) . '\\'
+                            . ucfirst($type) . 'Field';
         }
         $field = new $classNameType(
             $champ,
