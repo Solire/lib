@@ -465,9 +465,9 @@ class Formulaire
     protected function catchData()
     {
         $datas = array(
-            'g' => $GET,
-            'p' => $POST,
-            'c' => $COOKIE,
+            'g' => $_GET,
+            'p' => $_POST,
+            'c' => $_COOKIE,
         );
 
         $result = array();
