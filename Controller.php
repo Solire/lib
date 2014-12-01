@@ -8,6 +8,9 @@
 
 namespace Solire\Lib;
 
+use \Solire\Lib\Exception\HttpError;
+use \PDO;
+
 /**
  * Base controller
  *
@@ -322,7 +325,7 @@ class Controller
      */
     public function check301()
     {
-        $appUrl = \Slrfw\FrontController::$appUrl;
+        $appUrl = FrontController::$appUrl;
         if (!empty($appUrl)) {
             $appUrl .= '/';
         }
@@ -331,7 +334,7 @@ class Controller
 
         $mask = '`'
               . '^/'
-              . \Slrfw\FrontController::$envConfig->get('base', 'root')
+              . FrontController::$envConfig->get('base', 'root')
               . $appUrl
               . '`';
         $url = preg_replace($mask, '', $_SERVER['REQUEST_URI']);
@@ -376,11 +379,11 @@ class Controller
             $query = 'SELECT new '
                     . 'FROM redirection '
                     . 'WHERE id_version = ' . ID_VERSION . ' '
-                    . ' AND id_api = ' . \Slrfw\FrontController::$idApiRew . ' '
+                    . ' AND id_api = ' . FrontController::$idApiRew . ' '
                     . ' AND old LIKE ' . $this->db->quote($urlToTest) . ' '
                     . 'LIMIT 1';
 
-            $redirection301  = $this->db->query($query)->fetch(\PDO::FETCH_COLUMN);
+            $redirection301  = $this->db->query($query)->fetch(PDO::FETCH_COLUMN);
 
             if ($redirection301 !== false) {
                 $redirection301 .= $urlFollowing;
@@ -431,7 +434,7 @@ class Controller
      */
     final public function redirectError($codeError = null, $url = null)
     {
-        $exc = new \Solire\Lib\Exception\HttpError('Erreur HTTP');
+        $exc = new HttpError('Erreur HTTP');
         if (!empty($codeError)) {
             $exc->http($codeError, $url);
         }
