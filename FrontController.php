@@ -386,8 +386,8 @@ class FrontController
          */
         if ($current === true) {
             $appDirs = [
-                DS . self::$appName,
-                DS . strtolower(self::$appName),
+                Path::DS . self::$appName,
+                Path::DS . strtolower(self::$appName),
             ];
         } else {
             $appDirs = [
@@ -408,7 +408,7 @@ class FrontController
                     $dir = $appLibDir[$dir];
                 }
 
-                return $dir . DS . $path;
+                return $dir . Path::DS . $path;
             }, $appDirs);
 
             foreach ($fooPaths as $fooPath) {
@@ -432,8 +432,8 @@ class FrontController
      */
     final public static function searchClass($className)
     {
-        $path = str_replace('\\', DS, $className);
-        $path = DS . strtolower($path) . '.php';
+        $path = str_replace('\\', Path::DS, $className);
+        $path = Path::DS . strtolower($path) . '.php';
 
         foreach (self::$appDirs as $app) {
             $fooPath = $app['dir'] . $path;
@@ -458,7 +458,7 @@ class FrontController
         if (empty($test)) {
             $confPath = self::search('conf.ini');
         } else {
-            $confPath = self::search($test . DS . 'conf.ini', false);
+            $confPath = self::search($test . Path::DS . 'conf.ini', false);
         }
         if (!empty($confPath)) {
             $appConfig = new Config($confPath);
@@ -483,7 +483,7 @@ class FrontController
     private function testApp($ctrl)
     {
         foreach (self::$appDirs as $app) {
-            $testPath = new Path($app['dir'] . DS . $ctrl, Path::SILENT);
+            $testPath = new Path($app['dir'] . Path::DS . $ctrl, Path::SILENT);
             if ($testPath->get()) {
                 return $app['dir'];
             }
@@ -533,7 +533,7 @@ class FrontController
             $front->action = $action;
 
             if (isset($front->view) && !empty($front->view)) {
-                $defaultViewPath = strtolower($front->controller) . DS . $front->action;
+                $defaultViewPath = strtolower($front->controller) . Path::DS . $front->action;
                 $front->view->setViewPath($defaultViewPath);
                 unset($defaultViewPath);
             }
@@ -626,7 +626,7 @@ class FrontController
 
         $this->view = new View();
 
-        $defaultViewPath = strtolower($this->controller) . DS . $this->action;
+        $defaultViewPath = strtolower($this->controller) . Path::DS . $this->action;
         $mainViewPath = sprintf($this->getFormat('view-file'), 'main');
 
         try {
