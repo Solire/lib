@@ -18,6 +18,9 @@ use \Solire\Lib\Exception\Lib as Exception;
  */
 class Path
 {
+    const DS = DIRECTORY_SEPARATOR;
+    const PS = PATH_SEPARATOR;
+
     /**
      * Chemin absolu vers le fichier
      *
@@ -74,11 +77,7 @@ class Path
             return false;
         }
 
-        if (is_dir($this->path)) {
-            return $this->path . DIRECTORY_SEPARATOR;
-        } else {
-            return $this->path;
-        }
+        return $this->path;
     }
 
     /**
@@ -93,7 +92,7 @@ class Path
     {
         $path = new self($path);
 
-        $usePaths = explode(PATH_SEPARATOR, get_include_path());
+        $usePaths = explode(self::PS, get_include_path());
         foreach ($usePaths as $usePath) {
             if ($usePath == $path->get()) {
                 return true;
@@ -101,10 +100,37 @@ class Path
         }
 
         set_include_path(
-            get_include_path() . PATH_SEPARATOR . $path->get()
+            get_include_path() . self::PS . $path->get()
         );
 
         return true;
+    }
+
+    /**
+     * Renvoi le chemin absolu, si le fichier est un lien symbolique et
+     *
+     * @param string $path          le chemin du fichier
+     * @param bool   $followSymLink si le fichier est un lien si le paramètre
+     * est à faux renvoi le chemin absolu du lien sinon renvoi le chemin absolu
+     * de la cible du lien
+     *
+     * @return string
+     * @see \realpath()
+     */
+    public static function realPath($path, $symLink = false)
+    {
+        if (is_link($path) && !$symLink) {
+            /*
+             * Si c'est un lien symbolique et qu'on veut le chemin absolu du
+             * lien et non de la cible du lien, on prend le realpath du parent
+             * auquel on concatène le dossier final
+             */
+            $parent = pathinfo($path, PATHINFO_DIRNAME);
+            return realpath($parent) . self::DS
+                 . pathinfo($path, PATHINFO_BASENAME);
+        }
+
+        return realpath($path);
     }
 
     /**
@@ -116,15 +142,15 @@ class Path
      */
     private function test($filePath)
     {
-        $usePaths = explode(PATH_SEPARATOR, get_include_path());
+        $usePaths = explode(self::PS, get_include_path());
         foreach ($usePaths as $usePath) {
             if ($usePath != '.') {
-                $testFilePath = $usePath . DIRECTORY_SEPARATOR . $filePath;
+                $testFilePath = $usePath . self::DS . $filePath;
             } else {
                 $testFilePath = $filePath;
             }
             if (file_exists($testFilePath)) {
-                return realpath($testFilePath);
+                return self::realPath($testFilePath);
             }
         }
 
