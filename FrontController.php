@@ -412,8 +412,6 @@ class FrontController
             }, $appDirs);
 
             foreach ($fooPaths as $fooPath) {
-//                echo $fooPath, "\n<br>";
-
                 $testPath = new Path($fooPath, Path::SILENT);
                 if ($testPath->get() !== false) {
                     return $testPath->get();
