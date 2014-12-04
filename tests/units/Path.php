@@ -75,6 +75,10 @@ class Path extends Atoum
             ->string(TestClass::realPath($link, true))
                 ->isEqualTo($target)
         ;
+
+        unlink($link);
+        rmdir($target);
+        rmdir($tempDir);
     }
 
     /**
