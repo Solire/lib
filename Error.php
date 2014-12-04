@@ -94,7 +94,7 @@ final class Error
     {
         $dirs = FrontController::getAppDirs();
         foreach ($dirs as $dir) {
-            $path = $dir['dir'] . DS . 'error' . DS;
+            $path = $dir['dir'] . Path::DS . 'error' . Path::DS;
             $path = new Path($path . $code . '.phtml', Path::SILENT);
             if ($path->get()) {
                 return $path->get();
