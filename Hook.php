@@ -117,7 +117,9 @@ class Hook
             }
             $dir = opendir($path->get());
             while ($file = readdir($dir)) {
-                if ($file == '.' || $file == '..' || is_dir($path->get() . $file)) {
+                if ($file == '.' || $file == '..'
+                    || is_dir($path->get() . Path::DS . $file)
+                ) {
                     continue;
                 }
 
@@ -130,7 +132,7 @@ class Hook
 
                 $foo = array();
                 $foo['className'] = $funcName;
-                $foo['path'] = $path->get() . $file;
+                $foo['path'] = $path->get() . Path::DS . $file;
                 $hooks[$file] = $foo;
                 unset($foo, $funcName, $file);
             }
@@ -146,7 +148,9 @@ class Hook
 
             $interfaces = class_implements($hook['className']);
 
-            if (empty($interfaces) || !in_array('Solire\Lib\HookInterface', $interfaces)) {
+            if (empty($interfaces)
+                || !in_array('Solire\Lib\HookInterface', $interfaces)
+            ) {
                 throw new \Solire\Lib\Exception\Lib('Hook au mauvais format');
             }
 
