@@ -177,53 +177,6 @@ class Controller
     }
 
     /**
-     * Lance les executions automatiques
-     *
-     * @param string $type Type d'execution (shutdown pour le moment)
-     *
-     * @return void
-     * @throws Exception\lib Si le type n'est pas cohérent
-     * @deprecated since version 3.0
-     */
-    final protected function loadExec($type)
-    {
-        if (!in_array($type, array('shutdown'))) {
-            throw new Exception\lib('Type d\'execution incorrecte');
-        }
-
-        $dirs = FrontController::getAppDirs();
-        $config = FrontController::$mainConfig;
-        foreach ($dirs as $foo) {
-            $dir = $foo['dir'] . DS . strtolower(FrontController::$appName)
-                 . DS . $config->get('dirs', $type . 'Exec');
-            $path = new Path($dir, Path::SILENT);
-            if ($path->get() === false) {
-                continue;
-            }
-
-            $dir = opendir($path->get());
-            while ($file = readdir($dir)) {
-                if ($file == '.' || $file == '..') {
-                    continue;
-                }
-
-                if (is_dir($path->get() . $file)) {
-                    continue;
-                }
-
-                $funcName = $foo['name'] . '\\' . FrontController::$appName . '\\'
-                          . str_replace(DS, '\\', $config->get('dirs', $type . 'Exec'))
-                          . pathinfo($file, PATHINFO_FILENAME);
-                if (!function_exists($funcName)) {
-                    include $path->get() . $file;
-                }
-                    $funcName($this);
-            }
-            closedir($dir);
-        }
-    }
-
-    /**
      * Définit la vue
      *
      * @param View $view Vue à utiliser
