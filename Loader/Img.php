@@ -4,7 +4,7 @@ namespace Solire\Lib\Loader;
 /**
  * Gestionnaire des images pour le html
  *
- * @author  dev <dev@solire.fr>
+ * @author  thansen <thansen@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 class Img extends Loader

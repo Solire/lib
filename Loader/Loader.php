@@ -49,10 +49,12 @@ abstract class Loader
 
         $this->dirs = $dirs;
 
-        if (substr($root, -1) == Path::DS) {
-            $this->root = $root;
-        } else {
-            $this->root = $root . Path::DS;
+        if ($root != '') {
+            if (substr($root, -1) == Path::DS) {
+                $this->root = $root;
+            } else {
+                $this->root = $root . Path::DS;
+            }
         }
     }
 
@@ -74,7 +76,7 @@ abstract class Loader
      *
      * @return void
      */
-    final public function add($url, array $options = [])
+    final public function addLibrary($url, array $options = [])
     {
         if (!is_string($url)
             || $url === ''
@@ -175,5 +177,15 @@ abstract class Loader
             $output .= $this->output($url, $options, $force);
         }
         return $output;
+    }
+
+    /**
+     * Alias de outputAll()
+     *
+     * @return string
+     */
+    final public function __toString()
+    {
+        return $this->outputAll();
     }
 }
