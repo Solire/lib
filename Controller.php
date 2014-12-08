@@ -74,24 +74,14 @@ class Controller
     public $seo;
 
     /**
-     *
-     * @var Loader\Javascript
-     */
-    public $javascript;
-
-    /**
-     *
-     * @var Loader\Css
-     */
-    public $css;
-
-    /**
+     * Traduction des textes statiques
      *
      * @var TranslateMysql
      */
     protected $translate = null;
 
     /**
+     * Log
      *
      * @var Log
      */
@@ -110,6 +100,20 @@ class Controller
      * @var boolean
      */
     public $acceptRew = false;
+
+    /**
+     *
+     *
+     * @var Loader\Css
+     */
+    public $css = null;
+
+    /**
+     *
+     *
+     * @var Loader\Javascript
+     */
+    public $javascript = null;
 
     /**
      * Chargement du controller
@@ -140,8 +144,8 @@ class Controller
      */
     public function start()
     {
-        $this->css = new Loader\Css();
-        $this->javascript = new Loader\Javascript();
+//        $this->css = new Loader\Css();
+//        $this->javascript = new Loader\Javascript();
 
         $this->seo = new Seo();
         $this->view->mainConfig = Registry::get('mainconfig');
@@ -187,6 +191,9 @@ class Controller
     {
         $this->view = $view;
 
+        $this->css = $this->view->getCssLoader();
+        $this->javascript = $this->view->getJsLoader();
+
         return $this;
     }
 
@@ -215,7 +222,7 @@ class Controller
     }
 
     /**
-     * Définit l'objet de traduction
+     * Renvoi l'objet de traduction
      *
      * @return TranslateMysql
      */
@@ -223,7 +230,6 @@ class Controller
     {
         return $this->translate;
     }
-
 
     /**
      * Redirection vers une autre action d'un controller

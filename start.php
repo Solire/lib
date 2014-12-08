@@ -15,6 +15,7 @@ try {
         'name' => 'Solire',
         'dir' => 'vendor/solire',
         'namespace' => 'Solire',
+        'public' => 'public/default',
     ]);
     FrontController::init();
     FrontController::run();
