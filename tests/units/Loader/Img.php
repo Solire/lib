@@ -135,20 +135,20 @@ class Img extends Atoum
 
         $this
             ->exception(function()use($imgLoader){
-                $imgLoader->add('');
+                $imgLoader->addLibrary('');
             })
                 ->isInstanceOf('\Solire\Lib\Exception\Lib')
         ;
 
         $this
-            ->if($imgLoader->add('01.jpg'))
+            ->if($imgLoader->addLibrary('01.jpg'))
             ->array($imgLoader->getLibrairies())
                 ->hasKey('01.jpg')
                 ->isEqualTo(['01.jpg' => []])
         ;
 
         $this
-            ->if($imgLoader->add('02.jpg', ['class' => 'css-img']))
+            ->if($imgLoader->addLibrary('02.jpg', ['class' => 'css-img']))
             ->array($imgLoader->getLibrairies())
                 ->hasKey('01.jpg')
                 ->hasKey('02.jpg')
@@ -189,20 +189,20 @@ class Img extends Atoum
         ;
 
         $this
-            ->if($imgLoader->add('01.jpg'))
+            ->if($imgLoader->addLibrary('01.jpg'))
             ->string($s = $imgLoader->outputAll())
                 ->isEqualTo('<img src="a/01.jpg">')
         ;
 
         $this
-            ->if($imgLoader->add('01.jpg'))
-            ->and($imgLoader->add('02.jpg', [
+            ->if($imgLoader->addLibrary('01.jpg'))
+            ->and($imgLoader->addLibrary('02.jpg', [
                 'class' => 'css-img'
             ]))
-            ->and($imgLoader->add('03.jpg', [
+            ->and($imgLoader->addLibrary('03.jpg', [
                 'class' => 'css-img'
             ]))
-            ->and($imgLoader->add('05.jpg', [
+            ->and($imgLoader->addLibrary('05.jpg', [
                 'class' => 'css-img',
                 'alt' => 'oho',
             ]))
