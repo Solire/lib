@@ -72,7 +72,7 @@ class Session
             $dir = $config->get('dirs', 'config') . $sessionCode;
             $path = FrontController::search($dir);
         } else {
-            $dir = $appName . DS . $config->get('dirs', 'config') . $sessionCode;
+            $dir = $appName . Path::DS . $config->get('dirs', 'config') . $sessionCode;
             $path = FrontController::search($dir, false);
         }
         unset($dir, $format);

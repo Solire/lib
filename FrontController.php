@@ -56,7 +56,14 @@ class FrontController
      *
      * @var array
      */
-    protected static $appDirs = array();
+    protected static $appDirs = [];
+
+    /**
+     * Liste des répertoires app à utiliser
+     *
+     * @var array
+     */
+    protected static $publicDirs = [];
 
     /**
      * Nom du controller utilisé
@@ -96,10 +103,8 @@ class FrontController
     /**
      *
      *
-     * @var string
+     * @var self
      */
-    public $target = '';
-
     private static $singleton = null;
 
     /**
@@ -113,13 +118,40 @@ class FrontController
     private $format = null;
     private $debug = null;
 
+    /**
+     * Traduction des textes statiques
+     *
+     * @var TranslateMysql
+     */
     private $translate = false;
+
+    /**
+     * Vue
+     *
+     * @var View
+     */
     private $view = false;
 
-    const CONTROLLER_FILE_NOT_EXISTS = 0;
-    const CONTROLLER_CLASS_NOT_EXISTS = 1;
-    const CONTROLLER_ACTION_NOT_EXISTS = 2;
-    const VIEW_FILE_NOT_EXISTS = 3;
+    /**
+     * Loader des librairies javascript
+     *
+     * @var Loader\Js
+     */
+    private $loaderJs = false;
+
+    /**
+     * Loader des librairies css
+     *
+     * @var Loader\Css
+     */
+    private $loaderCss = false;
+
+    /**
+     * Loader des librairies img
+     *
+     * @var Loader\Img
+     */
+    private $loaderImg = false;
 
     /**
      * Instantiation du frontController
@@ -396,7 +428,7 @@ class FrontController
         }
 
         foreach (self::$appDirs as $app) {
-            $fooPaths = \array_map(function($appDir) use($path, $app, $appLibDir) {
+            $fooPaths = \array_map(function ($appDir) use ($path, $app, $appLibDir) {
                 $dir = $app['dir'] . $appDir;
 
                 /*
@@ -634,6 +666,11 @@ class FrontController
                 ->setPathFormat($this->getFormat('view-file'))
                 ->setPathPrefix(self::$mainConfig->get('dirs', 'views'))
                 ->setTranslate($this->loadTranslate())
+
+                ->setJsLoader($this->loadJsLoader())
+                ->setCssLoader($this->loadCssLoader())
+                ->setImgLoader($this->loadImgLoader())
+
                 ->setMainPath('main')
                 ->setViewPath($defaultViewPath)
             ;
@@ -644,6 +681,54 @@ class FrontController
         }
 
         return $this->view;
+    }
+
+    /**
+     * Chargement des librairies Javascript
+     *
+     * @return Loader\Javascript
+     */
+    public function loadJsLoader()
+    {
+        if ($this->loaderJs !== false) {
+            return $this->loaderJs;
+        }
+
+        $this->loaderJs = new Loader\Javascript(self::$publicDirs);
+
+        return $this->loaderJs;
+    }
+
+    /**
+     * Chargement des librairies Css
+     *
+     * @return Loader\Css
+     */
+    public function loadCssLoader()
+    {
+        if ($this->loaderCss !== false) {
+            return $this->loaderCss;
+        }
+
+        $this->loaderCss = new Loader\Css(self::$publicDirs);
+
+        return $this->loaderCss;
+    }
+
+    /**
+     * Chargement des librairies Img
+     *
+     * @return Loader\Img
+     */
+    public function loadImgLoader()
+    {
+        if ($this->loaderImg !== false) {
+            return $this->loaderImg;
+        }
+
+        $this->loaderImg = new Loader\Img(self::$publicDirs);
+
+        return $this->loaderImg;
     }
 
     /**
@@ -779,7 +864,7 @@ class FrontController
     /**
      * Enregistre un nouveau répertoire d'app
      *
-     * @param string $app Configuration de l'app
+     * @param string|array $app Configuration de l'app
      *
      * @return void
      */
@@ -787,18 +872,21 @@ class FrontController
     {
         if (is_array($app)) {
             $name = $app['name'];
-            $dir = $app['dir'];
             $namespace = $app['namespace'];
+            $dir = $app['dir'];
+            $public = $app['public'];
         } else {
             $name = ucfirst(strtolower($app));
-            $dir = strtolower($app);
             $namespace = $name;
+            $dir = strtolower($app);
+            $public = $dir;
         }
         self::$appDirs[] = array(
             'name' => $name,
             'dir' => $dir,
             'namespace' => $namespace,
         );
+        self::$publicDirs[] = $public;
     }
 
     /**
