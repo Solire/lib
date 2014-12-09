@@ -27,13 +27,17 @@ class Javascript extends Loader
             $options['src'] = $realUrl;
         }
 
+        if (!isset($options['type'])) {
+            $options['type'] = 'text/javascript';
+        }
+
         $attr = '';
         foreach ($options as $key => $value) {
             $value = str_replace('"', '&quot;', $value);
             $attr .= ' ' . $key . '="' . $value . '"';
         }
 
-        $html = '<script' . $attr . '>';
+        $html = '<script' . $attr . '></script>';
 
         return $html;
     }
