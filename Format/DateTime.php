@@ -43,7 +43,7 @@ class DateTime
             '4.35',
             '12',
         );
-        $difference = time() - $timestamp;
+        $difference = time() - $timestampOrDate;
         if ($difference >= 0) {
             /**
              * C'est dans le passé
@@ -128,7 +128,7 @@ class DateTime
                 $max  = 3;
             }
         } else {
-            $time = '@' . $timestampOrDate;
+            $time = $timestampOrDate;
         }
 
         $d = new \DateTime($time);
