@@ -464,14 +464,11 @@ class FrontController
      */
     final public static function searchClass($className)
     {
-        $path = str_replace('\\', Path::DS, $className);
-        $path = Path::DS . strtolower($path) . '.php';
-
         foreach (self::$appDirs as $app) {
-            $fooPath = $app['dir'] . $path;
-            $testPath = new Path($fooPath, Path::SILENT);
-            if ($testPath->get() !== false) {
-                return $app['namespace'] . '\\' . $className;
+            $testClass = $app['namespace'] . '\\' . $className;
+
+            if (class_exists($testClass)) {
+                return $testClass;
             }
         }
 
