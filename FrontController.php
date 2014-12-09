@@ -63,7 +63,7 @@ class FrontController
      *
      * @var array
      */
-    protected static $publicDirs = [];
+    public static $publicDirs = [];
 
     /**
      * Nom du controller utilisé
