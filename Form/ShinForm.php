@@ -535,7 +535,7 @@ class ShinForm
             //On parcourt chaque champs
             foreach ($form['validate']['rules'] as $fieldName => $field) {
                 //On parcourt chaque règle
-                uksort($field, array($this, '_sortRulesJs'));
+                uksort($field, array($this, 'sortRulesJs'));
 
                 foreach ($field as $key => $rule) {
                     $continue = false;
@@ -599,7 +599,6 @@ class ShinForm
                                 switch ($typeDependsTest) {
                                     case 'ISNOT':
                                         $fieldDepVal = current($fieldDepVal);
-//                                        $functions[] = "function(){ return $(\"$fieldDepSelector\").val() != '$fieldDepVal'; }";
                                         //Ajout du cas des checkbox
                                         $functions[] = "function(){ if($(\"$fieldDepSelector\").is('[type=checkbox]')) return $(\"$fieldDepSelectorCheckbox\").val() != '$fieldDepVal'; else return $(\"$fieldDepSelector\").val() != '$fieldDepVal'; }";
                                         $functionsKeys[] = '"[%function' . $fieldName . $key . '%]"';
@@ -699,11 +698,11 @@ class ShinForm
                                         }
                                     } else {
                                         $functions[] = 'function(){ if($('
-                                        . '\"' . $fieldDepSelector . '\")'
+                                        . '\'' . $fieldDepSelector . '\')'
                                         . '.is("[type=checkbox]")) return'
-                                        . ' $("' . $fieldDepSelectorCheckbox . '").length'
+                                        . ' $(\'' . $fieldDepSelectorCheckbox . '\').length'
                                         . ' == 0 ? true : false ; else '
-                                        . 'return $("$fieldDepSelector").val() == "' . $fieldDepVal . '"; }';
+                                        . 'return $(\'' . $fieldDepSelector . '\').val() == "' . $fieldDepVal . '"; }';
                                         $functionsKeys[] = '"[%function' . $fieldName . $key . $keyRuleParam . '%]"';
                                     }
                                     $form['validate']['rules'][$fieldName][$key][$keyRuleParam] =
@@ -840,7 +839,7 @@ class ShinForm
     {
         foreach ($this->config['form'] as $formName => $form) {
             foreach ($form['fields'] as $field) {
-                uksort($field['validate']['rules'], array($this, '_sortRules'));
+                uksort($field['validate']['rules'], array($this, 'sortRules'));
                 $this->validateRules[$formName]['validate']['rules'][$field['name']] = $field['validate']['rules'];
                 $this->validateRules[$formName]['validate']['messages'][$field['name']] =
                     $field['validate']['messages']
@@ -1199,16 +1198,13 @@ class ShinForm
     protected function sortRulesJs($a, $b)
     {
         $priority = array('depends' => 0, 'required' => 1, 'minlength' => 2, 'maxlength' => 3);
-        // company logic dictates a week begins on a Tuesday.
-        if (
-        (isset($priority[$a]) &&!isset($priority[$b]))
-        || isset($priority[$b]
-        && isset($priority[$a])
-        && $priority[$a] < $priority[$b])
+
+        if ((isset($priority[$a]) && !isset($priority[$b]))
+            || (isset($priority[$b]) && isset($priority[$a]) && $priority[$a] < $priority[$b])
         ) {
-            return 1;
-        } else {
             return -1;
+        } else {
+            return 1;
         }
     }
 
