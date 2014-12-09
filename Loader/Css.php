@@ -27,13 +27,21 @@ class Css extends Loader
             $options['href'] = $realUrl;
         }
 
+        if (!isset($options['type'])) {
+            $options['type'] = 'text/css';
+        }
+
+        if (!isset($options['rel'])) {
+            $options['rel'] = 'stylesheet';
+        }
+
         $attr = '';
         foreach ($options as $key => $value) {
             $value = str_replace('"', '&quot;', $value);
             $attr .= ' ' . $key . '="' . $value . '"';
         }
 
-        $html = '<script' . $attr . '>';
+        $html = '<link' . $attr . '>';
 
         return $html;
     }
