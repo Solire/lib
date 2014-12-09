@@ -11,6 +11,7 @@
 namespace Solire\Lib\Datatable;
 
 use Solire\Lib\Loader;
+use Solire\Lib\FrontController;
 use Solire\Lib\Tools;
 use Solire\Lib\Model\fileManager;
 
@@ -224,7 +225,15 @@ class Datatable
      * Défini les chemins des ressources, la connexion à la base de données
      * ainsi que les paramètres GET de l'url et le nom du fichier de configuration
      */
-    public function __construct($get, $configPath, $db = null, $cssPath = "./datatable/", $jsPath = "./datatable/", $imgPath = "./img/datatable/", $log = null) {
+    public function __construct(
+        $get,
+        $configPath,
+        $db = null,
+        $cssPath = "./datatable/",
+        $jsPath = "./datatable/",
+        $imgPath = "./img/datatable/",
+        $log = null
+    ) {
         $this->db = $db;
         $this->get = $get;
 
@@ -287,8 +296,8 @@ class Datatable
         $this->imgPath = $imgPath;
 
         //Création d'un chargeur JS/CSS
-        $this->javascript = new Loader\Javascript();
-        $this->css = new Loader\Css();
+        $this->javascript = new Loader\Javascript(FrontController::$publicDirs);
+        $this->css = new Loader\Css(FrontController::$publicDirs);
     }
 
     // --------------------------------------------------------------------
@@ -417,14 +426,14 @@ class Datatable
         }
 
         if (method_exists($this, $this->action . "Action")) {
-        call_user_func(array($this, $this->action . "Action"));
+            call_user_func(array($this, $this->action . "Action"));
 
             /* Appel action dans plugins */
             if (isset($plugins) && count($plugins)) {
                 foreach ($plugins as $plugin) {
                     if (method_exists($plugin, $this->action . "Action")) {
                         $this->pluginsOutput = call_user_func(array($plugin, $this->action . "Action"));
-    }
+                    }
                 }
             }
         }
