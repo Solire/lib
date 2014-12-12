@@ -161,7 +161,7 @@ class Img extends Atoum
         ;
     }
 
-    public function testOutputAll()
+    public function testOutput()
     {
         $imgLoader = $this->instanciate();
 
@@ -173,11 +173,12 @@ class Img extends Atoum
         ;
 
         $this
-            ->if($s = $imgLoader->output('100.jpg', [
-                'class' => 'css-img'
-            ]))
-            ->string($s)
-                ->isEqualTo('')
+            ->exception(function()use($imgLoader){
+                $s = $imgLoader->output('100.jpg', [
+                    'class' => 'css-img'
+                ]);
+            })
+                ->isInstanceOf('Solire\Lib\Exception\Lib')
         ;
 
         $this
@@ -207,6 +208,13 @@ class Img extends Atoum
                 'alt' => 'oho',
             ]))
             ->string($imgLoader->outputAll())
+                ->isEqualTo(
+                    '<img src="a/01.jpg">'
+                    . '<img class="css-img" src="a/02.jpg">'
+                    . '<img class="css-img" src="b/03.jpg">'
+                    . '<img class="css-img" alt="oho" src="c/05.jpg">'
+                )
+            ->string((string) $imgLoader)
                 ->isEqualTo(
                     '<img src="a/01.jpg">'
                     . '<img class="css-img" src="a/02.jpg">'
