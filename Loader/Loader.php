@@ -14,17 +14,23 @@ use Solire\Lib\Exception\Lib as LibException;
  */
 abstract class Loader
 {
+    /**
+     * Préfixe des chemins, cette partie ne sera pas renvoyé dans la méthode
+     * getPath()
+     *
+     * @var string
+     */
     protected $root = '';
 
     /**
-     *
+     * Liste des chemins de dossiers à inspecter pour librairies
      *
      * @var array
      */
     protected $dirs = [];
 
     /**
-     *
+     * Liste des librairies
      *
      * @var array
      */
