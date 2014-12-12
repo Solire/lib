@@ -43,7 +43,8 @@ abstract class Loader
     {
         if (empty($dirs)) {
             throw new LibException(
-                'The loader should be instanciate with a non empty array'
+                'Le loader ne doit pas être instancié avec une liste de dossier'
+                . ' vide'
             );
         }
 
@@ -124,21 +125,6 @@ abstract class Loader
     abstract protected function template($url, $realUrl, array $options = []);
 
     /**
-     * Comportement au cas où la librairie n'est pas trouvé
-     *
-     * @param string $url     Url de la librairie
-     * @param string $realUrl Vraie url de la librairie
-     * @param array  $options Options de la librairie
-     *
-     * @return string
-     */
-    protected function errorNotFound($url, $realUrl, array $options = [])
-    {
-        return '';
-    }
-
-
-    /**
      * Recherche la librairie et renvoi un code pour une librairie
      *
      * @param string $url     Url de la librairie
@@ -148,13 +134,16 @@ abstract class Loader
      * errorNotFound() sera utilisé
      *
      * @return string
+     * @throws LibException si la librairie n'est pas trouvée
      */
     final public function output($url, array $options = [], $force = false)
     {
         $realUrl = $this->getPath($url);
 
         if ($realUrl === null && !$force) {
-            return $this->errorNotFound($url, $realUrl, $options);
+            throw new LibException(
+                'La librairie "' . $url . '" n\'a pas été trouvée'
+            );
         }
 
         return $this->template($url, $realUrl, $options);
@@ -164,7 +153,7 @@ abstract class Loader
      * Recherche chaque librairie ajouté et renvoi la concaténation de tous les
      * codes correspondants
      *
-     * @param array $force Si une librairie n'est pas trouvé, qu'on veut l'url
+     * @param bool $force Si une librairie n'est pas trouvé, qu'on veut l'url
      * donné sans traitement on met ce paramètre à vrai sinon la méthode
      * errorNotFound() sera utilisé
      *
