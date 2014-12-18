@@ -144,9 +144,13 @@ abstract class Loader
      */
     final public function output($url, array $options = [], $force = false)
     {
+        $direct = false;
+        if (strpos($url, 'http:') === 0 || strpos($url, 'https:')) {
+            $direct = true;
+        }
         $realUrl = $this->getPath($url);
 
-        if ($realUrl === null && !$force) {
+        if ($realUrl === null && !$force && $direct === false) {
             throw new LibException(
                 'La librairie "' . $url . '" n\'a pas été trouvée'
             );
