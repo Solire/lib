@@ -138,16 +138,12 @@ class Img extends Atoum
                 $imgLoader->addLibrary('');
             })
                 ->isInstanceOf('\Solire\Lib\Exception\Lib')
-        ;
 
-        $this
             ->if($imgLoader->addLibrary('01.jpg'))
             ->array($imgLoader->getLibrairies())
                 ->hasKey('01.jpg')
                 ->isEqualTo(['01.jpg' => []])
-        ;
 
-        $this
             ->if($imgLoader->addLibrary('02.jpg', ['class' => 'css-img']))
             ->array($imgLoader->getLibrairies())
                 ->hasKey('01.jpg')
@@ -207,12 +203,14 @@ class Img extends Atoum
                 'class' => 'css-img',
                 'alt' => 'oho',
             ]))
+            ->and($imgLoader->addLibrary('http://www.solire.fr'))
             ->string($imgLoader->outputAll())
                 ->isEqualTo(
                     '<img src="a/01.jpg">'
                     . '<img class="css-img" src="a/02.jpg">'
                     . '<img class="css-img" src="b/03.jpg">'
                     . '<img class="css-img" alt="oho" src="c/05.jpg">'
+                    . '<img src="http://www.solire.fr">'
                 )
             ->string((string) $imgLoader)
                 ->isEqualTo(
@@ -220,6 +218,7 @@ class Img extends Atoum
                     . '<img class="css-img" src="a/02.jpg">'
                     . '<img class="css-img" src="b/03.jpg">'
                     . '<img class="css-img" alt="oho" src="c/05.jpg">'
+                    . '<img src="http://www.solire.fr">'
                 )
         ;
     }
