@@ -104,7 +104,7 @@ abstract class Loader
      *
      * @return string
      */
-    protected function getPath($filePath)
+    public function getPath($filePath)
     {
         foreach ($this->dirs as $dir) {
             $path = new Path(
