@@ -210,7 +210,7 @@ class FileManager extends manager
         $vignetteDir,
         $apercuDir
     ) {
-        /** HTTP headers for no cache etc. */
+        /* HTTP headers for no cache etc. */
         header('Content-type: text/plain; charset=UTF-8');
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
@@ -218,13 +218,13 @@ class FileManager extends manager
         header('Cache-Control: post-check=0, pre-check=0', false);
         header('Pragma: no-cache');
 
-        /** 5 minutes execution time */
+        /* 5 minutes execution time */
         @set_time_limit(5 * 60);
 
-        /** Get parameters */
-        $chunk      = isset($REQUEST['chunk']) ? $REQUEST['chunk'] : 0;
-        $chunks     = isset($REQUEST['chunks']) ? $REQUEST['chunks'] : 1;
-        $fileName   = isset($REQUEST['name']) ? $REQUEST['name'] : '';
+        /* Get parameters */
+        $chunk      = isset($_POST['chunk']) ? $_POST['chunk'] : 0;
+        $chunks     = isset($_POST['chunks']) ? $_POST['chunks'] : 1;
+        $fileName   = isset($_POST['name']) ? $_POST['name'] : '';
         $fileName = strtolower($fileName);
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $name = pathinfo($fileName, PATHINFO_FILENAME);
@@ -243,28 +243,28 @@ class FileManager extends manager
             }
         }
 
-        /** Clean the fileName for security reasons */
-        $name = $this->db->rewrit($name);
+        /* Clean the fileName for security reasons */
+        $name = \Solire\Lib\Format\String::urlSlug($name);
         $fileName = $name . '.' . $ext;
 
-        /** Look for the content type header */
-        if (isset($SERVER['HTTP_CONTENT_TYPE'])) {
-            $contentType = $SERVER['HTTP_CONTENT_TYPE'];
+        /* Look for the content type header */
+        if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+            $contentType = $_SERVER['HTTP_CONTENT_TYPE'];
         }
 
-        if (isset($SERVER['CONTENT_TYPE'])) {
-            $contentType = $SERVER['CONTENT_TYPE'];
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            $contentType = $_SERVER['CONTENT_TYPE'];
         }
 
-        /**
+        /*
          * Handle non multipart uploads older WebKit
          * versions didn't support multipart in HTML5
          */
         if (strpos($contentType, 'multipart') !== false) {
-            if (isset($FILES['file']['tmp_name'])
-                && is_uploaded_file($FILES['file']['tmp_name'])
+            if (isset($_FILES['file']['tmp_name'])
+                && is_uploaded_file($_FILES['file']['tmp_name'])
             ) {
-                /** Open temp file */
+                /* Open temp file */
 
                 if ($chunk == 0) {
                     $mode = 'wb';
@@ -278,8 +278,8 @@ class FileManager extends manager
                 );
 
                 if ($out) {
-                    /** Read binary input stream and append it to temp file */
-                    $in = fopen($FILES['file']['tmp_name'], 'rb');
+                    /* Read binary input stream and append it to temp file */
+                    $in = fopen($_FILES['file']['tmp_name'], 'rb');
 
                     if ($in) {
                         while ($buff = fread($in, 4096)) {
@@ -299,7 +299,7 @@ class FileManager extends manager
 
                     fclose($in);
                     fclose($out);
-                    @unlink($FILES['file']['tmp_name']);
+                    @unlink($_FILES['file']['tmp_name']);
                 } else {
                     return array(
                         'jsonrpc' => '2.0',
@@ -317,7 +317,7 @@ class FileManager extends manager
                     'status' => 'error',
                     'error' => array(
                         'code' => 103,
-                        'message' => 'Failed to move uploaded file.'
+                        'message' => 'Failed to move uploaded file.',
                     ),
                     'id' => 'id'
                 );
@@ -333,7 +333,7 @@ class FileManager extends manager
             $out = fopen($uploadDir . DS . $targetTmp . DS . $fileName, $mode);
 
             if ($out) {
-                /** Read binary input stream and append it to temp file */
+                /* Read binary input stream and append it to temp file */
                 $in = fopen('php://input', 'rb');
 
                 if ($in) {
@@ -367,18 +367,18 @@ class FileManager extends manager
             }
         }
 
-        /** Construct JSON-RPC response */
+        /* Construct JSON-RPC response */
         $jsonrpc = array(
             'jsonrpc' => '2.0',
             'status' => 'success',
             'result' => $fileName,
         );
 
-        /** Dernière partie. */
+        /* Dernière partie. */
         if ($chunk == $chunks - 1) {
             $fileNameNew = $fileName;
 
-            /** On renomme pour éviter d'écraser un fichier existant */
+            /* On renomme pour éviter d'écraser un fichier existant */
             if (file_exists($uploadDir . DS . $targetDir . DS . $fileName)) {
                 $fileName_a = pathinfo($fileName, PATHINFO_FILENAME);
                 $fileName_b = pathinfo($fileName, PATHINFO_EXTENSION);
@@ -395,7 +395,7 @@ class FileManager extends manager
                 $fileNameNew = $fileName_a . '-' . $count . '.' . $fileName_b;
             }
 
-            /** On déplace le fichier temporaire */
+            /* On déplace le fichier temporaire */
             rename(
                 $uploadDir . DS . $targetTmp . DS . $fileName,
                 $uploadDir . DS . $targetDir . DS . $fileNameNew
@@ -403,7 +403,7 @@ class FileManager extends manager
 
             $size = filesize($uploadDir . DS . $targetDir . DS . $fileNameNew);
 
-            /** Création de la miniature. */
+            /* Création de la miniature. */
             $ext = pathinfo($fileNameNew, PATHINFO_EXTENSION);
             if (array_key_exists($ext, self::$extensions['image'])) {
                 $filePath = $uploadDir . DS . $targetDir . DS . $fileNameNew;
@@ -412,7 +412,7 @@ class FileManager extends manager
                 $height = $sizes[1];
                 $jsonrpc['taille'] = $sizes[0] . ' x ' . $sizes[1];
 
-                /** Création de la vignette  */
+                /* Création de la vignette  */
                 $largeurmax = self::$vignette['max-width'];
                 $hauteurmax = self::$vignette['max-height'];
                 $this->vignette(
@@ -426,7 +426,7 @@ class FileManager extends manager
                                       . $fileNameNew;
                 $jsonrpc['mini_url']  = $vignetteDir . DS . $fileNameNew;
 
-                /** Création de l'apercu  */
+                /* Création de l'apercu  */
                 $largeurmax = self::$apercu['max-width'];
                 $hauteurmax = self::$apercu['max-height'];
                 $this->vignette(
@@ -442,7 +442,7 @@ class FileManager extends manager
                 $jsonrpc['taille'] = \Solire\Lib\Format\Number::formatSize($size);
             }
 
-            /** Ajout d'informations utiles (ou pas) */
+            /* Ajout d'informations utiles (ou pas) */
             $jsonrpc['filename'] = $fileNameNew;
             $jsonrpc['size'] = $size;
             $jsonrpc['width'] = $width;
@@ -543,7 +543,7 @@ class FileManager extends manager
         $fileNameNew     = $target;
         $ext             = pathinfo($fileNameNew, PATHINFO_EXTENSION);
 
-        /** On créé et on enregistre l'image recadrée */
+        /* On créé et on enregistre l'image recadrée */
         if ($targ_w == false) {
             $targ_w = $w;
         }
@@ -559,7 +559,7 @@ class FileManager extends manager
         );
         $dstR = imagecreatetruecolor($targ_w, $targ_h);
 
-        /** Transparence */
+        /* Transparence */
         if ($ext == 'png' || $ext == 'gif') {
             imagecolortransparent(
                 $dstR,
@@ -616,7 +616,7 @@ class FileManager extends manager
             'date' => date('d/m/Y H:i:s'),
         );
 
-        /** On créé la vignette */
+        /* On créé la vignette */
         $largeurmax = self::$vignette['max-width'];
         $hauteurmax = self::$vignette['max-height'];
         $this->vignette(
@@ -628,7 +628,7 @@ class FileManager extends manager
         );
         $jsonrpc['minipath'] = $vignetteDir . DS . $fileNameNew;
 
-        /** On créé l'apercu */
+        /* On créé l'apercu */
         $largeurmax = self::$apercu['max-width'];
         $hauteurmax = self::$apercu['max-height'];
         $this->vignette(
@@ -639,7 +639,7 @@ class FileManager extends manager
             $hauteurmax
         );
 
-        /** On insert la ressource en base */
+        /* On insert la ressource en base */
         $json['id'] = $this->insertToMediaFile(
             $json['filename'],
             $idGabPage,
@@ -712,7 +712,7 @@ class FileManager extends manager
             $fileSource
         );
 
-        /**
+        /*
          * Les fonctions imagesx et imagesy renvoient la largeur et la hauteur
          * d'une image
          */
@@ -745,13 +745,13 @@ class FileManager extends manager
                 $hauteurDestination
             );
 
-            /** Transparence */
+            /* Transparence */
             if ($ext == 'png' || $ext == 'gif') {
                 imagealphablending($destination, false);
                 imagesavealpha($destination, true);
             }
 
-            /** On crée la miniature */
+            /* On crée la miniature */
             imagecopyresampled(
                 $destination,
                 $source,

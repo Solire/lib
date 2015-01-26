@@ -435,8 +435,8 @@ class Formulaire
 
             /* = Par défaut on redirige vers la page précédente
               ------------------------------- */
-            if (isset($SERVER['HTTP_REFERER'])) {
-                $error->link($SERVER['HTTP_REFERER'], 1);
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                $error->link($_SERVER['HTTP_REFERER'], 1);
             }
         }
 

@@ -42,17 +42,17 @@ class Tools
 
         if (preg_match('#^[0-9]{1,}$#', $valeur)) {
             if ($valeur >= 1000000) {
-                // Taille supÃ©rieur Ã  1 MegaOctet
+                // Taille supérieur à  1 MegaOctet
                 $strTmp = sprintf('%01.2f', $valeur / 1000000);
                 // Suppression des "0" en fin de chaine
                 $strTmp = preg_replace('#[\.]{1}[0]{1,}$#', '', $strTmp) . ' Mo';
             } elseif ($valeur >= 1000) {
-                // Taille infÃ©rieur Ã  1 MegaOctet
+                // Taille inférieur à  1 MegaOctet
                 $strTmp = sprintf('%01.2f', $valeur / 1000);
                 // Suppression des "0" en fin de chaine
                 $strTmp = preg_replace('#[\.]{1}[0]{1,}$#', '', $strTmp) . ' Ko';
             } elseif ($valeur >= 0) {
-                // Taille infÃ©rieur Ã  1 KiloOctet
+                // Taille inférieur à  1 KiloOctet
                 $strTmp = $valeur . ' octect';
                 if ($valeur > 0) {
                     $strTmp .= 's';

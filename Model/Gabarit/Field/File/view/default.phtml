@@ -12,7 +12,7 @@
         $ext = pathinfo($this->value, PATHINFO_EXTENSION);
         $href   = $this->idGabPage . '/' . $this->value;
         $path = 'upload/' . $href;
-        if (Slrfw\Model\fileManager::isImage($path)) {
+        if (\Solire\Lib\Model\FileManager::isImage($path)) {
             $minSrc = $this->idGabPage . '/mini/' . $this->value;
             $sizes = getimagesize('upload/' . $href);
             $size  = $sizes[0] . ' x ' . $sizes[1];
