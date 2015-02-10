@@ -100,6 +100,23 @@ class Mail
 
         $configLoc = Registry::get('envconfig');
         $default = $configLoc->get('mail');
+        $this->setDefault($default);
+    }
+
+    /**
+     * Défini des valeurs par défaut pour les attributs
+     *
+     * @param array $default Tableau associatif des valeurs par défaut, les clés
+     * étant les noms des attributs
+     *
+     * @return void
+     */
+    protected function setDefault($default)
+    {
+        if (empty($default)) {
+            return;
+        }
+
         foreach ($default as $key => $value) {
             $this->$key = $value;
         }

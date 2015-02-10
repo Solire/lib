@@ -156,7 +156,7 @@ abstract class Loader
 
         if ($realUrl === null && !$force) {
             throw new LibException(
-                'La librairie "' . $url . '" n\'a pas été trouvée'
+                'La librairie "' . $url . '" n\'a pas été trouvée dans [' . print_r($this->dirs, true) . ']'
             );
         }
 
@@ -180,15 +180,5 @@ abstract class Loader
             $output .= $this->output($url, $options, $force);
         }
         return $output;
-    }
-
-    /**
-     * Alias de outputAll()
-     *
-     * @return string
-     */
-    final public function __toString()
-    {
-        return $this->outputAll();
     }
 }

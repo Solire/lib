@@ -2232,7 +2232,8 @@ class Datatable
      *
      * @return 	string
      */
-    public function __toString() {
+    public function display()
+    {
         if ($this->viewPathRelative) {
             $rc = new \ReflectionClass(get_class($this));
         } else {
@@ -2245,6 +2246,11 @@ class Datatable
             return $this->output(dirname($rc->getFileName()) . DIRECTORY_SEPARATOR . $this->viewPath . $view . ".phtml") . $this->pluginsOutput;
         } else
             return $this->pluginsOutput;
+    }
+
+    public function __toString()
+    {
+        return $this->display();
     }
 
     // --------------------------------------------------------------------
