@@ -8,6 +8,8 @@
 
 namespace Solire\Lib\Model;
 
+use Solire\Lib\Path;
+
 /**
  * Gestion des fichiers
  *
@@ -230,16 +232,16 @@ class FileManager extends manager
         $name = pathinfo($fileName, PATHINFO_FILENAME);
 
         if ($chunk == $chunks - 1) {
-            if (!file_exists($uploadDir . DS . $targetDir)) {
-                $this->createFolder($uploadDir . DS . $targetDir);
+            if (!file_exists($uploadDir . Path::DS . $targetDir)) {
+                $this->createFolder($uploadDir . Path::DS . $targetDir);
             }
 
-            if (!file_exists($uploadDir . DS . $vignetteDir)) {
-                $this->createFolder($uploadDir . DS . $vignetteDir);
+            if (!file_exists($uploadDir . Path::DS . $vignetteDir)) {
+                $this->createFolder($uploadDir . Path::DS . $vignetteDir);
             }
 
-            if (!file_exists($uploadDir . DS . $apercuDir)) {
-                $this->createFolder($uploadDir . DS . $apercuDir);
+            if (!file_exists($uploadDir . Path::DS . $apercuDir)) {
+                $this->createFolder($uploadDir . Path::DS . $apercuDir);
             }
         }
 
@@ -273,7 +275,7 @@ class FileManager extends manager
                 }
 
                 $out = fopen(
-                    $uploadDir . DS . $targetTmp . DS . $fileName,
+                    $uploadDir . Path::DS . $targetTmp . Path::DS . $fileName,
                     $mode
                 );
 
@@ -330,7 +332,7 @@ class FileManager extends manager
                 $mode = 'ab';
             }
 
-            $out = fopen($uploadDir . DS . $targetTmp . DS . $fileName, $mode);
+            $out = fopen($uploadDir . Path::DS . $targetTmp . Path::DS . $fileName, $mode);
 
             if ($out) {
                 /* Read binary input stream and append it to temp file */
@@ -379,16 +381,16 @@ class FileManager extends manager
             $fileNameNew = $fileName;
 
             /* On renomme pour éviter d'écraser un fichier existant */
-            if (file_exists($uploadDir . DS . $targetDir . DS . $fileName)) {
+            if (file_exists($uploadDir . Path::DS . $targetDir . Path::DS . $fileName)) {
                 $fileName_a = pathinfo($fileName, PATHINFO_FILENAME);
                 $fileName_b = pathinfo($fileName, PATHINFO_EXTENSION);
 
                 $count = 1;
-                $path   = $uploadDir . DS . $targetDir . DS . $fileName_a . '-'
+                $path   = $uploadDir . Path::DS . $targetDir . Path::DS . $fileName_a . '-'
                         . $count . '.' . $fileName_b;
                 while (file_exists($path)) {
                     $count++;
-                    $path   = $uploadDir . DS . $targetDir . DS . $fileName_a
+                    $path   = $uploadDir . Path::DS . $targetDir . Path::DS . $fileName_a
                             . '-' . $count . '.' . $fileName_b;
                 }
 
@@ -397,16 +399,16 @@ class FileManager extends manager
 
             /* On déplace le fichier temporaire */
             rename(
-                $uploadDir . DS . $targetTmp . DS . $fileName,
-                $uploadDir . DS . $targetDir . DS . $fileNameNew
+                $uploadDir . Path::DS . $targetTmp . Path::DS . $fileName,
+                $uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew
             );
 
-            $size = filesize($uploadDir . DS . $targetDir . DS . $fileNameNew);
+            $size = filesize($uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew);
 
             /* Création de la miniature. */
             $ext = pathinfo($fileNameNew, PATHINFO_EXTENSION);
             if (array_key_exists($ext, self::$extensions['image'])) {
-                $filePath = $uploadDir . DS . $targetDir . DS . $fileNameNew;
+                $filePath = $uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew;
                 $sizes = getimagesize($filePath);
                 $width = $sizes[0];
                 $height = $sizes[1];
@@ -418,13 +420,13 @@ class FileManager extends manager
                 $this->vignette(
                     $filePath,
                     $ext,
-                    $uploadDir . DS . $vignetteDir . DS . $fileNameNew,
+                    $uploadDir . Path::DS . $vignetteDir . Path::DS . $fileNameNew,
                     $largeurmax,
                     $hauteurmax
                 );
-                $jsonrpc['mini_path'] = $uploadDir . DS . $vignetteDir . DS
+                $jsonrpc['mini_path'] = $uploadDir . Path::DS . $vignetteDir . Path::DS
                                       . $fileNameNew;
-                $jsonrpc['mini_url']  = $vignetteDir . DS . $fileNameNew;
+                $jsonrpc['mini_url']  = $vignetteDir . Path::DS . $fileNameNew;
 
                 /* Création de l'apercu  */
                 $largeurmax = self::$apercu['max-width'];
@@ -432,7 +434,7 @@ class FileManager extends manager
                 $this->vignette(
                     $filePath,
                     $ext,
-                    $uploadDir . DS . $apercuDir . DS . $fileNameNew,
+                    $uploadDir . Path::DS . $apercuDir . Path::DS . $fileNameNew,
                     $largeurmax,
                     $hauteurmax
                 );
@@ -447,9 +449,9 @@ class FileManager extends manager
             $jsonrpc['size'] = $size;
             $jsonrpc['width'] = $width;
             $jsonrpc['height'] = $height;
-            $jsonrpc['path'] = $uploadDir . DS . $targetDir . DS
+            $jsonrpc['path'] = $uploadDir . Path::DS . $targetDir . Path::DS
                              . $fileNameNew;
-            $jsonrpc['url'] = $targetDir . DS . $fileNameNew;
+            $jsonrpc['url'] = $targetDir . Path::DS . $fileNameNew;
             $jsonrpc['date'] = date('d/m/Y H:i:s');
         }
 
@@ -539,7 +541,7 @@ class FileManager extends manager
         $targ_w = false,
         $targ_h = false
     ) {
-        $destinationName = $uploadDir . DS . $targetDir . DS . $target;
+        $destinationName = $uploadDir . Path::DS . $targetDir . Path::DS . $target;
         $fileNameNew     = $target;
         $ext             = pathinfo($fileNameNew, PATHINFO_EXTENSION);
 
@@ -552,7 +554,7 @@ class FileManager extends manager
             $targ_h = $h;
         }
 
-        $src = $uploadDir . DS . $fileSource;
+        $src = $uploadDir . Path::DS . $fileSource;
         $img_r = call_user_func(
             'imagecreatefrom' . self::$extensions['image'][$ext],
             $src
@@ -612,7 +614,7 @@ class FileManager extends manager
             'size' => $size,
             'width' => $width,
             'height' => $height,
-            'path' => $targetDir . DS . $fileNameNew,
+            'path' => $targetDir . Path::DS . $fileNameNew,
             'date' => date('d/m/Y H:i:s'),
         );
 
@@ -620,21 +622,21 @@ class FileManager extends manager
         $largeurmax = self::$vignette['max-width'];
         $hauteurmax = self::$vignette['max-height'];
         $this->vignette(
-            $uploadDir . DS . $targetDir . DS . $fileNameNew,
+            $uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew,
             $ext,
-            $uploadDir . DS . $vignetteDir . DS . $fileNameNew,
+            $uploadDir . Path::DS . $vignetteDir . Path::DS . $fileNameNew,
             $largeurmax,
             $hauteurmax
         );
-        $jsonrpc['minipath'] = $vignetteDir . DS . $fileNameNew;
+        $jsonrpc['minipath'] = $vignetteDir . Path::DS . $fileNameNew;
 
         /* On créé l'apercu */
         $largeurmax = self::$apercu['max-width'];
         $hauteurmax = self::$apercu['max-height'];
         $this->vignette(
-            $uploadDir . DS . $targetDir . DS . $fileNameNew,
+            $uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew,
             $ext,
-            $uploadDir . DS . $apercuDir . DS . $fileNameNew,
+            $uploadDir . Path::DS . $apercuDir . Path::DS . $fileNameNew,
             $largeurmax,
             $hauteurmax
         );

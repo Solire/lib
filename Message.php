@@ -147,7 +147,7 @@ class Message
     {
         $dirs = FrontController::getAppDirs();
         foreach ($dirs as $dir) {
-            $path = $dir['dir'] . DS . 'error' . DS . 'message.phtml';
+            $path = $dir['dir'] . Path::DS . 'error' . Path::DS . 'message.phtml';
             $path = new Path($path, Path::SILENT);
             if ($path->get()) {
                 return $path->get();
@@ -155,7 +155,7 @@ class Message
         }
 
         /** utilisation du message.phtml présent dans Solire\Lib **/
-        $path = pathinfo(__FILE__, PATHINFO_DIRNAME) . DS . 'error/message.phtml';
+        $path = pathinfo(__FILE__, PATHINFO_DIRNAME) . Path::DS . 'error/message.phtml';
         $path = new Path($path, Path::SILENT);
         if ($path->get()) {
             return $path->get();
