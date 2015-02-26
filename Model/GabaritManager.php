@@ -1294,6 +1294,7 @@ class GabaritManager extends Manager
      * <li>FALSE si aucune modification n'est apparue</li>
      * <li>NULL si l'identifiant de page ou de gabarit n'est pas valide</li>
      * </ul>
+     * @hook gabarit/ <gabaritName>AfterSave A la fin de l'enregistrement
      */
     public function save($donnees)
     {
@@ -1358,6 +1359,13 @@ class GabaritManager extends Manager
         }
 
         $newPage = $this->getPage($versionId, $api['id'], $page->getMeta('id'), 0);
+
+        $hook = new Hook();
+        $hook->setSubdirName('gabarit');
+
+        $hook->data = $donnees;
+        $hook->page = $newPage;
+        $hook->exec($gabarit->getName() . 'AfterSave');
 
         return $newPage;
     }
