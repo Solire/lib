@@ -1480,9 +1480,9 @@ class Datatable
             if (isset($column["format"])) {
                 foreach ($column["format"] as $type => $params) {
                     $paramsFunc = array();
-                    $aColumnsFunctions[$keyCol][]["name"] = "\Solire\Lib\Format\\" . ucfirst($type);
+                    $aColumnsFunctions[$keyCol][]["name"] = "\Solire\Lib\Format\\" . ($type);
                     $keyFunc = count($aColumnsFunctions[$keyCol]) - 1;
-                    switch ($type) {
+                    switch (strtolower($type)) {
                         case "datetime":
                             switch ($params["type"]) {
                                 case "short":
