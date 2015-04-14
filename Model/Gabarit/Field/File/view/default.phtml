@@ -17,7 +17,7 @@
             $sizes = getimagesize('upload/' . $href);
             $size  = $sizes[0] . ' x ' . $sizes[1];
         } else {
-            $size  = Slrfw\Format\Number::formatSize(filesize($path));
+            $size  = \Solire\Lib\Format\Number::formatSize(filesize($path));
             $minSrc = 'public/default/back/img/filetype/' . $ext . '.png';
         }
     }
