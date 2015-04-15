@@ -1,13 +1,17 @@
 <div class="line form-line">
-    <div class="line">
-        <label for="<?php echo $this->id; ?>">
+    <div class="line form-group">
+        <label class="col-sm-2 control-label" for="<?php echo $this->id; ?>">
             <span><?php echo $this->label; ?><?php echo in_array('form-oblig', explode(' ', $this->classes)) ? ' <span class="required">*</span>' : '' ; ?></span>
         </label>
-        <input type="text" style="width:<?php echo $this->params['WIDTH']; ?>px;" name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="<?php echo $this->classes; ?>" value="<?php echo $this->value; ?>" />
+        <div class="col-sm-10">
+            <input <?php echo $this->champ['typedonnee'] == 'DATE' ? 'data-amd="modules/helper/datepicker"' : '' ?> type="text" name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="form-control <?php echo $this->classes; ?>" value="<?php echo $this->value; ?>" />
+        </div>
     </div>
 
-    <div class="line form-other-line" style="display:none;">
-        <label class="form-other-flag"></label>
-        <input type="text" readonly="readonly" class="form-other-elmt" />
+    <div class="line form-other-line form-group" style="display:none;">
+        <label class="form-other-flag col-sm-2 control-label"></label>
+        <div class="col-sm-10">
+            <input type="text" readonly="readonly" class="form-other-elmt form-control">
+        </div>
     </div>
 </div>

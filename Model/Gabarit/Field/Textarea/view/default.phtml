@@ -1,9 +1,11 @@
 <div class="line form-line">
-    <div class="line">
-        <label for="<?php echo $this->id; ?>">
+    <div class="line form-group">
+        <label class="col-sm-2 control-label" for="<?php echo $this->id; ?>">
             <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
         </label>
-        <textarea name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="<?php echo $this->classes; ?>" rows="5" cols="20"><?php echo $this->value; ?></textarea>
+        <div class="col-sm-10">
+            <textarea name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="form-control <?php echo $this->classes; ?>" rows="5" cols="20"><?php echo $this->value; ?></textarea>
+        </div>
     </div>
 
     <div class="line form-other-line" style="display:none;">
