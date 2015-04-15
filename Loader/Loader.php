@@ -85,7 +85,7 @@ abstract class Loader
      *
      * @throws LibException
      */
-    final public function addLibrary($url, array $options = [])
+    public function addLibrary($url, array $options = [])
     {
         if (!is_string($url)
             || $url === ''
@@ -175,7 +175,7 @@ abstract class Loader
      *
      * @return string
      */
-    final public function outputAll($force = false)
+    public function outputAll($force = false)
     {
         $output = '';
         foreach ($this->librairies as $url => $options) {
