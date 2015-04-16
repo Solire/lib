@@ -595,13 +595,16 @@ class FrontController
         if (!method_exists($class, $method)) {
             $front->rewriting[] = $front->action;
             $method = $front->getDefault('action');
+            $method = sprintf($front->getFormat('controller-action'), $method);
             if (!method_exists($class, $method)) {
                 $message = sprintf(
                     'Impossible de trouver  l\'action "%s" pour le contrôleur "%s".',
                     $class,
                     $method
                 );
-                throw new Exception\Lib($message);
+                $error = new Exception\HttpError($message);
+                $error->http(404);
+                throw $error;
             }
         }
 
