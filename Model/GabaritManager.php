@@ -1548,10 +1548,6 @@ class GabaritManager extends Manager
                 $titre_rew = $donnees['rewriting'];
             }
 
-            if ($donnees['bal_title'] == '') {
-                $donnees['bal_title'] = $donnees['titre'];
-            }
-
             $query = 'AND `suppr` = 0'
             . ' AND `id_gabarit` IN ('
             . implode(', ', $gabaritsFromCurrentApi) . ')'
