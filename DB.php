@@ -128,7 +128,7 @@ class DB
      *
      * @param string $dbName Nom de la base de données
      *
-     * @return \PDO
+     * @return MyPDO
      * @throws LibExeception Si il n'y a pas de bdd répondant au nom $dbName
      */
     final public static function get($dbName)

@@ -10,7 +10,7 @@
                                 <div class="line form-line">
                                     <div<?php echo $this->view['noMetaTitre']; ?> class="line">
                                         <label for="titre-<?php echo $this->view['metaLang']; ?>">Titre <span class="required">*</span> </label>
-                                        <input type="text" name="titre" id="titre-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['titre']) ? $this->meta['titre'] : ''; ?>" class="form-controle<?php echo $this->gabarit->getMetaTitre() ? ' form-oblig form-mix' : ''; ?>" />
+                                        <input type="text" name="titre" id="titre-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['titre']) ? $this->meta['titre'] : ''; ?>" class="form-controle<?php echo $this->gabarit->getMetaTitre() ? ' form-oblig form-notnul' : ''; ?>" />
                                     </div>
 
                                     <div class="line form-other-line" style="display:none;">
