@@ -105,6 +105,19 @@ class GabaritPage extends GabaritBloc
     }
 
     /**
+     * Setter d'un attribut des meta
+     *
+     * @param type $key   Clé de l'attribut
+     * @param type $value Valeur
+     *
+     * @return void
+     */
+    public function setMetaValue($key, $value)
+    {
+        $this->meta[$key] = $value;
+    }
+
+    /**
      * Setter de la version
      *
      * @param array $data Data
@@ -215,7 +228,8 @@ class GabaritPage extends GabaritBloc
     public function getMeta($key = null)
     {
         if ($key != null) {
-            if (is_array($this->meta) && isset($this->meta[$key])
+            if (is_array($this->meta)
+                && isset($this->meta[$key])
             ) {
                 return $this->meta[$key];
             }
@@ -236,7 +250,9 @@ class GabaritPage extends GabaritBloc
     public function getVersion($key = null)
     {
         if ($key != null) {
-            if (is_array($this->version) && isset($this->version[$key])) {
+            if (is_array($this->version)
+                && isset($this->version[$key])
+            ) {
                 return $this->version[$key];
             }
 
@@ -256,7 +272,8 @@ class GabaritPage extends GabaritBloc
     public function getValues($key = null)
     {
         if ($key != null) {
-            if (is_array($this->values) && isset($this->values[$key])
+            if (is_array($this->values)
+                && isset($this->values[$key])
             ) {
                 return $this->values[$key];
             }
