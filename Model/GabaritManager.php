@@ -202,15 +202,15 @@ class GabaritManager extends Manager
 
         if ($id_gab_page) {
             $query = 'SELECT *'
-            . ' FROM `gab_page`'
-            . ' WHERE `id_version` = ' . $id_version
-            . ' AND `id_api` = ' . $id_api
-            . ' AND `id` = ' . $id_gab_page
-            . ' AND `suppr` = 0';
+                   . ' FROM `gab_page`'
+                   . ' WHERE `id_version` = ' . $id_version
+                   . ' AND `id_api` = ' . $id_api
+                   . ' AND `id` = ' . $id_gab_page
+                   . ' AND `suppr` = 0';
 
             if ($visibleFront) {
                 $query .= ' AND `visible` = 1'
-                . ' AND `visible_parent` = 1';
+                        . ' AND `visible_parent` = 1';
             }
 
             $meta = $this->db->query($query)->fetch(\PDO::FETCH_ASSOC);
@@ -218,10 +218,16 @@ class GabaritManager extends Manager
             if (!$meta) {
                 return false;
             }
-
-            $page->setMeta($meta);
-            $id_gabarit = $meta['id_gabarit'];
+        } else {
+            $meta = [
+                'id_version' => $id_version,
+                'id_api' => $id_api,
+                'id_gabarit' => $id_gabarit,
+            ];
         }
+
+        $page->setMeta($meta);
+        $id_gabarit = $meta['id_gabarit'];
 
         $data = $this->getVersion($id_version);
         $page->setVersion($data);
@@ -229,8 +235,8 @@ class GabaritManager extends Manager
         $gabarit = $this->getGabarit($id_gabarit);
 
         $query = 'SELECT *'
-        . ' FROM `gab_gabarit`'
-        . ' WHERE `id` = ' . $gabarit->getIdParent();
+               . ' FROM `gab_gabarit`'
+               . ' WHERE `id` = ' . $gabarit->getIdParent();
         $parentData = $this->db->query($query)->fetch(\PDO::FETCH_ASSOC);
         $gabarit->setGabaritParent($parentData);
 
@@ -1392,75 +1398,93 @@ class GabaritManager extends Manager
      */
     protected function saveMeta($page, $donnees)
     {
-        $updating = $donnees['id_gab_page'] > 0;
+        if ($donnees['id_gab_page']) {
+            return $this->updateMeta($page, $donnees);
+        } else {
+            return $this->insertMeta($page, $donnees);
+        }
+    }
 
-        /**
-         * On recupere les ids de gabarits pour l'api courante
+    /**
+     * Insère les infos meta d'une nouvelle page
+     *
+     * @param GabaritPage $page    Page
+     * @param array       $donnees Données à enregistrer
+     *
+     * @return int
+     */
+    protected function insertMeta($page, $donnees)
+    {
+        /*
+         * Insertion dans la table `gab_page`.
          */
-        $api = $page->getGabarit()->getApi();
-        $query = 'SELECT `gab_gabarit`.id FROM `gab_gabarit`'
-        . ' WHERE `gab_gabarit`.`id_api` = ' . $api['id'];
-        $gabaritsFromCurrentApi = $this->db->query($query)->fetchAll(
-            \PDO::FETCH_COLUMN
-        );
+        if (isset($donnees['id_parent']) && $donnees['id_parent']) {
+            $id_parent = $donnees['id_parent'];
 
-        $modif = false;
-
-        if ($updating) {
-            /**
-             * Mise a jour d'une page
-             */
-            if ($page->getMeta('rewriting') == '') {
-                /**
-                 * Cas d'une page qui n'a pas été traduite
-                 */
-                if ($donnees['rewriting'] == '') {
-                    if ($page->getVersion('exotique') > 0) {
-                        $titre_rew = $donnees['titre_rew'];
-                    } else {
-                        $titre_rew = $donnees['titre'];
-                    }
-                } else {
-                    $titre_rew = $donnees['rewriting'];
-                }
-            } else {
-                if ($donnees['rewriting'] == '') {
-                    $titre_rew = $page->getMeta('rewriting');
-                } else {
-                    $titre_rew = $donnees['rewriting'];
-                }
-            }
-
-            $query = 'AND `suppr` = 0 AND `id_gabarit` IN ('
-            . implode(', ', $gabaritsFromCurrentApi) . ')'
-            . ' AND `id_parent` = ' . $page->getMeta('id_parent')
-            . ' AND `id_version` = ' . $page->getMeta('id_version')
-            . ' AND `id` != ' . $page->getMeta('id');
-            $rewriting = $this->db->rewrit(
-                $titre_rew,
-                'gab_page',
-                'rewriting',
-                $query
+            $query = 'SELECT id_version, (visible + visible_parent)'
+                   . ' FROM gab_page'
+                   . ' WHERE id = ' . $donnees['id_parent']
+                   . ' AND id_api = ' . $page->getMeta('id_api');
+            $visibles_parents = $this->db->query($query)->fetchAll(
+                \PDO::FETCH_UNIQUE | \PDO::FETCH_COLUMN
             );
+        } else {
+            $id_parent = 0;
+        }
 
-            $query = 'UPDATE `gab_page` SET'
-            . ' `titre` = ' . $this->db->quote($donnees['titre']) . ',';
+        $page->setMetaValue('id_parent', $id_parent);
 
-            if ($page->getVersion('exotique') > 0) {
-                $query .= ' `titre_rew`      = '
-                . $this->db->quote($donnees['titre_rew']) . ',';
+        if ($donnees['rewriting'] == '') {
+            $titre_rew = $donnees['titre'];
+        } else {
+            $titre_rew = $donnees['rewriting'];
+        }
+        $rewriting = $this->buildRewriting($page, $titre_rew);
+
+        /*
+         * Si niveau 0, on met l'ordre à MAX + 1 sinon MIN - 1
+         */
+        $type = 'MIN';
+        if ($id_parent == 0) {
+            $type = 'MAX';
+        }
+
+        $query = 'SELECT ' . $type . '(`ordre`)'
+               . ' FROM `gab_page`'
+               . ' WHERE `id_api` = ' . $page->getMeta('id_api')
+               . ' AND `id_parent` = ' . $page->getMeta('id_parent');
+        $ordre = $this->db->query($query)->fetch(\PDO::FETCH_COLUMN);
+        if ($ordre !== false) {
+            if ($type == 'MAX') {
+                $ordre++;
+            } else {
+                $ordre--;
+            }
+        } else {
+            $ordre = 0;
+        }
+
+        $id_gab_page = 0;
+        foreach ($this->versionsIds as $version) {
+            $query = 'INSERT INTO `gab_page` SET ';
+
+            if ($id_gab_page > 0) {
+                $query .= '`id` = ' . $id_gab_page . ',';
             }
 
-            if (!isset($donnees['author'])) {
-                $donnees['author'] = 0;
+            $query .= '`id_gabarit` = ' . $page->getGabarit()->getId() . ','
+                    . '`titre` = ' . $this->db->quote($donnees['titre']) . ',';
+
+            if ($id_gab_page > 0) {
+                $query .= '`rewriting` = "",';
+            } else {
+                $query .= '`rewriting` = ' . $this->db->quote($rewriting) . ',';
             }
 
-            $query .= ' `bal_title` = ' . $this->db->quote($donnees['bal_title']) . ','
-            . ' `bal_key` = ' . $this->db->quote($donnees['bal_key']) . ','
-            . ' `author` = ' . $this->db->quote($donnees['author']) . ','
-            . ' `bal_descr` = ' . $this->db->quote($donnees['bal_descr']) . ','
-            . ' `importance` = ' . $donnees['importance'] . ','
-            . ' `date_modif` = NOW(),';
+            $query .= '`bal_title` = ' . $this->db->quote($donnees['bal_title']) . ','
+                    . '`bal_key` = ' . $this->db->quote($donnees['bal_key']) . ','
+                    . '`author` = ' . $this->db->quote($donnees['author']) . ','
+                    . '`bal_descr` = ' . $this->db->quote($donnees['bal_descr']) . ',';
 
             if (isset($donnees['no_index']) && $page->getMeta('id') != 1) {
                 $query .= ' `no_index`   = ' . $donnees['no_index'] . ',';
@@ -1468,202 +1492,223 @@ class GabaritManager extends Manager
                 $query .= ' `no_index`   = 0,';
             }
 
-            $query .= ' `canonical` = ' . $this->db->quote($donnees['canonical']) . ','
-            . ' `rewriting` = ' . $this->db->quote($rewriting)
-            . ' WHERE `id` = ' . $page->getMeta('id')
-            . ' AND `id_version` = ' . $page->getMeta('id_version');
+            $query .= '`canonical` = ' . $this->db->quote($donnees['canonical']) . ','
+                    . '`importance` = ' . $donnees['importance'] . ','
+                    . '`id_parent` = ' . $id_parent . ', '
+                    . '`ordre` = ' . intval($ordre) . ','
+                    . '`date_crea` = NOW(),'
+                    . '`date_modif` = NOW(),'
+                    . '`visible` = 0,'
+                    . '`id_api` = ' . $page->getMeta('id_api') . ','
+                    . '`id_version` = ' . $version . ',';
 
-            $modfiTmp = $this->db->exec($query);
-            if (!$modif && $modfiTmp > 0) {
-                $modif = true;
-            }
-
-            $urlParent = '';
-            $parents = $this->getParents($page->getMeta('id_parent'), $page->getMeta('id_version'));
-            foreach ($parents as $parent) {
-                $urlParent = $parent->getMeta('rewriting') . '/' . $urlParent;
-            }
-            $newUrl = $urlParent . $rewriting . $page->getGabarit()->getExtension();
-
-            $redirections = $donnees['301'];
-            /** Si le rewriting a été modifié */
-            if ($rewriting != $page->getMeta('rewriting') && $page->getMeta('rewriting') != ''
-            ) {
-                $redirections[] = $urlParent . $page->getMeta('rewriting')
-                . $page->getGabarit()->getExtension();
-            }
-            $redirections = array_unique($redirections);
-
-            /** On supprime toutes les urls de redirection 301 pour la page courante */
-            $query2Del = 'DELETE FROM `redirection`'
-            . ' WHERE `new` = ' . $this->db->quote($newUrl)
-            . ' AND `id_version` = ' . $page->getMeta('id_version')
-            . ' AND `id_api` = ' . $api['id'];
-            $this->db->exec($query2Del);
-
-            /** On insert toutes les urls dans le bloc redirection 301 */
-            $queries2 = array();
-            foreach ($redirections as $redirect301) {
-                $oldUrl = $redirect301;
-
-                if ($oldUrl != '' && $oldUrl != $newUrl
-                ) {
-                    $queries2[] = 'INSERT INTO `redirection` SET'
-                    . ' `old` = ' . $this->db->quote($oldUrl) . ', '
-                    . ' `new` = ' . $this->db->quote($newUrl) . ', '
-                    . ' `id_api` = ' . $api['id'] . ', '
-                    . ' `id_version` = ' . $page->getMeta('id_version') . ';';
+            if ($id_parent > 0) {
+                if ($visibles_parents[$version] >= 2) {
+                    $visible_parent = 1;
+                } else {
+                    $visible_parent = 0;
                 }
-            }
-
-            foreach ($queries2 as $query2) {
-                $modfiTmp = $this->db->exec($query2);
-                if (!$modif && $modfiTmp > 0) {
-                    $modif = true;
-                }
-            }
-
-            return $modif;
-        } else {
-            /**
-             * Insertion dans la table `gab_page`.
-             */
-            if (isset($donnees['id_parent']) && $donnees['id_parent']) {
-                $id_parent = $donnees['id_parent'];
-
-                $query = 'SELECT id_version, (visible + visible_parent)'
-                . ' FROM gab_page'
-                . ' WHERE id = ' . $donnees['id_parent']
-                . ' AND id_api = ' . $api['id'];
-                $visibles_parents = $this->db->query($query)->fetchAll(
-                    \PDO::FETCH_UNIQUE | \PDO::FETCH_COLUMN
-                );
             } else {
-                $id_parent = 0;
+                $visible_parent = 1;
             }
 
+            $query .= '`visible_parent` = ' . $visible_parent;
+
+            $this->db->exec($query);
+
+            if ($id_gab_page == 0) {
+                $id_gab_page = $this->db->lastInsertId();
+            }
+        }
+
+        $urlParent = '';
+        foreach ($this->getParents($id_parent, $version) as $parent) {
+            $urlParent = $parent->getMeta('rewriting') . '/' . $urlParent;
+        }
+
+        $newUrl = $urlParent . $rewriting
+                . $page->getGabarit()->getExtension();
+
+        $donnees['301'] = array_unique($donnees['301']);
+
+        /*
+         * On insert toutes les urls dans le bloc redirection 301
+         */
+        $queries2 = array();
+        foreach ($donnees['301'] as $redirect301) {
+            $oldUrl = $redirect301;
+            if ($oldUrl != '' && $oldUrl != $newUrl) {
+                $queries2[] = 'INSERT INTO `redirection` SET'
+                            . ' `old` = ' . $this->db->quote($oldUrl) . ', '
+                            . ' `new` = ' . $this->db->quote($newUrl) . ', '
+                            . ' `id_api` = ' . $page->getMeta('id_api') . ', '
+                            . ' `id_version` = 1';
+            }
+        }
+
+        foreach ($queries2 as $query2) {
+            $this->db->exec($query2);
+        }
+
+        return $id_gab_page;
+    }
+
+    /**
+     * Modifie les infos meta d'une page
+     *
+     * @param GabaritPage $page    Page
+     * @param array       $donnees Données à enregistrer
+     *
+     * @return int
+     */
+    protected function updateMeta($page, $donnees)
+    {
+        $modif = false;
+
+        /*
+         * Mise a jour d'une page
+         */
+        if ($page->getMeta('rewriting') == '') {
+            /*
+             * Cas d'une page qui n'a pas été traduite
+             */
             if ($donnees['rewriting'] == '') {
-                $titre_rew = $donnees['titre'];
+                if ($page->getVersion('exotique') > 0) {
+                    $titre_rew = $donnees['titre_rew'];
+                } else {
+                    $titre_rew = $donnees['titre'];
+                }
             } else {
                 $titre_rew = $donnees['rewriting'];
             }
-
-            $query = 'AND `suppr` = 0'
-            . ' AND `id_gabarit` IN ('
-            . implode(', ', $gabaritsFromCurrentApi) . ')'
-            . ' AND `id_parent` = ' . $id_parent
-            . ' AND `id_version` = ' . $donnees['id_version'];
-            $rewriting = $this->db->rewrit($titre_rew, 'gab_page', 'rewriting', $query);
-
-            //Si niveau 0, on met l'ordre à MAX + 1 sinon MIN - 1
-            $type = 'MIN';
-            if ($id_parent == 0) {
-                $type = 'MAX';
-            }
-
-            $query = 'SELECT ' . $type . '(`ordre`)'
-            . ' FROM `gab_page`'
-            . ' WHERE `id_api` = ' . $api['id']
-            . ' AND `id_parent` = ' . $id_parent;
-            $ordre = $this->db->query($query)->fetch(\PDO::FETCH_COLUMN);
-            if ($ordre !== false) {
-                if ($type == 'MAX') {
-                    $ordre++;
-                } else {
-                    $ordre--;
-                }
+        } else {
+            if ($donnees['rewriting'] == '') {
+                $titre_rew = $page->getMeta('rewriting');
             } else {
-                $ordre = 0;
+                $titre_rew = $donnees['rewriting'];
             }
-
-            $id_gab_page = 0;
-            foreach ($this->versionsIds as $version) {
-                $query = 'INSERT INTO `gab_page` SET ';
-
-                if ($id_gab_page > 0) {
-                    $query .= '`id` = ' . $id_gab_page . ',';
-                }
-
-                $query .= '`id_gabarit` = ' . $page->getGabarit()->getId() . ','
-                . '`titre` = ' . $this->db->quote($donnees['titre']) . ',';
-
-                if ($id_gab_page > 0) {
-                    $query .= '`rewriting` = "",';
-                } else {
-                    $query .= '`rewriting` = ' . $this->db->quote($rewriting) . ',';
-                }
-
-                $query .= '`bal_title` = ' . $this->db->quote($donnees['bal_title']) . ','
-                . '`bal_key` = ' . $this->db->quote($donnees['bal_key']) . ','
-                . '`author` = ' . $this->db->quote($donnees['author']) . ','
-                . '`bal_descr` = ' . $this->db->quote($donnees['bal_descr']) . ',';
-
-                if (isset($donnees['no_index']) && $page->getMeta('id') != 1) {
-                    $query .= ' `no_index`   = ' . $donnees['no_index'] . ',';
-                } else {
-                    $query .= ' `no_index`   = 0,';
-                }
-
-                $query .= '`canonical` = ' . $this->db->quote($donnees['canonical']) . ','
-                . '`importance` = ' . $donnees['importance'] . ','
-                . '`id_parent` = ' . $id_parent . ', '
-                . '`ordre` = ' . intval($ordre) . ','
-                . '`date_crea` = NOW(),'
-                . '`date_modif` = NOW(),'
-                . '`visible` = 0,'
-                . '`id_api` = ' . $api['id'] . ','
-                . '`id_version` = ' . $version . ',';
-
-                if ($id_parent > 0) {
-                    if ($visibles_parents[$version] >= 2) {
-                        $visible_parent = 1;
-                    } else {
-                        $visible_parent = 0;
-                    }
-                } else {
-                    $visible_parent = 1;
-                }
-
-                $query .= '`visible_parent` = ' . $visible_parent;
-
-                $this->db->exec($query);
-
-                if ($id_gab_page == 0) {
-                    $id_gab_page = $this->db->lastInsertId();
-                }
-            }
-
-            $urlParent = '';
-            foreach ($this->getParents($id_parent, $version) as $parent) {
-                $urlParent = $parent->getMeta('rewriting') . '/' . $urlParent;
-            }
-
-            $newUrl = $urlParent . $rewriting
-            . $page->getGabarit()->getExtension();
-
-            $donnees['301'] = array_unique($donnees['301']);
-
-            /**
-             * On insert toutes les urls dans le bloc redirection 301
-             */
-            $queries2 = array();
-            foreach ($donnees['301'] as $redirect301) {
-                $oldUrl = $redirect301;
-                if ($oldUrl != '' && $oldUrl != $newUrl) {
-                    $queries2[] = 'INSERT INTO `redirection` SET'
-                    . ' `old` = ' . $this->db->quote($oldUrl) . ', '
-                    . ' `new` = ' . $this->db->quote($newUrl) . ', '
-                    . ' `id_api` = ' . $api['id'] . ', '
-                    . ' `id_version` = 1;';
-                }
-            }
-
-            foreach ($queries2 as $query2) {
-                $this->db->exec($query2);
-            }
-
-            return $id_gab_page;
         }
+
+        $rewriting = $this->buildRewriting($page, $titre_rew);
+
+        $query = 'UPDATE `gab_page` SET'
+        . ' `titre` = ' . $this->db->quote($donnees['titre']) . ',';
+
+        if ($page->getVersion('exotique') > 0) {
+            $query .= ' `titre_rew`      = '
+            . $this->db->quote($donnees['titre_rew']) . ',';
+        }
+
+        if (!isset($donnees['author'])) {
+            $donnees['author'] = 0;
+        }
+
+        $query .= ' `bal_title` = ' . $this->db->quote($donnees['bal_title']) . ','
+                . ' `bal_key` = ' . $this->db->quote($donnees['bal_key']) . ','
+                . ' `author` = ' . $this->db->quote($donnees['author']) . ','
+                . ' `bal_descr` = ' . $this->db->quote($donnees['bal_descr']) . ','
+                . ' `importance` = ' . $donnees['importance'] . ','
+                . ' `date_modif` = NOW(),';
+
+        if (isset($donnees['no_index']) && $page->getMeta('id') != 1) {
+            $query .= ' `no_index`   = ' . $donnees['no_index'] . ',';
+        } else {
+            $query .= ' `no_index`   = 0,';
+        }
+
+        $query .= ' `canonical` = ' . $this->db->quote($donnees['canonical']) . ','
+                . ' `rewriting` = ' . $this->db->quote($rewriting)
+                . ' WHERE `id` = ' . $page->getMeta('id')
+                . ' AND `id_version` = ' . $page->getMeta('id_version');
+
+        $modfiTmp = $this->db->exec($query);
+        if (!$modif && $modfiTmp > 0) {
+            $modif = true;
+        }
+
+        $urlParent = '';
+        $parents = $this->getParents($page->getMeta('id_parent'), $page->getMeta('id_version'));
+        foreach ($parents as $parent) {
+            $urlParent = $parent->getMeta('rewriting') . '/' . $urlParent;
+        }
+        $newUrl = $urlParent . $rewriting . $page->getGabarit()->getExtension();
+
+        $redirections = $donnees['301'];
+        /* Si le rewriting a été modifié */
+        if ($rewriting != $page->getMeta('rewriting') && $page->getMeta('rewriting') != ''
+        ) {
+            $redirections[] = $urlParent . $page->getMeta('rewriting')
+                            . $page->getGabarit()->getExtension();
+        }
+        $redirections = array_unique($redirections);
+
+        /* On supprime toutes les urls de redirection 301 pour la page courante */
+        $query2Del = 'DELETE FROM `redirection`'
+                   . ' WHERE `new` = ' . $this->db->quote($newUrl)
+                   . ' AND `id_version` = ' . $page->getMeta('id_version')
+                   . ' AND `id_api` = ' . $page->getMeta('id_api');
+        $this->db->exec($query2Del);
+
+        /* On insert toutes les urls dans le bloc redirection 301 */
+        $queries2 = array();
+        foreach ($redirections as $redirect301) {
+            $oldUrl = $redirect301;
+
+            if ($oldUrl != '' && $oldUrl != $newUrl
+            ) {
+                $queries2[] = 'INSERT INTO `redirection` SET'
+                            . ' `old` = ' . $this->db->quote($oldUrl) . ', '
+                            . ' `new` = ' . $this->db->quote($newUrl) . ', '
+                            . ' `id_api` = ' . $page->getMeta('id_api') . ', '
+                            . ' `id_version` = ' . $page->getMeta('id_version') . ';';
+            }
+        }
+
+        foreach ($queries2 as $query2) {
+            $modfiTmp = $this->db->exec($query2);
+            if (!$modif && $modfiTmp > 0) {
+                $modif = true;
+            }
+        }
+
+        return $modif;
+    }
+
+    /**
+     * Construit le rewriting
+     *
+     * @param GabaritPage $page  Page
+     * @param string      $titre Titre à partir duquel construire le rewriting
+     *
+     * @return type
+     */
+    protected function buildRewriting($page, $titre)
+    {
+        /**
+         * On recupere les ids de gabarits pour l'api courante
+         */
+        $api = $page->getGabarit()->getApi();
+        $query = 'SELECT id FROM gab_gabarit '
+               . 'WHERE id_api = ' . $api['id'];
+        $gabaritsFromCurrentApi = $this->db->query($query)->fetchAll(
+            \PDO::FETCH_COLUMN
+        );
+
+        $query = 'AND `suppr` = 0 AND `id_gabarit` IN ('
+               . implode(', ', $gabaritsFromCurrentApi) . ')'
+               . ' AND `id_parent` = ' . $page->getMeta('id_parent')
+               . ' AND `id_version` = ' . $page->getMeta('id_version');
+
+        if ($page->getMeta('id')) {
+            $query .= ' AND `id` != ' . $page->getMeta('id');
+        }
+
+        return $this->db->rewrit(
+            $titre,
+            'gab_page',
+            'rewriting',
+            $query
+        );
     }
 
     /**
@@ -1693,13 +1738,13 @@ class GabaritManager extends Manager
         if ($updating) {
             $query = '';
             $where = 'WHERE `id_version` = ' . $id_version
-            . ' AND `id_gab_page` = ' . $id_gab_page;
+                   . ' AND `id_gab_page` = ' . $id_gab_page;
 
             $queryT = '';
             $whereT = 'WHERE `id_gab_page` = ' . $id_gab_page;
         } else {
             $query = 'INSERT INTO `' . $table . '` SET'
-            . ' `id_gab_page` = ' . $id_gab_page . ',';
+                   . ' `id_gab_page` = ' . $id_gab_page . ',';
         }
 
         foreach ($allchamps as $name_group => $champs) {
@@ -1741,16 +1786,16 @@ class GabaritManager extends Manager
                         $lng = $donnees['champ' . $champ['id'] . '_lng'][0];
                         $zoom = $donnees['champ' . $champ['id'] . '_zoom'][0];
                         $query .= '`' . $champ['name'] . '_lat` = '
-                        . $this->db->quote($lat) . ',';
+                                . $this->db->quote($lat) . ',';
                         $query .= '`' . $champ['name'] . '_lng` = '
-                        . $this->db->quote($lng) . ',';
+                                . $this->db->quote($lng) . ',';
                         $query .= '`' . $champ['name'] . '_zoom` = '
-                        . $this->db->quote($zoom) . ',';
+                                . $this->db->quote($zoom) . ',';
                         break;
 
                     default:
                         $query .= '`' . $champ['name'] . '` = '
-                        . $this->db->quote($value) . ',';
+                                . $this->db->quote($value) . ',';
                         break;
                 }
             }
@@ -1762,7 +1807,7 @@ class GabaritManager extends Manager
             if ($champsExiste) {
                 if ($query != '') {
                     $queryTmp = 'UPDATE `' . $table . '` SET '
-                    . substr($query, 0, -1) . ' ' . $where;
+                              . substr($query, 0, -1) . ' ' . $where;
                 }
 
                 $tmpModif = $this->db->exec($queryTmp);
@@ -1772,7 +1817,7 @@ class GabaritManager extends Manager
 
                 if ($queryT != '') {
                     $queryTmp = 'UPDATE `' . $table . '` SET '
-                    . substr($queryT, 0, -1) . ' ' . $whereT;
+                              . substr($queryT, 0, -1) . ' ' . $whereT;
                 }
 
                 $tmpModif = $this->db->exec($queryTmp);
@@ -1843,8 +1888,8 @@ class GabaritManager extends Manager
              * Cas des types join en mode simpleFieldset (Checkbox)
              */
             $query = 'DELETE FROM `' . $table . '` WHERE'
-            . ' `id_version` = ' . $id_version
-            . ' AND `id_gab_page` = ' . $id_gab_page;
+                   . ' `id_version` = ' . $id_version
+                   . ' AND `id_gab_page` = ' . $id_gab_page;
 
             $tmpModif = $this->db->exec($query);
             if (!$modif && $tmpModif > 0) {
@@ -1854,13 +1899,13 @@ class GabaritManager extends Manager
             if (isset($donnees['champ' . $firstField['id']])) {
                 foreach ($donnees['champ' . $firstField['id']] as $value) {
                     $fieldSql = '`' . $firstField['name'] . '` = '
-                    . $this->db->quote($value);
+                              . $this->db->quote($value);
 
                     $query = 'INSERT INTO `' . $table . '` SET'
-                    . ' `id_gab_page` = ' . $id_gab_page . ','
-                    . ' `id_version` = ' . $id_version . ','
-                    . ' `visible` = 1,'
-                    . $fieldSql;
+                           . ' `id_gab_page` = ' . $id_gab_page . ','
+                           . ' `id_version` = ' . $id_version . ','
+                           . ' `visible` = 1,'
+                           . $fieldSql;
 
                     $tmpModif = $this->db->exec($query);
                     if (!$modif && $tmpModif > 0) {
@@ -1903,9 +1948,9 @@ class GabaritManager extends Manager
                 }
 
                 $query = 'UPDATE `' . $table . '` SET `suppr` = NOW()'
-                . ' WHERE `suppr` = 0'
-                . ' AND `id_gab_page` = ' . $id_gab_page
-                . ' AND `id` NOT IN (' . implode(',', $ids_blocs) . ')';
+                       . ' WHERE `suppr` = 0'
+                       . ' AND `id_gab_page` = ' . $id_gab_page
+                       . ' AND `id` NOT IN (' . implode(',', $ids_blocs) . ')';
                 $tmpModif = $this->db->exec($query);
                 if (!$modif && $tmpModif > 0) {
                     $modif = true;
@@ -1961,12 +2006,12 @@ class GabaritManager extends Manager
 
             if ($updating) {
                 $query = 'UPDATE `' . $table . '` SET'
-                . ' `ordre` = ' . $ordre . ','
-                . ' `visible` = ' . $visible . ',';
+                       . ' `ordre` = ' . $ordre . ','
+                       . ' `visible` = ' . $visible . ',';
             } else {
                 $query = 'INSERT INTO `' . $table . '` SET'
-                . ' `id_gab_page` = ' . $id_gab_page . ','
-                . ' `ordre` = ' . $ordre . ',';
+                       . ' `id_gab_page` = ' . $id_gab_page . ','
+                       . ' `ordre` = ' . $ordre . ',';
             }
         } else {
             $query = 'UPDATE `' . $table . '` SET ';
@@ -2005,17 +2050,17 @@ class GabaritManager extends Manager
                     $lng = array_shift($donnees['champ' . $champ['id'] . '_lng']);
                     $zoom = array_shift($donnees['champ' . $champ['id'] . '_zoom']);
                     $query .= '`' . $champ['name'] . '_lat` = '
-                    . $this->db->quote($lat) . ',';
+                            . $this->db->quote($lat) . ',';
                     $query .= '`' . $champ['name'] . '_lng` = '
-                    . $this->db->quote($lng) . ',';
+                            . $this->db->quote($lng) . ',';
                     $query .= '`' . $champ['name'] . '_zoom` = '
-                    . $this->db->quote($zoom) . ',';
-                    break;
+                            . $this->db->quote($zoom) . ',';
+                break;
 
                 default:
                     $query .= '`' . $champ['name'] . '` = '
-                    . $this->db->quote($value) . ',';
-                    break;
+                            . $this->db->quote($value) . ',';
+                break;
             }
         }
 
@@ -2024,8 +2069,8 @@ class GabaritManager extends Manager
 
         if ($updating) {
             $queryTmp = substr($query, 0, -1)
-            . ' WHERE `id_version` = ' . $id_version
-            . ' AND `id` = ' . $id_bloc;
+                      . ' WHERE `id_version` = ' . $id_version
+                      . ' AND `id` = ' . $id_bloc;
 
             $tmpModif = $this->db->exec($queryTmp);
             if (!$modif && $tmpModif > 0) {
@@ -2038,7 +2083,7 @@ class GabaritManager extends Manager
 
                 if ($id_bloc) {
                     $queryTmp .= ', `id` = ' . $id_bloc
-                    . ', `visible` = 0';
+                               . ', `visible` = 0';
                 } else {
                     $queryTmp .= ', `visible` = ' . $visible;
                 }
