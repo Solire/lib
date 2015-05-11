@@ -357,6 +357,10 @@ class DateTime
      */
     public static function sqlTo($dateSql, $format = 'd/m/Y')
     {
+        if (substr($dateSql, 0, 10) == '0000-00-00') {
+            return null;
+        }
+
         $date = new \DateTime($dateSql);
         return $date->format($format);
     }

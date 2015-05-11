@@ -27,13 +27,6 @@ class GabaritManager extends Manager
     protected $versions = array();
 
     /**
-     * Tableau de mise en cache des gabarits.
-     *
-     * @var array
-     */
-    protected $gabarits = array();
-
-    /**
      * Tableau des identifiants des versions (utilisé lors de l'enregistrement
      * des pages.)
      *
@@ -218,12 +211,14 @@ class GabaritManager extends Manager
             if (!$meta) {
                 return false;
             }
-        } else {
+        } elseif ($id_gabarit) {
             $meta = [
                 'id_version' => $id_version,
                 'id_api' => $id_api,
                 'id_gabarit' => $id_gabarit,
             ];
+        } else {
+            return null;
         }
 
         $page->setMeta($meta);
@@ -368,7 +363,7 @@ class GabaritManager extends Manager
      *
      * @param int $id_gabarit Identifiant du gabarit en BDD
      *
-     * @return \Solire\Lib\Model\gabarit
+     * @return Gabarit
      */
     public function getGabarit($id_gabarit)
     {
@@ -379,8 +374,8 @@ class GabaritManager extends Manager
 
         if ($row['id_api'] > 0) {
             $query = 'SELECT *'
-            . ' FROM `gab_api`'
-            . ' WHERE `id` = ' . $row['id_api'];
+                   . ' FROM `gab_api`'
+                   . ' WHERE `id` = ' . $row['id_api'];
             $api = $this->db->query($query)->fetch();
             $gabarit->setApi($api);
             $table = $api['name'] . '_' . $row['name'];
@@ -393,11 +388,11 @@ class GabaritManager extends Manager
          * Récupération des champs
          */
         $query = 'SELECT IF (`g`.`label` IS NULL, "general", `g`.`label`), `c`.*'
-        . ' FROM `gab_champ` `c`'
-        . ' LEFT JOIN `gab_champ_group` `g` ON `g`.`id` = `c`.`id_group`'
-        . ' WHERE `id_parent` = ' . $id_gabarit
-        . ' AND `type_parent` = "gabarit"'
-        . ' ORDER BY `g`.`ordre`, `c`.`ordre`';
+               . ' FROM `gab_champ` `c`'
+               . ' LEFT JOIN `gab_champ_group` `g` ON `g`.`id` = `c`.`id_group`'
+               . ' WHERE `id_parent` = ' . $id_gabarit
+               . ' AND `type_parent` = "gabarit"'
+               . ' ORDER BY `g`.`ordre`, `c`.`ordre`';
         $champs = $this->db->query($query)->fetchAll(
             \PDO::FETCH_GROUP | \PDO::FETCH_ASSOC
         );
@@ -408,19 +403,19 @@ class GabaritManager extends Manager
          * filtrer par id champ + type, voir faire des jointure sur gab_champ)
          */
         $query = 'SELECT `gc`.`id`, `gcpv`.*'
-        . ' FROM `gab_champ` `gc`'
-        . ' INNER JOIN `gab_champ_param_value` `gcpv`'
-        . ' ON `gcpv`.`id_champ` = `gc`.`id`'
-        . ' ORDER BY `id_group`, `ordre`';
+               . ' FROM `gab_champ` `gc`'
+               . ' INNER JOIN `gab_champ_param_value` `gcpv`'
+               . ' ON `gcpv`.`id_champ` = `gc`.`id`'
+               . ' ORDER BY `id_group`, `ordre`';
         $gabChampTypeParams = $this->db->query($query)->fetchAll(
             \PDO::FETCH_GROUP | \PDO::FETCH_ASSOC
         );
 
         $query = 'SELECT `gct`.`code`, `gcp`.*, `gcp`.`default_value` `value`'
-        . ' FROM `gab_champ_type` `gct`'
-        . ' INNER JOIN `gab_champ_param` `gcp`'
-        . ' ON `gct`.`code` = `gcp`.`code_champ_type`'
-        . ' ORDER BY  `gct`.`ordre`, `gct`.`code`';
+               . ' FROM `gab_champ_type` `gct`'
+               . ' INNER JOIN `gab_champ_param` `gcp`'
+               . ' ON `gct`.`code` = `gcp`.`code_champ_type`'
+               . ' ORDER BY  `gct`.`ordre`, `gct`.`code`';
         $gabChampTypeParamsDefault = $this->db->query($query)->fetchAll(
             \PDO::FETCH_GROUP | \PDO::FETCH_ASSOC
         );
@@ -462,10 +457,11 @@ class GabaritManager extends Manager
                 }
             }
         }
+
         $gabarit->setChamps($champs);
         $gabarit->setJoins($joins);
-        $this->gabarits[$id_gabarit] = $gabarit;
-        return $this->gabarits[$id_gabarit];
+
+        return $gabarit;
     }
 
     /**
@@ -522,10 +518,10 @@ class GabaritManager extends Manager
             $joins = array();
 
             $query = 'SELECT *'
-            . ' FROM `gab_champ`'
-            . ' WHERE `id_parent` = ' . $row['id']
-            . ' AND `type_parent` = "bloc"'
-            . ' ORDER BY `ordre`';
+                   . ' FROM `gab_champ`'
+                   . ' WHERE `id_parent` = ' . $row['id']
+                   . ' AND `type_parent` = "bloc"'
+                   . ' ORDER BY `ordre`';
             $champs = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
             /** Paramètres */
@@ -577,8 +573,8 @@ class GabaritManager extends Manager
     public function getValues($page)
     {
         $query = 'SELECT * FROM `' . $page->getGabarit()->getTable() . '`'
-        . ' WHERE `id_gab_page` = ' . $page->getMeta('id')
-        . ' AND `id_version` = ' . $page->getMeta('id_version');
+               . ' WHERE `id_gab_page` = ' . $page->getMeta('id')
+               . ' AND `id_version` = ' . $page->getMeta('id_version');
 
         return $this->db->query($query)->fetch(\PDO::FETCH_ASSOC);
     }
@@ -599,10 +595,10 @@ class GabaritManager extends Manager
     public function getBlocValues($bloc, $idGabPage, $idVersion, $visible = false)
     {
         $query = 'SELECT * '
-        . 'FROM `' . $bloc->getGabarit()->getTable() . '` '
-        . 'WHERE `id_gab_page` = ' . $idGabPage . ' '
-        . ' AND `suppr` = 0 '
-        . ' AND `id_version` = ' . $idVersion . ' ';
+               . 'FROM `' . $bloc->getGabarit()->getTable() . '` '
+               . 'WHERE `id_gab_page` = ' . $idGabPage . ' '
+               . ' AND `suppr` = 0 '
+               . ' AND `id_version` = ' . $idVersion . ' ';
 
         if ($visible) {
             $query .= ' AND `visible` = 1 ';
@@ -711,12 +707,12 @@ class GabaritManager extends Manager
                  * Cas des tables jointes sans gab_page
                  */
                 $query = 'SELECT `' . $joinField['table'] . '`.`'
-                . $joinField['fieldId'] . '`,'
-                . ' `' . $joinField['table'] . '`.*'
-                . ' FROM `' . $joinField['table'] . '`'
-                . ' WHERE `' . $joinField['table'] . '`.`'
-                . $joinField['fieldId']
-                . '` IN (' . implode(',', $joinField['values']) . ')';
+                       . $joinField['fieldId'] . '`,'
+                       . ' `' . $joinField['table'] . '`.*'
+                       . ' FROM `' . $joinField['table'] . '`'
+                       . ' WHERE `' . $joinField['table'] . '`.`'
+                       . $joinField['fieldId']
+                       . '` IN (' . implode(',', $joinField['values']) . ')';
                 $values = $this->db->query($query)->fetchAll(
                     \PDO::FETCH_UNIQUE | \PDO::FETCH_ASSOC
                 );
@@ -730,14 +726,14 @@ class GabaritManager extends Manager
             }
 
             $query = 'SELECT `gab_page`.`id`, `gab_page`.*'
-            . ' FROM `gab_page`'
-            . ' WHERE `id_version` = ' . $id_version
-            . ' AND  `id`  IN (' . implode(',', $joinField['values']) . ')'
-            . ' AND `suppr` = 0';
+                   . ' FROM `gab_page`'
+                   . ' WHERE `id_version` = ' . $id_version
+                   . ' AND  `id`  IN (' . implode(',', $joinField['values']) . ')'
+                   . ' AND `suppr` = 0';
 
             if ($visible) {
                 $query .= ' AND `visible` = 1'
-                . ' AND `visible_parent` = 1';
+                        . ' AND `visible_parent` = 1';
             }
 
             $meta = $this->db->query($query)->fetchAll(
@@ -755,8 +751,8 @@ class GabaritManager extends Manager
                     $gabarit = $this->getGabarit($m['id_gabarit']);
 
                     $query = 'SELECT * FROM `' . $gabarit->getTable() . '`'
-                    . ' WHERE `id_gab_page` = ' . $id_gab_page
-                    . ' AND `id_version` = ' . $id_version;
+                           . ' WHERE `id_gab_page` = ' . $id_gab_page
+                           . ' AND `id_version` = ' . $id_version;
 
                     $value = $this->db->query($query)->fetch(\PDO::FETCH_ASSOC);
 
@@ -764,12 +760,12 @@ class GabaritManager extends Manager
                 }
             } else {
                 $query = 'SELECT `' . $joinField['table'] . '`.`id_gab_page`,'
-                . ' `' . $joinField['table'] . '`.*'
-                . ' FROM `' . $joinField['table'] . '`'
-                . ' WHERE `id_gab_page` IN ('
-                . implode(',', array_keys($meta)) . ')'
-                . ' AND `' . $joinField['table']
-                . '`.`id_version` = ' . $id_version;
+                       . ' `' . $joinField['table'] . '`.*'
+                       . ' FROM `' . $joinField['table'] . '`'
+                       . ' WHERE `id_gab_page` IN ('
+                       . implode(',', array_keys($meta)) . ')'
+                       . ' AND `' . $joinField['table']
+                       . '`.`id_version` = ' . $id_version;
 
                 $values = $this->db->query($query)->fetchAll(
                     \PDO::FETCH_UNIQUE | \PDO::FETCH_ASSOC
@@ -812,9 +808,9 @@ class GabaritManager extends Manager
                 unset($parents);
                 $parents = array();
                 $query = 'SELECT * FROM `gab_page`'
-                . ' WHERE `id_version` = ' . $id_version
-                . ' AND `id` IN (' . implode(', ', $parentsUnique) . ')'
-                . ' AND `suppr` = 0';
+                       . ' WHERE `id_version` = ' . $id_version
+                       . ' AND `id` IN (' . implode(', ', $parentsUnique) . ')'
+                       . ' AND `suppr` = 0';
                 $parentTmp = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
                 $parentsMeta = array_merge($parentsMeta, $parentTmp);
 
@@ -841,9 +837,9 @@ class GabaritManager extends Manager
                  */
                 if (count($parentsUnique2) > count($parentsUnique)) {
                     $query = 'SELECT * FROM `gab_page`'
-                    . ' WHERE `id_version` = ' . $id_version
-                    . ' AND `id` IN (' . implode(', ', $parentsUnique2) . ')'
-                    . ' AND `suppr` = 0';
+                           . ' WHERE `id_version` = ' . $id_version
+                           . ' AND `id` IN (' . implode(', ', $parentsUnique2) . ')'
+                           . ' AND `suppr` = 0';
                     $parentTmp = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
                     $parentsMeta = array_merge($parentsMeta, $parentTmp);
 
@@ -869,9 +865,9 @@ class GabaritManager extends Manager
                      */
                     if (count($parentsUnique3) > count($parentsUnique2)) {
                         $query = 'SELECT * FROM `gab_page`'
-                        . ' WHERE `id_version` = ' . $id_version
-                        . ' AND `id` IN (' . implode(', ', $parentsUnique3) . ')'
-                        . ' AND `suppr` = 0';
+                               . ' WHERE `id_version` = ' . $id_version
+                               . ' AND `id` IN (' . implode(', ', $parentsUnique3) . ')'
+                               . ' AND `suppr` = 0';
                         $parentTmp = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
                         $parentsMeta2 = array_merge($parentsMeta, $parentTmp);
@@ -963,9 +959,9 @@ class GabaritManager extends Manager
 
         while ($id_gab_page_parent > 0) {
             $query = 'SELECT * FROM `gab_page`'
-            . ' WHERE `id_version` = ' . $id_version
-            . ' AND `id` = ' . $id_gab_page_parent
-            . ' AND `suppr` = 0';
+                   . ' WHERE `id_version` = ' . $id_version
+                   . ' AND `id` = ' . $id_gab_page_parent
+                   . ' AND `suppr` = 0';
             $parentMeta = $this->db->query($query)->fetch(\PDO::FETCH_ASSOC);
 
             $parentPage = new GabaritPage();
@@ -1020,9 +1016,9 @@ class GabaritManager extends Manager
         }
 
         $query = 'SELECT `p`.*, COUNT(`e`.`id`) `nbre_enfants`'
-        . ' FROM `gab_page` `p` LEFT JOIN `gab_page` `e`'
-        . ' ON `e`.`id_parent` = `p`.`id` AND `e`.`suppr` = 0'
-        . ' AND `e`.`id_version` = ' . $id_version;
+               . ' FROM `gab_page` `p` LEFT JOIN `gab_page` `e`'
+               . ' ON `e`.`id_parent` = `p`.`id` AND `e`.`suppr` = 0'
+               . ' AND `e`.`id_version` = ' . $id_version;
 
         if ($visible) {
             $query .= ' AND `e`.`visible` = 1';
@@ -1030,16 +1026,16 @@ class GabaritManager extends Manager
 
         if ($main) {
             $query .= ' INNER JOIN `gab_gabarit` `g`'
-            . ' ON `p`.`id_gabarit` = `g`.`id`'
-            . ' AND `g`.`main` = 1';
+                    . ' ON `p`.`id_gabarit` = `g`.`id`'
+                    . ' AND `g`.`main` = 1';
         }
 
         $query .= ' WHERE `p`.`suppr` = 0 AND `p`.`id_version` = ' . $id_version
-        . ' AND `p`.`id_api` = ' . $id_api;
+                . ' AND `p`.`id_api` = ' . $id_api;
 
         if ($visible) {
             $query .= ' AND `p`.`visible` = 1'
-            . ' AND `p`.`visible_parent` = 1';
+                    . ' AND `p`.`visible_parent` = 1';
         }
 
         if ($id_parent !== false) {
@@ -1050,7 +1046,7 @@ class GabaritManager extends Manager
             if (is_array($id_gabarit)) {
                 if (count($id_gabarit) > 0) {
                     $query .= ' AND `p`.`id_gabarit` IN ('
-                    . implode(', ', $id_gabarit) . ')';
+                            . implode(', ', $id_gabarit) . ')';
                 }
             } else {
                 $query .= ' AND `p`.`id_gabarit` = ' . $id_gabarit;
@@ -1090,13 +1086,13 @@ class GabaritManager extends Manager
     public function getMain($id_version, $id_api)
     {
         $query = 'SELECT `g`.`name`, `p`.*'
-        . ' FROM `gab_page` `p` LEFT JOIN `gab_page` `e`'
-        . ' ON `e`.`id_parent` = `p`.`id` AND `e`.`suppr` = 0'
-        . ' AND `e`.`id_version` = ' . $id_version
-        . ' INNER JOIN `gab_gabarit` `g` ON `p`.`id_gabarit` = `g`.`id`'
-        . ' AND `g`.`main` = 1 AND  `g`.`id_api` = ' . $id_api
-        . ' WHERE `p`.`suppr` = 0 AND `p`.`id_version` = ' . $id_version
-        . ' ORDER BY `p`.`ordre` ASC';
+               . ' FROM `gab_page` `p` LEFT JOIN `gab_page` `e`'
+               . ' ON `e`.`id_parent` = `p`.`id` AND `e`.`suppr` = 0'
+               . ' AND `e`.`id_version` = ' . $id_version
+               . ' INNER JOIN `gab_gabarit` `g` ON `p`.`id_gabarit` = `g`.`id`'
+               . ' AND `g`.`main` = 1 AND  `g`.`id_api` = ' . $id_api
+               . ' WHERE `p`.`suppr` = 0 AND `p`.`id_version` = ' . $id_version
+               . ' ORDER BY `p`.`ordre` ASC';
         $metas = $this->db->query($query)->fetchAll(
             \PDO::FETCH_GROUP | \PDO::FETCH_ASSOC
         );
@@ -1136,9 +1132,9 @@ class GabaritManager extends Manager
         }
 
         $query = 'SELECT *'
-        . ' FROM `gab_page`'
-        . ' WHERE `suppr` = 0 AND `id_version` = ' . $id_version
-        . ' AND `titre` LIKE ' . $this->db->quote('%' . $term . '%');
+               . ' FROM `gab_page`'
+               . ' WHERE `suppr` = 0 AND `id_version` = ' . $id_version
+               . ' AND `titre` LIKE ' . $this->db->quote('%' . $term . '%');
 
         if ($id_gabarit) {
             $query .= ' AND `id_gabarit` = ' . $id_gabarit;
@@ -1184,17 +1180,17 @@ class GabaritManager extends Manager
         }
 
         $query = 'SELECT *'
-        . ' FROM `gab_page`'
-        . ' WHERE `id_parent` = ' . $id_parent
-        . ' AND `suppr` = 0'
-        . ' AND `id_version` = ' . $id_version;
+               . ' FROM `gab_page`'
+               . ' WHERE `id_parent` = ' . $id_parent
+               . ' AND `suppr` = 0'
+               . ' AND `id_version` = ' . $id_version;
 
         if ($visible) {
             $query .= ' AND `visible` = 1';
         }
 
         $query .= ' ORDER BY `ordre`'
-        . ' LIMIT 0, 1';
+                . ' LIMIT 0, 1';
         $meta = $this->db->query($query)->fetch(\PDO::FETCH_ASSOC);
 
         if ($meta) {
@@ -1216,9 +1212,9 @@ class GabaritManager extends Manager
     public function delete($id_gab_page)
     {
         $query = 'UPDATE gab_page SET'
-        . ' suppr = 1,'
-        . ' date_modif = NOW()'
-        . ' WHERE id = ' . $id_gab_page;
+               . ' suppr = 1,'
+               . ' date_modif = NOW()'
+               . ' WHERE id = ' . $id_gab_page;
         return $this->db->exec($query);
     }
 
@@ -1235,10 +1231,10 @@ class GabaritManager extends Manager
     public function setVisible($id_version, $id_api, $id_gab_page, $visible)
     {
         $query = 'UPDATE gab_page SET'
-        . ' visible = ' . $visible
-        . ' WHERE id = ' . $id_gab_page
-        . ' AND id_version = ' . $id_version
-        . ' AND id_api = ' . $id_api;
+               . ' visible = ' . $visible
+               . ' WHERE id = ' . $id_gab_page
+               . ' AND id_version = ' . $id_version
+               . ' AND id_api = ' . $id_api;
         $this->db->exec($query);
 
         return $this->setVisibleParent($id_version, $id_api, $id_gab_page, $visible);
@@ -1258,23 +1254,23 @@ class GabaritManager extends Manager
     public function setVisibleParent($id_version, $id_api, $id_parent, $visible)
     {
         $query = 'SELECT visible, visible_parent'
-        . ' FROM gab_page'
-        . ' WHERE id = ' . $id_parent
-        . ' AND id_version = ' . $id_version
-        . ' AND id_api = ' . $id_api;
+               . ' FROM gab_page'
+               . ' WHERE id = ' . $id_parent
+               . ' AND id_version = ' . $id_version
+               . ' AND id_api = ' . $id_api;
         $page = $this->db->query($query)->fetch(\PDO::FETCH_ASSOC);
 
         $query = 'UPDATE gab_page SET visible_parent = ' . $visible
-        . ' WHERE id_parent = ' . $id_parent
-        . ' AND id_version = ' . $id_version
-        . ' AND id_api = ' . $id_api;
+               . ' WHERE id_parent = ' . $id_parent
+               . ' AND id_version = ' . $id_version
+               . ' AND id_api = ' . $id_api;
         $this->db->exec($query);
 
         $query = 'SELECT id'
-        . ' FROM gab_page'
-        . ' WHERE id_parent = ' . $id_parent
-        . ' AND id_version = ' . $id_version
-        . ' AND id_api = ' . $id_api;
+               . ' FROM gab_page'
+               . ' WHERE id_parent = ' . $id_parent
+               . ' AND id_version = ' . $id_version
+               . ' AND id_api = ' . $id_api;
         $enfants = $this->db->query($query)->fetchAll(\PDO::FETCH_COLUMN);
 
         if ($page['visible'] + $page['visible_parent'] >= 2) {
@@ -1314,9 +1310,9 @@ class GabaritManager extends Manager
         }
 
         $query = 'SELECT `id`'
-        . ' FROM `version`'
-        . ' WHERE id_api = ' . $api['id']
-        . ' ORDER BY `id` != ' . $versionId;
+               . ' FROM `version`'
+               . ' WHERE id_api = ' . $api['id']
+               . ' ORDER BY `id` != ' . $versionId;
         $this->versionsIds = $this->db->query($query)->fetchAll(
             \PDO::FETCH_COLUMN
         );
