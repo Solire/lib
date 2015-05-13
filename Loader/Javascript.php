@@ -24,7 +24,9 @@ class Javascript extends Loader
         if ($realUrl === null) {
             $options['src'] = $url;
         } else {
-            $options['src'] = $realUrl;
+            $mask = '#\.js$#';
+            $time = filemtime($realUrl);
+            $options['src'] = preg_replace($mask, '.' . $time . '.js', $realUrl);
         }
 
         if (!isset($options['type'])) {

@@ -24,7 +24,9 @@ class Css extends Loader
         if ($realUrl === null) {
             $options['href'] = $url;
         } else {
-            $options['href'] = $realUrl;
+            $mask = '#\.css$#';
+            $time = filemtime($realUrl);
+            $options['href'] = preg_replace($mask, '.' . $time . '.css', $realUrl);
         }
 
         if (!isset($options['type'])) {
