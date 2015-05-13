@@ -23,10 +23,14 @@ class Css extends Loader
     {
         if ($realUrl === null) {
             $options['href'] = $url;
-        } else {
+        } elseif (isset($options['cache']) && $options['cache']) {
             $mask = '#\.css$#';
             $time = filemtime($realUrl);
             $options['href'] = preg_replace($mask, '.' . $time . '.css', $realUrl);
+
+            unset($options['cache']);
+        } else {
+            $options['href'] = $realUrl;
         }
 
         if (!isset($options['type'])) {
