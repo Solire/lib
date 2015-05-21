@@ -474,8 +474,9 @@ class GabaritManager extends Manager
     public function getBlocs($gabarit)
     {
         $query = 'SELECT *'
-        . ' FROM `gab_bloc`'
-        . ' WHERE `id_gabarit` = ' . $gabarit->getId();
+               . ' FROM `gab_bloc`'
+               . ' WHERE `id_gabarit` = ' . $gabarit->getId()
+               . ' ORDER BY `ordre`';
         $rows = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
         /**
