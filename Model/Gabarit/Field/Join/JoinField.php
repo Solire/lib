@@ -22,7 +22,14 @@ class JoinField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
      *
      * @var type
      */
-    protected $valueLabel;
+    protected $valueLabel = '';
+
+    /**
+     * Placeholder
+     *
+     * @var string
+     */
+    protected $placeholder = '';
 
     /**
      *
@@ -90,21 +97,32 @@ class JoinField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
                 . ' ' . ($filterVersion != 1 ? 'AND gab_page.id_version = ' . $this->versionId : '');
                 $labelField = $this->params['TABLE.FIELD.LABEL'];
             } else {
+                if ($table == 'gab_page') {
+                    $filterVersion .= ' AND suppr = 0';
+                }
+
                 $gabPageJoin = '';
                 $labelField = '`' . $table . '`.`' . $this->params['TABLE.FIELD.LABEL'] . '`';
             }
 
             $sql = 'SELECT ' . $labelField . ' label' . $additionnalFields
-            . $gabPageSelect
-            . ' FROM `' . $table . '`'
-            . $gabPageJoin
-            . ' WHERE ' . $filterVersion
-            . ' AND `' . $table . '`.`' . $idField . '` = ' . $this->value;
+                 . $gabPageSelect
+                 . ' FROM `' . $table . '`'
+                 . $gabPageJoin
+                 . ' WHERE ' . $filterVersion
+                 . ' AND `' . $table . '`.`' . $idField . '` = ' . $this->value;
             $values = $this->db->query($sql)->fetch(\PDO::FETCH_ASSOC);
-            $this->valueLabel = $values['label'];
 
-            if (isset($values['visible']) && $values['visible'] == 0) {
+            if (empty($values)) {
+                $this->value = '';
+                $this->valueLabel = '';
                 $this->classes .= ' translucide';
+                $this->placeholder = 'Supprimé';
+            } else {
+                $this->valueLabel = $values['label'];
+                if (isset($values['visible']) && $values['visible'] == 0) {
+                    $this->classes .= ' translucide';
+                }
             }
         }
     }
