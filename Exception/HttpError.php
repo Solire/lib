@@ -53,7 +53,7 @@ class HttpError extends \Exception
      */
     public function getHttp()
     {
-        if ($this->getCode() !== 0) {
+        if ($this->getCode() !== 0 && $this->getCode() !== 301) {
             return $this->getCode();
         }
 
