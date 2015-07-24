@@ -212,14 +212,6 @@ class Img extends Atoum
                     . '<img class="css-img" alt="oho" src="c/05.jpg">'
                     . '<img src="http://www.solire.fr">'
                 )
-            ->string((string) $imgLoader)
-                ->isEqualTo(
-                    '<img src="a/01.jpg">'
-                    . '<img class="css-img" src="a/02.jpg">'
-                    . '<img class="css-img" src="b/03.jpg">'
-                    . '<img class="css-img" alt="oho" src="c/05.jpg">'
-                    . '<img src="http://www.solire.fr">'
-                )
         ;
     }
 }
