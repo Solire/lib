@@ -38,6 +38,7 @@ final class Error
         404 => '404 Not Found',
         405 => '405 Method Not Allowed',
         418 => '418 I’m a teapot',
+        429 => '429 Too Many Requests',
         500 => '500 Internal Server Error',
         // Service temporairement indisponible ou en maintenance
         503 => '503 Service Unavailable',
