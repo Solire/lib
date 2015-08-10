@@ -1,4 +1,5 @@
 <?php
+
 namespace Solire\Lib\Security\Handler;
 
 use Solire\Lib\Registry;
@@ -7,7 +8,7 @@ use Solire\Lib\Registry;
  * DB Handler class providing the Handler structure
  *
  * @author  Stéphane <smonnot@solire.fr>
- * @license MIT http://mit-license.org/
+ * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 class Db extends AbstractHandler
 {
@@ -18,22 +19,33 @@ class Db extends AbstractHandler
      */
     protected $connection = null;
 
-    public function __construct()
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($conf)
     {
         $this->connection = Registry::get('db');
+        parent::__construct($conf);
     }
 
-    protected function countFailed($ip, $findTime)
+    /**
+     * {@inheritdoc}
+     */
+    public function countFailed($ip, $findTime)
     {
         $where = [];
         foreach ($this->conf['failregex'] as $regex) {
-            $where[] = $this->conf['search-column'] . 'LIKE' . $db->quote($regex);
+            $where[] = $this->conf['search-column']
+                . ' LIKE ' . $this->connection->quote($regex);
         }
 
+        $dateTimeC = $this->conf['datetime-column'];
+        $ipC       = $this->conf['datetime-column'];
+
         $query = 'SELECT COUNT(*) FROM ' . $this->conf['table']
-            . ' WHERE ' . implode(' OR ', $where)
-            . '     AND ' . $this->conf['datetime-column'] . ' >= DATE(NOW()-INTERVAL ' . (int) $findTime . ' SECOND)'
-            . '     AND ' . $this->conf['ip-column'] . ' = ' . $db->quote($ip);
+            . ' WHERE (' . implode(' OR ', $where) . ')'
+            . '   AND ' . $dateTimeC . ' >= NOW()-INTERVAL ' . ((int) $findTime) . ' SECOND'
+            . '   AND ' . $ipC . ' = ' . $this->connection->quote($ip);
 
         return $this->connection->query($query)->fetchColumn();
     }

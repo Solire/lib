@@ -5,7 +5,7 @@ namespace Solire\Lib\Security\Handler;
  * Base Handler class providing the Handler structure
  *
  * @author  Stéphane <smonnot@solire.fr>
- * @license MIT http://mit-license.org/
+ * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 abstract class AbstractHandler
 {
@@ -22,7 +22,7 @@ abstract class AbstractHandler
      * @param Conf $conf The configuration
      * 
      */
-    public function __construct(Conf $conf)
+    public function __construct($conf)
     {
         $this->conf = $conf;
     }
@@ -32,5 +32,5 @@ abstract class AbstractHandler
      *
      * @return int Total number
      */
-    abstract public function countFailed();
+    abstract public function countFailed($ip, $findTime);
 }
