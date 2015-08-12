@@ -93,13 +93,13 @@ class AbstractFileLocator
                     $dir = $appLibDir[$dir];
                 }
 
-                return $dir;
+                return array($app['namespace'] . '\\' . ucfirst(str_replace('/', '', $appDir)), $dir);
             }, $this->appDirs);
 
             foreach ($fooPaths as $fooPath) {
-                $testPath = new Path($fooPath, Path::SILENT);
+                $testPath = new Path($fooPath[1], Path::SILENT);
                 if ($testPath->get() !== false) {
-                    $srcDirs[] = $testPath->get();
+                    $srcDirs[$fooPath[0]] = $testPath->get();
                 }
             }
         }
