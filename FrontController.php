@@ -8,6 +8,13 @@
 
 namespace Solire\Lib;
 
+use Solire\Lib\Exception\HttpError;
+use Solire\Lib\Loader\Css;
+use Solire\Lib\Loader\Javascript;
+use Solire\Lib\View\View;
+use Solire\Lib\Filesystem\FileLocator;
+use Solire\Lib\View\Filesystem\FileLocator as ViewFileLocator;
+
 /**
  * Front controller
  *
@@ -39,7 +46,7 @@ class FrontController
     public static $appName;
 
     /**
-     * Préfix url pour l'application (exemple "catalogue")
+     * Préfixe url pour l'application (exemple "catalogue")
      *
      * @var string
      */
@@ -135,14 +142,14 @@ class FrontController
     /**
      * Loader des librairies javascript
      *
-     * @var Loader\Js
+     * @var Javascript
      */
     private $loaderJs = false;
 
     /**
      * Loader des librairies css
      *
-     * @var Loader\Css
+     * @var Css
      */
     private $loaderCss = false;
 
@@ -152,6 +159,13 @@ class FrontController
      * @var Loader\Img
      */
     private $loaderImg = false;
+
+    /**
+     * FileLocator
+     *
+     * @var FileLocator
+     */
+    private $fileLocator = null;
 
     /**
      * Instantiation du frontController
@@ -166,12 +180,16 @@ class FrontController
         $count = count(self::$appDirs);
         $this->app = self::$appDirs[$count - 1]['namespace'];
         unset($count);
+        
+        /* Création du FileLocator */
+        $appLibDir = self::$mainConfig->get('appLibDir');
+        $this->fileLocator = new FileLocator(self::$appDirs, $appLibDir);
     }
 
     /**
      * Renvois une instance du FrontController
      *
-     * @return FrontController
+     * @return self
      */
     public static function getInstance()
     {
@@ -194,6 +212,7 @@ class FrontController
     /**
      * Initialise les données nécessaires pour FrontController
      *
+     * @throws Exception\Lib
      * @return void
      */
     public static function init()
@@ -230,11 +249,13 @@ class FrontController
     }
 
     /**
-     * Ajoute une partie de rewrinting
+     * Ajoute une partie de rewriting
      *
      * @param string $rewriting Parte de rewriting à ajouter
      *
      * @return void
+     *
+     * @throws HttpError
      * @uses Solire\Lib\Controller->acceptRew Contrôle si le
      * rewriting est accepté
      */
@@ -243,7 +264,7 @@ class FrontController
         $className = $this->getClassName();
         $class = new $className();
         if ($class->acceptRew !== true) {
-            $exc = new \Solire\Lib\Exception\HttpError('Erreur HTTP');
+            $exc = new HttpError('Erreur HTTP');
             $exc->http(404, null);
             throw $exc;
         }
@@ -285,6 +306,7 @@ class FrontController
         /* Nom de l'application par défaut */
         $this->application = self::$mainConfig->get('project', 'defaultApp');
         self::$appName = $this->application;
+        $this->fileLocator->setCurrentAppName(self::$appName);
 
         self::loadAppConfig();
 
@@ -314,8 +336,8 @@ class FrontController
                 }
 
                 /*
-                 * Si le contrôller n'est pas en minuscule
-                 *  on concidère que c'est un rewriting
+                 * Si le contrôleur n'est pas en minuscule
+                 *  on considère que c'est un rewriting
                  */
                 if ($ctrl != strtolower($ctrl)) {
                     $this->addRewriting($ctrl);
@@ -325,7 +347,6 @@ class FrontController
 
                 /* On test l'existence du dossier app répondant au nom $ctrl */
                 if ($this->testApp($ctrl) !== false) {
-
                     /* Si un application est déjà définie */
                     if ($application === true) {
                         $this->addRewriting($ctrl);
@@ -351,7 +372,6 @@ class FrontController
 
                 /* Test existence d'un controller */
                 if ($this->classExists($ctrl)) {
-
                     if ($controller === true) {
                         $this->addRewriting($ctrl);
                         $rewritingMod = true;
@@ -368,6 +388,7 @@ class FrontController
 
             /* Si l'application à changé on charge sa configuration */
             if ($application === true) {
+                $this->fileLocator->setCurrentAppName(self::$appName);
                 self::loadAppConfig();
             }
         }
@@ -411,47 +432,8 @@ class FrontController
      */
     final public static function search($path, $current = true)
     {
-        $appLibDir = self::$mainConfig->get('appLibDir');
-
-        /*
-         * @todo voir boulot de steph pour eolia
-         */
-        if ($current === true) {
-            $appDirs = [
-                Path::DS . self::$appName,
-                Path::DS . strtolower(self::$appName),
-            ];
-        } else {
-            $appDirs = [
-                '',
-            ];
-        }
-
-        foreach (self::$appDirs as $app) {
-            $fooPaths = \array_map(function ($appDir) use ($path, $app, $appLibDir) {
-                $dir = $app['dir'] . $appDir;
-
-                /*
-                 * Permet de faire correspondre des répertoires d'application
-                 */
-                if (!empty($appLibDir)
-                    && isset($appLibDir[$dir])
-                ) {
-                    $dir = $appLibDir[$dir];
-                }
-
-                return $dir . Path::DS . $path;
-            }, $appDirs);
-
-            foreach ($fooPaths as $fooPath) {
-                $testPath = new Path($fooPath, Path::SILENT);
-                if ($testPath->get() !== false) {
-                    return $testPath->get();
-                }
-            }
-        }
-
-        return false;
+        $front = self::getInstance();
+        return $front->fileLocator->locate($path, $current);
     }
 
     /**
@@ -545,8 +527,10 @@ class FrontController
      *
      * @param string $controller Nom du controller à lancer
      * @param string $action     Nom de l'action à lancer
-     *
-     * @return boolean
+     * @return bool
+     * @throws Exception\Lib
+     * @throws HttpError
+     * @throws \Exception
      */
     public static function run($controller = null, $action = null)
     {
@@ -572,7 +556,7 @@ class FrontController
         unset($controller, $action);
 
         /*
-         * Pour eviter les conflits lors de l'envois d'une 404 on ne charge les
+         * Pour éviter les conflits lors de l'envois d'une 404 on ne charge les
          * informations relative à l'api
          */
         if (self::$singleApi === false) {
@@ -611,6 +595,7 @@ class FrontController
         /*
          * On créé le controller
          */
+        /* @var Controller $instance */
         $instance = new $class();
 
         $instance
@@ -649,6 +634,8 @@ class FrontController
      * Chargement de la vue
      *
      * @return View
+     *
+     * @throws Exception\Lib
      */
     public function loadView()
     {
@@ -656,14 +643,17 @@ class FrontController
             return $this->view;
         }
 
-        $this->view = new View();
+        /* Création du FileLocator pour le chargement des templates */
+        $appLibDir = self::$mainConfig->get('appLibDir');
+        $viewFileLocator = new ViewFileLocator(self::$appDirs, $appLibDir);
+        $viewFileLocator->setCurrentAppName(self::$appName);
+
+        $this->view = new View($viewFileLocator);
 
         $defaultViewPath = strtolower($this->controller) . Path::DS . $this->action;
-        $mainViewPath = sprintf($this->getFormat('view-file'), 'main');
 
         try {
             $this->view
-                ->setPathFormat($this->getFormat('view-file'))
                 ->setPathPrefix(self::$mainConfig->get('dirs', 'views'))
                 ->setTranslate($this->loadTranslate())
 
@@ -751,7 +741,7 @@ class FrontController
         $apiId = $db->query($query)->fetchColumn();
 
         if (empty($apiId)) {
-            /* On essaie de recuperer l'api par le domaine */
+            /* On essaie de récuperer l'api par le domaine */
             $serverUrl = str_replace('www.', '', $_SERVER['SERVER_NAME']);
             $query = 'SELECT id_api '
                    . 'FROM version '
@@ -806,7 +796,7 @@ class FrontController
         }
 
         /*
-         * On verifie en base si le nom de domaine courant correspond
+         * On vérifie en base si le nom de domaine courant correspond
          *  à une langue
          */
         $serverUrl = str_replace('www.', '', $_SERVER['SERVER_NAME']);
