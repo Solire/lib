@@ -2,6 +2,6 @@
     <label for="<?php echo $this->id; ?>">
         <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
     </label>
-    <input type="text"  id="<?php echo $this->id; ?>" value="<?php echo $this->valueLabel; ?>" class="<?php echo $this->classes; ?> autocomplete-join" />
+    <input type="text"  id="<?php echo $this->id; ?>" value="<?php echo $this->valueLabel; ?>" class="<?php echo $this->classes; ?> autocomplete-join" placeholder="<?php echo $this->placeholder; ?>" />
     <input type="hidden" value="<?php echo $this->value; ?>" name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="join" />
 </div>

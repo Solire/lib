@@ -60,6 +60,26 @@ class View
      */
     private $formatPath = '%s';
 
+    /**
+     * Loader des librairies javascript
+     *
+     * @var Loader\Javascript
+     */
+    public $javascript;
+
+    /**
+     * Loader des librairies css
+     *
+     * @var Loader\Css
+     */
+    public $css;
+
+    /**
+     * Loader des images
+     *
+     * @var Loader\Img
+     */
+    public $img;
 
     /**
      * Chargement d'une nouvelle vue
@@ -82,6 +102,79 @@ class View
         $this->translate = $translate;
 
         return $this;
+    }
+
+
+    /**
+     * Défini le loader de librairies javascript
+     *
+     * @param Loader\Javascript $javascript Loader de librairies javascript
+     *
+     * @return self
+     */
+    public function setJsLoader(Loader\Javascript $javascript)
+    {
+        $this->javascript = $javascript;
+
+        return $this;
+    }
+
+    /**
+     * Renvoi le loader de librairies javascript
+     *
+     * @return Loader\Javascript
+     */
+    public function getJsLoader()
+    {
+        return $this->javascript;
+    }
+
+    /**
+     * Défini le loader de librairies css
+     *
+     * @param Loader\Css $css Loader de librairies css
+     *
+     * @return self
+     */
+    public function setCssLoader(Loader\Css $css)
+    {
+        $this->css = $css;
+
+        return $this;
+    }
+
+    /**
+     * Renvoi le loader de librairies css
+     *
+     * @return Loader\Css
+     */
+    public function getCssLoader()
+    {
+        return $this->css;
+    }
+
+    /**
+     * Défini le loader d'image
+     *
+     * @param Loader\Img $img Loader de librairies css
+     *
+     * @return self
+     */
+    public function setImgLoader(Loader\Img $img)
+    {
+        $this->img = $img;
+
+        return $this;
+    }
+
+    /**
+     * Renvoi le loader d'image
+     *
+     * @return Loader\Img
+     */
+    public function getImgLoader()
+    {
+        return $this->img;
     }
 
     /**

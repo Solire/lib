@@ -435,8 +435,8 @@ class Formulaire
 
             /* = Par défaut on redirige vers la page précédente
               ------------------------------- */
-            if (isset($SERVER['HTTP_REFERER'])) {
-                $error->link($SERVER['HTTP_REFERER'], 1);
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                $error->link($_SERVER['HTTP_REFERER'], 1);
             }
         }
 
@@ -465,9 +465,9 @@ class Formulaire
     protected function catchData()
     {
         $datas = array(
-            'g' => $GET,
-            'p' => $POST,
-            'c' => $COOKIE,
+            'g' => $_GET,
+            'p' => $_POST,
+            'c' => $_COOKIE,
         );
 
         $result = array();

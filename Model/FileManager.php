@@ -8,6 +8,8 @@
 
 namespace Solire\Lib\Model;
 
+use Solire\Lib\Path;
+
 /**
  * Gestion des fichiers
  *
@@ -210,7 +212,7 @@ class FileManager extends manager
         $vignetteDir,
         $apercuDir
     ) {
-        /** HTTP headers for no cache etc. */
+        /* HTTP headers for no cache etc. */
         header('Content-type: text/plain; charset=UTF-8');
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
@@ -218,53 +220,53 @@ class FileManager extends manager
         header('Cache-Control: post-check=0, pre-check=0', false);
         header('Pragma: no-cache');
 
-        /** 5 minutes execution time */
+        /* 5 minutes execution time */
         @set_time_limit(5 * 60);
 
-        /** Get parameters */
-        $chunk      = isset($REQUEST['chunk']) ? $REQUEST['chunk'] : 0;
-        $chunks     = isset($REQUEST['chunks']) ? $REQUEST['chunks'] : 1;
-        $fileName   = isset($REQUEST['name']) ? $REQUEST['name'] : '';
+        /* Get parameters */
+        $chunk      = isset($_POST['chunk']) ? $_POST['chunk'] : 0;
+        $chunks     = isset($_POST['chunks']) ? $_POST['chunks'] : 1;
+        $fileName   = isset($_POST['name']) ? $_POST['name'] : '';
         $fileName = strtolower($fileName);
         $ext = pathinfo($fileName, PATHINFO_EXTENSION);
         $name = pathinfo($fileName, PATHINFO_FILENAME);
 
         if ($chunk == $chunks - 1) {
-            if (!file_exists($uploadDir . DS . $targetDir)) {
-                $this->createFolder($uploadDir . DS . $targetDir);
+            if (!file_exists($uploadDir . Path::DS . $targetDir)) {
+                $this->createFolder($uploadDir . Path::DS . $targetDir);
             }
 
-            if (!file_exists($uploadDir . DS . $vignetteDir)) {
-                $this->createFolder($uploadDir . DS . $vignetteDir);
+            if (!file_exists($uploadDir . Path::DS . $vignetteDir)) {
+                $this->createFolder($uploadDir . Path::DS . $vignetteDir);
             }
 
-            if (!file_exists($uploadDir . DS . $apercuDir)) {
-                $this->createFolder($uploadDir . DS . $apercuDir);
+            if (!file_exists($uploadDir . Path::DS . $apercuDir)) {
+                $this->createFolder($uploadDir . Path::DS . $apercuDir);
             }
         }
 
-        /** Clean the fileName for security reasons */
-        $name = $this->db->rewrit($name);
+        /* Clean the fileName for security reasons */
+        $name = \Solire\Lib\Format\String::urlSlug($name);
         $fileName = $name . '.' . $ext;
 
-        /** Look for the content type header */
-        if (isset($SERVER['HTTP_CONTENT_TYPE'])) {
-            $contentType = $SERVER['HTTP_CONTENT_TYPE'];
+        /* Look for the content type header */
+        if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+            $contentType = $_SERVER['HTTP_CONTENT_TYPE'];
         }
 
-        if (isset($SERVER['CONTENT_TYPE'])) {
-            $contentType = $SERVER['CONTENT_TYPE'];
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+            $contentType = $_SERVER['CONTENT_TYPE'];
         }
 
-        /**
+        /*
          * Handle non multipart uploads older WebKit
          * versions didn't support multipart in HTML5
          */
         if (strpos($contentType, 'multipart') !== false) {
-            if (isset($FILES['file']['tmp_name'])
-                && is_uploaded_file($FILES['file']['tmp_name'])
+            if (isset($_FILES['file']['tmp_name'])
+                && is_uploaded_file($_FILES['file']['tmp_name'])
             ) {
-                /** Open temp file */
+                /* Open temp file */
 
                 if ($chunk == 0) {
                     $mode = 'wb';
@@ -273,13 +275,13 @@ class FileManager extends manager
                 }
 
                 $out = fopen(
-                    $uploadDir . DS . $targetTmp . DS . $fileName,
+                    $uploadDir . Path::DS . $targetTmp . Path::DS . $fileName,
                     $mode
                 );
 
                 if ($out) {
-                    /** Read binary input stream and append it to temp file */
-                    $in = fopen($FILES['file']['tmp_name'], 'rb');
+                    /* Read binary input stream and append it to temp file */
+                    $in = fopen($_FILES['file']['tmp_name'], 'rb');
 
                     if ($in) {
                         while ($buff = fread($in, 4096)) {
@@ -299,7 +301,7 @@ class FileManager extends manager
 
                     fclose($in);
                     fclose($out);
-                    @unlink($FILES['file']['tmp_name']);
+                    @unlink($_FILES['file']['tmp_name']);
                 } else {
                     return array(
                         'jsonrpc' => '2.0',
@@ -317,7 +319,7 @@ class FileManager extends manager
                     'status' => 'error',
                     'error' => array(
                         'code' => 103,
-                        'message' => 'Failed to move uploaded file.'
+                        'message' => 'Failed to move uploaded file.',
                     ),
                     'id' => 'id'
                 );
@@ -330,10 +332,10 @@ class FileManager extends manager
                 $mode = 'ab';
             }
 
-            $out = fopen($uploadDir . DS . $targetTmp . DS . $fileName, $mode);
+            $out = fopen($uploadDir . Path::DS . $targetTmp . Path::DS . $fileName, $mode);
 
             if ($out) {
-                /** Read binary input stream and append it to temp file */
+                /* Read binary input stream and append it to temp file */
                 $in = fopen('php://input', 'rb');
 
                 if ($in) {
@@ -367,72 +369,72 @@ class FileManager extends manager
             }
         }
 
-        /** Construct JSON-RPC response */
+        /* Construct JSON-RPC response */
         $jsonrpc = array(
             'jsonrpc' => '2.0',
             'status' => 'success',
             'result' => $fileName,
         );
 
-        /** Dernière partie. */
+        /* Dernière partie. */
         if ($chunk == $chunks - 1) {
             $fileNameNew = $fileName;
 
-            /** On renomme pour éviter d'écraser un fichier existant */
-            if (file_exists($uploadDir . DS . $targetDir . DS . $fileName)) {
+            /* On renomme pour éviter d'écraser un fichier existant */
+            if (file_exists($uploadDir . Path::DS . $targetDir . Path::DS . $fileName)) {
                 $fileName_a = pathinfo($fileName, PATHINFO_FILENAME);
                 $fileName_b = pathinfo($fileName, PATHINFO_EXTENSION);
 
                 $count = 1;
-                $path   = $uploadDir . DS . $targetDir . DS . $fileName_a . '-'
+                $path   = $uploadDir . Path::DS . $targetDir . Path::DS . $fileName_a . '-'
                         . $count . '.' . $fileName_b;
                 while (file_exists($path)) {
                     $count++;
-                    $path   = $uploadDir . DS . $targetDir . DS . $fileName_a
+                    $path   = $uploadDir . Path::DS . $targetDir . Path::DS . $fileName_a
                             . '-' . $count . '.' . $fileName_b;
                 }
 
                 $fileNameNew = $fileName_a . '-' . $count . '.' . $fileName_b;
             }
 
-            /** On déplace le fichier temporaire */
+            /* On déplace le fichier temporaire */
             rename(
-                $uploadDir . DS . $targetTmp . DS . $fileName,
-                $uploadDir . DS . $targetDir . DS . $fileNameNew
+                $uploadDir . Path::DS . $targetTmp . Path::DS . $fileName,
+                $uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew
             );
 
-            $size = filesize($uploadDir . DS . $targetDir . DS . $fileNameNew);
+            $size = filesize($uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew);
 
-            /** Création de la miniature. */
+            /* Création de la miniature. */
             $ext = pathinfo($fileNameNew, PATHINFO_EXTENSION);
             if (array_key_exists($ext, self::$extensions['image'])) {
-                $filePath = $uploadDir . DS . $targetDir . DS . $fileNameNew;
+                $filePath = $uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew;
                 $sizes = getimagesize($filePath);
                 $width = $sizes[0];
                 $height = $sizes[1];
                 $jsonrpc['taille'] = $sizes[0] . ' x ' . $sizes[1];
 
-                /** Création de la vignette  */
+                /* Création de la vignette  */
                 $largeurmax = self::$vignette['max-width'];
                 $hauteurmax = self::$vignette['max-height'];
                 $this->vignette(
                     $filePath,
                     $ext,
-                    $uploadDir . DS . $vignetteDir . DS . $fileNameNew,
+                    $uploadDir . Path::DS . $vignetteDir . Path::DS . $fileNameNew,
                     $largeurmax,
                     $hauteurmax
                 );
-                $jsonrpc['mini_path'] = $uploadDir . DS . $vignetteDir . DS
+                $jsonrpc['mini_path'] = $uploadDir . Path::DS . $vignetteDir . Path::DS
                                       . $fileNameNew;
-                $jsonrpc['mini_url']  = $vignetteDir . DS . $fileNameNew;
+                $jsonrpc['mini_url']  = $vignetteDir . Path::DS . $fileNameNew;
 
-                /** Création de l'apercu  */
+                /* Création de l'apercu  */
                 $largeurmax = self::$apercu['max-width'];
                 $hauteurmax = self::$apercu['max-height'];
                 $this->vignette(
                     $filePath,
                     $ext,
-                    $uploadDir . DS . $apercuDir . DS . $fileNameNew,
+                    $uploadDir . Path::DS . $apercuDir . Path::DS . $fileNameNew,
                     $largeurmax,
                     $hauteurmax
                 );
@@ -442,14 +444,14 @@ class FileManager extends manager
                 $jsonrpc['taille'] = \Solire\Lib\Format\Number::formatSize($size);
             }
 
-            /** Ajout d'informations utiles (ou pas) */
+            /* Ajout d'informations utiles (ou pas) */
             $jsonrpc['filename'] = $fileNameNew;
             $jsonrpc['size'] = $size;
             $jsonrpc['width'] = $width;
             $jsonrpc['height'] = $height;
-            $jsonrpc['path'] = $uploadDir . DS . $targetDir . DS
+            $jsonrpc['path'] = $uploadDir . Path::DS . $targetDir . Path::DS
                              . $fileNameNew;
-            $jsonrpc['url'] = $targetDir . DS . $fileNameNew;
+            $jsonrpc['url'] = $targetDir . Path::DS . $fileNameNew;
             $jsonrpc['date'] = date('d/m/Y H:i:s');
         }
 
@@ -539,11 +541,11 @@ class FileManager extends manager
         $targ_w = false,
         $targ_h = false
     ) {
-        $destinationName = $uploadDir . DS . $targetDir . DS . $target;
+        $destinationName = $uploadDir . Path::DS . $targetDir . Path::DS . $target;
         $fileNameNew     = $target;
         $ext             = pathinfo($fileNameNew, PATHINFO_EXTENSION);
 
-        /** On créé et on enregistre l'image recadrée */
+        /* On créé et on enregistre l'image recadrée */
         if ($targ_w == false) {
             $targ_w = $w;
         }
@@ -552,14 +554,14 @@ class FileManager extends manager
             $targ_h = $h;
         }
 
-        $src = $uploadDir . DS . $fileSource;
+        $src = $uploadDir . Path::DS . $fileSource;
         $img_r = call_user_func(
             'imagecreatefrom' . self::$extensions['image'][$ext],
             $src
         );
         $dstR = imagecreatetruecolor($targ_w, $targ_h);
 
-        /** Transparence */
+        /* Transparence */
         if ($ext == 'png' || $ext == 'gif') {
             imagecolortransparent(
                 $dstR,
@@ -612,34 +614,34 @@ class FileManager extends manager
             'size' => $size,
             'width' => $width,
             'height' => $height,
-            'path' => $targetDir . DS . $fileNameNew,
+            'path' => $targetDir . Path::DS . $fileNameNew,
             'date' => date('d/m/Y H:i:s'),
         );
 
-        /** On créé la vignette */
+        /* On créé la vignette */
         $largeurmax = self::$vignette['max-width'];
         $hauteurmax = self::$vignette['max-height'];
         $this->vignette(
-            $uploadDir . DS . $targetDir . DS . $fileNameNew,
+            $uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew,
             $ext,
-            $uploadDir . DS . $vignetteDir . DS . $fileNameNew,
+            $uploadDir . Path::DS . $vignetteDir . Path::DS . $fileNameNew,
             $largeurmax,
             $hauteurmax
         );
-        $jsonrpc['minipath'] = $vignetteDir . DS . $fileNameNew;
+        $jsonrpc['minipath'] = $vignetteDir . Path::DS . $fileNameNew;
 
-        /** On créé l'apercu */
+        /* On créé l'apercu */
         $largeurmax = self::$apercu['max-width'];
         $hauteurmax = self::$apercu['max-height'];
         $this->vignette(
-            $uploadDir . DS . $targetDir . DS . $fileNameNew,
+            $uploadDir . Path::DS . $targetDir . Path::DS . $fileNameNew,
             $ext,
-            $uploadDir . DS . $apercuDir . DS . $fileNameNew,
+            $uploadDir . Path::DS . $apercuDir . Path::DS . $fileNameNew,
             $largeurmax,
             $hauteurmax
         );
 
-        /** On insert la ressource en base */
+        /* On insert la ressource en base */
         $json['id'] = $this->insertToMediaFile(
             $json['filename'],
             $idGabPage,
@@ -712,7 +714,7 @@ class FileManager extends manager
             $fileSource
         );
 
-        /**
+        /*
          * Les fonctions imagesx et imagesy renvoient la largeur et la hauteur
          * d'une image
          */
@@ -745,13 +747,13 @@ class FileManager extends manager
                 $hauteurDestination
             );
 
-            /** Transparence */
+            /* Transparence */
             if ($ext == 'png' || $ext == 'gif') {
                 imagealphablending($destination, false);
                 imagesavealpha($destination, true);
             }
 
-            /** On crée la miniature */
+            /* On crée la miniature */
             imagecopyresampled(
                 $destination,
                 $source,

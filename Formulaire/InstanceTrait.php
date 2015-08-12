@@ -8,6 +8,9 @@
 
 namespace Solire\Lib\Formulaire;
 
+use \Solire\Lib\FrontController;
+use \Solire\Lib\Formulaire;
+
 /**
  * Interface des plugins formulaire
  *
@@ -29,8 +32,8 @@ trait InstanceTrait
     protected function chargeForm($name)
     {
         $name = 'config/form/' . $name;
-        $path = \Solire\Lib\FrontController::search($name, false);
-        $form = new \Solire\Lib\Formulaire($path, true);
+        $path = FrontController::search($name, false);
+        $form = new Formulaire($path, true);
 
         return $form;
     }
@@ -45,7 +48,7 @@ trait InstanceTrait
     protected function chargeFormConfig($name)
     {
         $name = 'config/form/' . $name;
-        $path = \Solire\Lib\FrontController::search($name, false);
+        $path = FrontController::search($name, false);
         $conf = new \Solire\Lib\Config($path);
 
         return $conf;

@@ -8,6 +8,9 @@
 
 namespace Solire\Lib;
 
+use \Solire\Lib\Exception\HttpError;
+use \PDO;
+
 /**
  * Base controller
  *
@@ -71,24 +74,14 @@ class Controller
     public $seo;
 
     /**
-     *
-     * @var Loader\Javascript
-     */
-    public $javascript;
-
-    /**
-     *
-     * @var Loader\Css
-     */
-    public $css;
-
-    /**
+     * Traduction des textes statiques
      *
      * @var TranslateMysql
      */
     protected $translate = null;
 
     /**
+     * Log
      *
      * @var Log
      */
@@ -107,6 +100,20 @@ class Controller
      * @var boolean
      */
     public $acceptRew = false;
+
+    /**
+     *
+     *
+     * @var Loader\Css
+     */
+    public $css = null;
+
+    /**
+     *
+     *
+     * @var Loader\Javascript
+     */
+    public $javascript = null;
 
     /**
      * Chargement du controller
@@ -137,8 +144,8 @@ class Controller
      */
     public function start()
     {
-        $this->css = new Loader\Css();
-        $this->javascript = new Loader\Javascript();
+//        $this->css = new Loader\Css();
+//        $this->javascript = new Loader\Javascript();
 
         $this->seo = new Seo();
         $this->view->mainConfig = Registry::get('mainconfig');
@@ -174,53 +181,6 @@ class Controller
     }
 
     /**
-     * Lance les executions automatiques
-     *
-     * @param string $type Type d'execution (shutdown pour le moment)
-     *
-     * @return void
-     * @throws Exception\lib Si le type n'est pas cohérent
-     * @deprecated since version 3.0
-     */
-    final protected function loadExec($type)
-    {
-        if (!in_array($type, array('shutdown'))) {
-            throw new Exception\lib('Type d\'execution incorrecte');
-        }
-
-        $dirs = FrontController::getAppDirs();
-        $config = FrontController::$mainConfig;
-        foreach ($dirs as $foo) {
-            $dir = $foo['dir'] . DS . strtolower(FrontController::$appName)
-                 . DS . $config->get('dirs', $type . 'Exec');
-            $path = new Path($dir, Path::SILENT);
-            if ($path->get() === false) {
-                continue;
-            }
-
-            $dir = opendir($path->get());
-            while ($file = readdir($dir)) {
-                if ($file == '.' || $file == '..') {
-                    continue;
-                }
-
-                if (is_dir($path->get() . $file)) {
-                    continue;
-                }
-
-                $funcName = $foo['name'] . '\\' . FrontController::$appName . '\\'
-                          . str_replace(DS, '\\', $config->get('dirs', $type . 'Exec'))
-                          . pathinfo($file, PATHINFO_FILENAME);
-                if (!function_exists($funcName)) {
-                    include $path->get() . $file;
-                }
-                    $funcName($this);
-            }
-            closedir($dir);
-        }
-    }
-
-    /**
      * Définit la vue
      *
      * @param View $view Vue à utiliser
@@ -230,6 +190,9 @@ class Controller
     final public function setView($view)
     {
         $this->view = $view;
+
+        $this->css = $this->view->getCssLoader();
+        $this->javascript = $this->view->getJsLoader();
 
         return $this;
     }
@@ -259,7 +222,7 @@ class Controller
     }
 
     /**
-     * Définit l'objet de traduction
+     * Renvoi l'objet de traduction
      *
      * @return TranslateMysql
      */
@@ -267,7 +230,6 @@ class Controller
     {
         return $this->translate;
     }
-
 
     /**
      * Redirection vers une autre action d'un controller
@@ -322,39 +284,68 @@ class Controller
      */
     public function check301()
     {
-        $url = preg_replace('`^/' . Registry::get('baseroot') . '`', '', $_SERVER['REQUEST_URI']);
+        $appUrl = FrontController::$appUrl;
+        if (!empty($appUrl)) {
+            $appUrl .= '/';
+        }
+
+        $urlsToTest = array();
+
+        $mask = '`'
+              . '^/'
+              . FrontController::$envConfig->get('base', 'root')
+              . $appUrl
+              . '`';
+        $url = preg_replace($mask, '', $_SERVER['REQUEST_URI']);
         $urlParts = explode('/', $url);
-        $urlsToTest[] = $url;
+
+        if (substr($url, -1) == '/') {
+            unset($urlParts[count($urlParts) - 1]);
+            $urlParts[count($urlParts) - 1] .= '/';
+        }
+
+        $url = '';
+        do {
+            $urlPart = array_shift($urlParts);
+
+            $url .= $urlPart;
+
+            $urlFollowing = '';
+            if (!empty($urlParts)) {
+                $urlFollowing = implode('/', $urlParts);
+                $url .= '/';
+            }
+
+            $urlsToTest[] = array(
+                $url,
+                $urlFollowing
+            );
+        } while (!empty($urlParts));
 
         // On ajoute aussi l'url entière à tester
-        $urlsToTest[] = FrontController::getCurrentUrl();
+        $urlsToTest[] = array(
+            FrontController::getCurrentURL(),
+            ''
+        );
 
-        $ajustLen = 0;
-        if (substr($url, -1) == '/') {
-            $ajustLen = 1;
-            unset($urlParts[count($urlParts) - 1]);
-        }
-
-        $urlPartsReverse = array_reverse($urlParts);
-        for ($index = 0; $index < count($urlPartsReverse) - 1; $index++) {
-            $url = substr($url, 0, -strlen($urlPartsReverse[$index]) - $ajustLen);
-            $urlsToTest[] = $url;
-            $ajustLen = 1;
-        }
+        $urlsToTest = array_reverse($urlsToTest);
 
         $urlPartRedirect = '';
         $redirection301 = false;
-        foreach ($urlsToTest as $key => $urlToTest) {
+        foreach ($urlsToTest as $key => $row) {
+            list($urlToTest, $urlFollowing) = $row;
+
             $query = 'SELECT new '
                     . 'FROM redirection '
                     . 'WHERE id_version = ' . ID_VERSION . ' '
-                    . ' AND id_api = ' . ID_API . ' '
+                    . ' AND id_api = ' . FrontController::$idApiRew . ' '
                     . ' AND old LIKE ' . $this->db->quote($urlToTest) . ' '
                     . 'LIMIT 1';
-            $redirection301 = $this->db->query($query)->fetch(\PDO::FETCH_COLUMN);
+
+            $redirection301  = $this->db->query($query)->fetch(PDO::FETCH_COLUMN);
+
             if ($redirection301 !== false) {
-                $keyChange = $key;
-                $urlPartRedirect = $urlToTest;
+                $redirection301 .= $urlFollowing;
                 break;
             }
         }
@@ -366,7 +357,7 @@ class Controller
             ) {
                 $redirection301 = $redirection301;
             } else {
-                $redirection301 = $this->url . $redirection301;
+                $redirection301 = $this->url . $appUrl . $redirection301;
             }
         }
 
@@ -402,7 +393,7 @@ class Controller
      */
     final public function redirectError($codeError = null, $url = null)
     {
-        $exc = new \Solire\Lib\Exception\HttpError('Erreur HTTP');
+        $exc = new HttpError('Erreur HTTP');
         if (!empty($codeError)) {
             $exc->http($codeError, $url);
         }

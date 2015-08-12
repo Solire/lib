@@ -4,10 +4,15 @@
   "description": "",
   "keywords": [""],
   "license": "CC by-nc",
+  "require-dev": {
+    "m6web/coke": "~1.2",
+    "siwayll/phpcs-norme-dpsi": "~3.0"
+  },
   "require": {
     "php": ">=5.5.0",
     "ensepar/html2pdf": "1.0.1",
     "zendframework/zend-mail": "2.2.5",
+	"solire/conf": "2.3.*",
     "easybook/geshi": "1.0.8.12"
   },
   "autoload": {

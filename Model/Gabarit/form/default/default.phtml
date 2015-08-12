@@ -1,5 +1,5 @@
                             <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="id_gabarit" value="<?php echo $this->_gabarit->getId(); ?>" />
+                                <input type="hidden" name="id_gabarit" value="<?php echo $this->gabarit->getId(); ?>" />
                                 <input type="hidden" name="id_gab_page" value="<?php echo $this->view['metaId']; ?>" />
                                 <input type="hidden" name="id_version" value="<?php echo $this->view['metaLang']; ?>" />
                                 <input type="hidden" name="id_api" value="<?php echo $this->view['api']['id']; ?>" />
@@ -10,7 +10,7 @@
                                 <div class="line form-line">
                                     <div<?php echo $this->view['noMetaTitre']; ?> class="line">
                                         <label for="titre-<?php echo $this->view['metaLang']; ?>">Titre <span class="required">*</span> </label>
-                                        <input type="text" name="titre" id="titre-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->_meta['titre']) ? $this->_meta['titre'] : ''; ?>" class="form-controle<?php echo $this->_gabarit->getMeta_titre() ? ' form-oblig form-mix' : ''; ?>" />
+                                        <input type="text" name="titre" id="titre-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['titre']) ? $this->meta['titre'] : ''; ?>" class="form-controle<?php echo $this->gabarit->getMetaTitre() ? ' form-oblig form-notnul' : ''; ?>" />
                                     </div>
 
                                     <div class="line form-other-line" style="display:none;">
@@ -19,11 +19,11 @@
                                     </div>
                                 </div>
 <?php
-    if (isset($this->_version['exotique']) && $this->_version['exotique'] > 0) {
+    if (isset($this->version['exotique']) && $this->version['exotique'] > 0) {
 ?>
                                 <div<?php echo $this->view['noMetaTitre']; ?> class="line">
                                     <label for="titre_rew-<?php echo $this->view['metaLang']; ?>">Titre pour le rewriting <span class="required">*</span> </label>
-                                    <input type="text" name="titre_rew" id="titre_rew-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->_meta['titre_rew']) ? $this->_meta['titre_rew'] : ''; ?>" class="<?php echo $this->_gabarit->getMeta_titre() ? 'form-controle form-oblig form-mix' : ''; ?>" />
+                                    <input type="text" name="titre_rew" id="titre_rew-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['titre_rew']) ? $this->meta['titre_rew'] : ''; ?>" class="<?php echo $this->gabarit->getMetaTitre() ? 'form-controle form-oblig form-mix' : ''; ?>" />
                                 </div>
 <?php
     }
@@ -34,8 +34,8 @@
                                     <div style="display:none;">
                                         <div class="line form-line">
                                             <div class="line"<?php if ($this->view['metaId'] == 1) {echo ' style="display:none;"';} ?>>
-                                                <label for="rewriting-<?php echo $this->view['metaLang']; ?>">Rewriting<?php echo isset($this->_meta['rewriting']) && $this->_meta['rewriting'] != "" ? ' <span class="required">*</span>' : ''; ?></label>
-                                                <input type="text" name="rewriting" id="rewriting-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->_meta['rewriting']) ? $this->_meta['rewriting'] : ''; ?>" class="form-controle<?php echo isset($this->_meta['rewriting']) && $this->_meta['rewriting'] != "" ? ' form-oblig form-notnul' : ''; ?>" />
+                                                <label for="rewriting-<?php echo $this->view['metaLang']; ?>">Rewriting<?php echo isset($this->meta['rewriting']) && $this->meta['rewriting'] != "" ? ' <span class="required">*</span>' : ''; ?></label>
+                                                <input type="text" name="rewriting" id="rewriting-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['rewriting']) ? $this->meta['rewriting'] : ''; ?>" class="form-controle<?php echo isset($this->meta['rewriting']) && $this->meta['rewriting'] != "" ? ' form-oblig form-notnul' : ''; ?>" />
                                             </div>
 
                                             <div class="line form-other-line" style="display:none;">
@@ -47,7 +47,7 @@
                                         <div class="line form-line">
                                             <div class="line">
                                                 <label for="bal_title-<?php echo $this->view['metaLang']; ?>">Title</label>
-                                                <input type="text" name="bal_title" id="bal_title-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->_meta['bal_title']) ? $this->_meta['bal_title'] : ''; ?>" size="80" maxlength="80" class="form-controle" />
+                                                <input type="text" name="bal_title" id="bal_title-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['bal_title']) ? $this->meta['bal_title'] : ''; ?>" size="80" maxlength="80" class="form-controle" />
                                             </div>
 
                                             <div class="line form-other-line" style="display:none;">
@@ -59,7 +59,7 @@
                                         <div class="line form-line">
                                             <div class="line">
                                                 <label for="bal_descr-<?php echo $this->view['metaLang']; ?>">Description</label>
-                                                <input type="text" name="bal_descr" id="bal_descr-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->_meta['bal_descr']) ? $this->_meta['bal_descr'] : ''; ?>" size="80" maxlength="250" class="form-controle" />
+                                                <input type="text" name="bal_descr" id="bal_descr-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['bal_descr']) ? $this->meta['bal_descr'] : ''; ?>" size="80" maxlength="250" class="form-controle" />
                                             </div>
 
                                             <div class="line form-other-line" style="display:none;">
@@ -71,7 +71,7 @@
                                         <div class="line form-line">
                                             <div class="line">
                                                 <label for="bal_key-<?php echo $this->view['metaLang']; ?>">Keywords (<i>séparés par des ,</i>)</label>
-                                                <input type="text" name="bal_key" id="bal_key-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->_meta['bal_key']) ? $this->_meta['bal_key'] : ''; ?>" size="80" maxlength="250" class="form-controle" />
+                                                <input type="text" name="bal_key" id="bal_key-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['bal_key']) ? $this->meta['bal_key'] : ''; ?>" size="80" maxlength="250" class="form-controle" />
                                             </div>
 
                                             <div class="line form-other-line" style="display:none;">
@@ -87,7 +87,7 @@
                                                 <option value="0">-------</option>
 <?php
     foreach ($authors as $author) {
-        $selected = isset($this->_meta['author']) && $this->_meta['author'] == $author["id"] ? true : false;
+        $selected = isset($this->meta['author']) && $this->meta['author'] == $author["id"] ? true : false;
 ?>
                                                 <option <?php echo $selected ? 'selected="selected"' : ""; ?> value="<?php echo $author["id"]; ?>">
                                                     <?php echo $author["nom_de_lauteur"]; ?>
@@ -104,7 +104,7 @@
 <?php
         for ($ii = 1 ; $ii < 10 ; $ii++) {
 ?>
-                                                <option value="<?php echo $ii; ?>"<?php echo isset($this->_meta['importance']) && $ii == $this->_meta['importance'] ? ' selected="selected"' : ''; ?>><?php echo $ii; ?></option>
+                                                <option value="<?php echo $ii; ?>"<?php echo isset($this->meta['importance']) && $ii == $this->meta['importance'] ? ' selected="selected"' : ''; ?>><?php echo $ii; ?></option>
 <?php
         }
 ?>
@@ -113,12 +113,12 @@
 
                                         <div class="line">
                                             <label for="no_index-<?php echo $this->view['metaLang']; ?>">No-index</label>
-                                            <input type="checkbox" value="1" name="no_index" id="no_index-<?php echo $this->view['metaLang']; ?>"<?php echo isset($this->_meta['no_index']) && $this->_meta['no_index'] > 0 ? ' checked="checked"' : ''; ?> />
+                                            <input type="checkbox" value="1" name="no_index" id="no_index-<?php echo $this->view['metaLang']; ?>"<?php echo isset($this->meta['no_index']) && $this->meta['no_index'] > 0 ? ' checked="checked"' : ''; ?> />
                                         </div>
 
                                         <div class="line">
                                             <label for="canonical-<?php echo $this->view['metaLang']; ?>">Url canonical</label>
-                                            <input type="text" name="canonical" id="canonical-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->_meta['canonical']) ? $this->_meta['canonical'] : ''; ?>" class="autocomplete-link"  />
+                                            <input type="text" name="canonical" id="canonical-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['canonical']) ? $this->meta['canonical'] : ''; ?>" class="autocomplete-link"  />
                                         </div>
 
                                         <fieldset  style="margin-left: 15px<?php echo $this->view['noRedirections301']; ?>">
@@ -143,7 +143,7 @@
                                     </div>
                                 </fieldset>
 
-                                <input type="hidden" name="id_<?php echo $this->_gabarit->getTable(); ?>" value="<?php echo isset($this->_values['id']) ? $this->_values['id'] : ''; ?>" />
+                                <input type="hidden" name="id_<?php echo $this->gabarit->getTable(); ?>" value="<?php echo isset($this->values['id']) ? $this->values['id'] : ''; ?>" />
 
 <?php
         foreach ($this->view['allchamps'] as $name_group => $champs) {
@@ -155,11 +155,11 @@
 <?php
             foreach ($champs as $champ) {
                 if($champ["type"] == "GMAP") {
-                    if(isset($this->_values[$champ['name'] . "_lat"])) {
+                    if(isset($this->values[$champ['name'] . "_lat"])) {
                         $value = array(
-                            "lat"          =>  $this->_values[$champ['name'] . "_lat"],
-                            "lng"         =>  $this->_values[$champ['name'] . "_lng"],
-                            "zoom"     =>  $this->_values[$champ['name'] . "_zoom"],
+                            "lat"          =>  $this->values[$champ['name'] . "_lat"],
+                            "lng"         =>  $this->values[$champ['name'] . "_lng"],
+                            "zoom"     =>  $this->values[$champ['name'] . "_zoom"],
                         );
                     } else {
                         $value = array(
@@ -169,11 +169,11 @@
                         );
                     }
                 } else {
-                    $value = isset($this->_values[$champ['name']]) ? $this->_values[$champ['name']] : '';
+                    $value = isset($this->values[$champ['name']]) ? $this->values[$champ['name']] : '';
                 }
 
-                    $id = isset($this->_meta['id_version']) ? $this->_meta['id_version'] : '';
-                    echo $this->_buildChamp($champ, $value, $id, $this->view['metaId']);
+                    $id = isset($this->meta['id_version']) ? $this->meta['id_version'] : '';
+                    echo $this->buildChamp($champ, $value, $id, $this->view['metaId']);
             }
 ?>
                                     </div>
@@ -181,7 +181,7 @@
 <?php
         }
 
-        foreach ($this->_blocs as $bloc) {
+        foreach ($this->blocs as $bloc) {
             echo $bloc->buildForm($this->view['metaId'], $this->getMeta('id_version'));
         }
 ?>
@@ -190,7 +190,7 @@
                                         <a title="Valider" class="btn btn-small btn-success formajaxsubmit" href="#"><i class="icon-ok"></i> Enregistrer</a><br /><br />
                                         <a title="Importer" class="btn btn-small btn-success uploader_popup" href="#"><i class="icon-folder-open"></i> Importer</a><br /><br />
                                         <?php
-                                            if ($this->_gabarit->getView()) {
+                                            if ($this->gabarit->getView()) {
                                         ?>
                                         <a title="Prévisualiser" class="btn btn-small btn-success formprev" href="#"><i class="icon-camera"></i> Prévisualiser</a><br /><br />
                                         <?php } ?>

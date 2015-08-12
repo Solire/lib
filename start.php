@@ -11,7 +11,12 @@ namespace Solire\Lib;
 /* = lancement du script
   ------------------------------- */
 try {
-    FrontController::setApp('app');
+    FrontController::setApp([
+        'name' => 'Solire',
+        'dir' => 'vendor/solire',
+        'namespace' => 'Solire',
+        'public' => 'public/default',
+    ]);
     FrontController::init();
     FrontController::run();
 } catch (Exception\Marvin $exc) {
@@ -19,7 +24,7 @@ try {
 } catch (Exception\User $exc) {
     Error::message($exc);
 } catch (Exception\HttpError $exc) {
-    if (current($exc->getHttp()) == '404') {
+    if ($exc->getHttp() == '404') {
         header('HTTP/1.0 404 Not Found');
         FrontController::run('Error', 'error404');
     } else {

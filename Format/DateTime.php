@@ -43,7 +43,7 @@ class DateTime
             '4.35',
             '12',
         );
-        $difference = time() - $timestamp;
+        $difference = time() - $timestampOrDate;
         if ($difference >= 0) {
             /**
              * C'est dans le passé
@@ -128,7 +128,7 @@ class DateTime
                 $max  = 3;
             }
         } else {
-            $time = '@' . $timestampOrDate;
+            $time = $timestampOrDate;
         }
 
         $d = new \DateTime($time);
@@ -357,6 +357,10 @@ class DateTime
      */
     public static function sqlTo($dateSql, $format = 'd/m/Y')
     {
+        if (substr($dateSql, 0, 10) == '0000-00-00') {
+            return null;
+        }
+
         $date = new \DateTime($dateSql);
         return $date->format($format);
     }

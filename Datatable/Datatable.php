@@ -11,6 +11,7 @@
 namespace Solire\Lib\Datatable;
 
 use Solire\Lib\Loader;
+use Solire\Lib\FrontController;
 use Solire\Lib\Tools;
 use Solire\Lib\Model\fileManager;
 
@@ -31,7 +32,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_view = "datatable";
+    protected $view = "datatable";
 
     /**
      * Réponse JSON des données qui sera renvoyé
@@ -39,7 +40,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_response = "";
+    protected $response = "";
 
     /**
      * Chemin du répertoire contenant les vues
@@ -47,7 +48,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_viewPath = "view/";
+    protected $viewPath = "view/";
 
     /**
      * Si vrai, le chemin des vues sera relatif
@@ -56,7 +57,7 @@ class Datatable
      * @var bool
      * @access protected
      */
-    protected $_viewPathRelative = false;
+    protected $viewPathRelative = false;
 
     /**
      * Chemin du répertoire contenant les feuilles de style
@@ -64,7 +65,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_cssPath = "./datatable/";
+    protected $cssPath = "./datatable/";
 
     /**
      * Chemin du répertoire contenant les scripts javascript
@@ -72,7 +73,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_jsPath = "./datatable/";
+    protected $jsPath = "./datatable/";
 
     /**
      * Chemin du répertoire contenant les images
@@ -80,7 +81,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_imgPath = "img/datatable/";
+    protected $imgPath = "img/datatable/";
 
     /**
      * Action executé
@@ -88,7 +89,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_action = "datatable";
+    protected $action = "datatable";
 
     /**
      * Chemin du répertoire contenant les fichiers de configurations
@@ -96,7 +97,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_configPath = "config/datatable/";
+    protected $configPath = "config/datatable/";
 
     /**
      * Nom du fichier de configuration qui sera utilisé
@@ -104,7 +105,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_configName = "";
+    protected $configName = "";
 
     /**
      * Connexion à la base de données qui sera utilisé
@@ -112,7 +113,7 @@ class Datatable
      * @var \Solire\Lib\MyPDO
      * @access protected
      */
-    protected $_db;
+    protected $db;
 
     /**
      * Paramètres GET de l'url
@@ -120,7 +121,7 @@ class Datatable
      * @var array
      * @access protected
      */
-    protected $_get;
+    protected $get;
 
     /**
      * Chargeur de script Javascript
@@ -128,7 +129,7 @@ class Datatable
      * @var Loader\Javascript
      * @access protected
      */
-    protected $_javascript;
+    protected $javascript;
 
     /**
      * Chargeur de feuilles de styles
@@ -136,7 +137,7 @@ class Datatable
      * @var Loader\Css
      * @access protected
      */
-    protected $_css;
+    protected $css;
 
     /**
      * Clause where de la requête
@@ -144,7 +145,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_where;
+    protected $where;
 
     /**
      *
@@ -152,7 +153,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_beforeHTML;
+    protected $beforeHTML;
 
     /**
      *
@@ -160,7 +161,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_beforeTableHTML;
+    protected $beforeTableHTML;
 
     /**
      *
@@ -168,7 +169,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_afterTableHTML;
+    protected $afterTableHTML;
 
     /**
      *
@@ -176,7 +177,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_additionalWhereQuery;
+    protected $additionalWhereQuery;
 
     /**
      *
@@ -184,7 +185,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_additionalJoinQueryCount;
+    protected $additionalJoinQueryCount;
 
     /**
      *
@@ -192,7 +193,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_pluginsOutput = "";
+    protected $pluginsOutput = "";
 
     /**
      *
@@ -200,7 +201,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_additionalForm;
+    protected $additionalForm;
 
     /**
      *
@@ -208,7 +209,7 @@ class Datatable
      * @var string
      * @access protected
      */
-    protected $_columnActionButtons;
+    protected $columnActionButtons;
 
     /**
      *
@@ -216,7 +217,7 @@ class Datatable
      * @var \Solire\Lib\Log
      * @access protected
      */
-    protected $_log;
+    protected $log;
 
     /**
      * Constructeur
@@ -224,71 +225,79 @@ class Datatable
      * Défini les chemins des ressources, la connexion à la base de données
      * ainsi que les paramètres GET de l'url et le nom du fichier de configuration
      */
-    public function __construct($get, $configPath, $db = null, $cssPath = "./datatable/", $jsPath = "./datatable/", $imgPath = "./img/datatable/", $log = null) {
-        $this->_db = $db;
-        $this->_get = $get;
+    public function __construct(
+        $get,
+        $configPath,
+        $db = null,
+        $cssPath = "./datatable/",
+        $jsPath = "./datatable/",
+        $imgPath = "./img/datatable/",
+        $log = null
+    ) {
+        $this->db = $db;
+        $this->get = $get;
 
         $pathInfoConfig = pathinfo($configPath);
 
-        $this->_configPath = $pathInfoConfig["dirname"];
-        $this->_configName = str_replace(".cfg", "", $pathInfoConfig["filename"]);
+        $this->configPath = $pathInfoConfig["dirname"];
+        $this->configName = str_replace(".cfg", "", $pathInfoConfig["filename"]);
 
-        $this->_log = $log;
+        $this->log = $log;
 
 
         /* Augmentation de la limite des group_concat */
-        $this->_db->exec("SET SESSION group_concat_max_len = 100000;");
+        $this->db->exec("SET SESSION group_concat_max_len = 100000;");
 
-        if (isset($this->_get["json"])) {
-            $this->_view = "json";
-            $this->_action = "json";
+        if (isset($this->get["json"])) {
+            $this->view = "json";
+            $this->action = "json";
         }
 
-        if (isset($this->_get["editable"])) {
-            $this->_view = "editable";
-            $this->_action = "editable";
+        if (isset($this->get["editable"])) {
+            $this->view = "editable";
+            $this->action = "editable";
         }
 
-        if (isset($this->_get["editRender"])) {
-            $this->_view = "";
-            $this->_action = "editFormRender";
+        if (isset($this->get["editRender"])) {
+            $this->view = "";
+            $this->action = "editFormRender";
         }
 
-        if (isset($this->_get["add"])) {
-            $this->_view = "";
-            $this->_action = "add";
+        if (isset($this->get["add"])) {
+            $this->view = "";
+            $this->action = "add";
         }
 
-        if (isset($this->_get["edit"])) {
-            $this->_view = "";
-            $this->_action = "edit";
+        if (isset($this->get["edit"])) {
+            $this->view = "";
+            $this->action = "edit";
         }
 
-        if (isset($this->_get["select_load"])) {
-            $this->_view = "";
-            $this->_action = "selectLoad";
+        if (isset($this->get["select_load"])) {
+            $this->view = "";
+            $this->action = "selectLoad";
         }
 
-        if (isset($this->_get["multi_autocomplete"])) {
-            $this->_view = "";
-            $this->_action = "multiAutocomplete";
+        if (isset($this->get["multi_autocomplete"])) {
+            $this->view = "";
+            $this->action = "multiAutocomplete";
         }
 
-        if (isset($this->_get["dt_action"]) && $this->_get["dt_action"] != "") {
-            $this->_view = "";
-            $this->_action = $this->_get["dt_action"];
+        if (isset($this->get["dt_action"]) && $this->get["dt_action"] != "") {
+            $this->view = "";
+            $this->action = $this->get["dt_action"];
         }
 
 
 
         //Paramètrage du chemin des ressources
-        $this->_cssPath = $cssPath;
-        $this->_jsPath = $jsPath;
-        $this->_imgPath = $imgPath;
+        $this->cssPath = $cssPath;
+        $this->jsPath = $jsPath;
+        $this->imgPath = $imgPath;
 
         //Création d'un chargeur JS/CSS
-        $this->_javascript = new Loader\Javascript();
-        $this->_css = new Loader\Css();
+        $this->javascript = new Loader\Javascript(FrontController::$publicDirs);
+        $this->css = new Loader\Css(FrontController::$publicDirs);
     }
 
     // --------------------------------------------------------------------
@@ -304,14 +313,14 @@ class Datatable
      */
     public function start()
     {
-        if ($this->_configName != '') {
-            include $this->_configPath . DIRECTORY_SEPARATOR . $this->_configName . '.cfg.php';
+        if ($this->configName != '') {
+            include $this->configPath . DIRECTORY_SEPARATOR . $this->configName . '.cfg.php';
 
             if(isset($_REQUEST["table"])) {
                 $this->name = $_REQUEST["table"];
             } else
-                $this->name = str_replace(array(".", "-"), "_", $this->_configName) . '_' . str_replace(array(" ", "."), "", microtime());
-            $this->nameConfig = str_replace(array(".", "-"), "_", $this->_configName);
+                $this->name = str_replace(array(".", "-"), "_", $this->configName) . '_' . str_replace(array(" ", "."), "", microtime());
+            $this->nameConfig = str_replace(array(".", "-"), "_", $this->configName);
             $this->config = $config;
 
             $sTable = $this->config["table"]["name"];
@@ -321,24 +330,24 @@ class Datatable
             if (isset($this->config["plugins"])) {
                 foreach ($this->config["plugins"] as $plugin) {
                     $pluginName = "\Solire\Lib\Datatable\Plugin\Datatable" . $plugin;
-                    $plugins[$pluginName] = new $pluginName($this->_db, $this);
+                    $plugins[$pluginName] = new $pluginName($this->db, $this);
                 }
             }
 
-            $this->_aFilterColumnAdditional = array();
+            $this->aFilterColumnAdditional = array();
             $this->additionalParams = "";
 
             if (isset($_GET["filter"])) {
                 foreach ($_GET["filter"] as $filter) {
                     list($filterColumn, $filterValue) = explode("|", $filter);
-                    $this->_aFilterColumnAdditional[] = $filterColumn . ' = ' . $this->_db->quote($filterValue);
+                    $this->aFilterColumnAdditional[] = $filterColumn . ' = ' . $this->db->quote($filterValue);
                 }
                 $params["filter"] = $_GET["filter"];
 //                $this->additionalParams = http_build_query($params);
             }
 
             if (isset($this->config["extra"]["logical delete"])) {
-                $this->_aFilterColumnAdditional[] = $sTable . "." . $this->config["extra"]["logical delete"]["column_bool"] . ' = 0';
+                $this->aFilterColumnAdditional[] = $sTable . "." . $this->config["extra"]["logical delete"]["column_bool"] . ' = 0';
             }
         }
 
@@ -403,28 +412,28 @@ class Datatable
             array_unshift($this->config["columns"], $columnSelectable);
         }
 
-        $this->_columnActionButtons = $columnActionButtons;
+        $this->columnActionButtons = $columnActionButtons;
 
-        $this->url = self::_selfURL() . "&table=" . $this->name ;
-        $this->urlRaw = self::_selfURLRaw();
+        $this->url = self::selfURL() . "&table=" . $this->name ;
+        $this->urlRaw = self::selfURLRaw();
 
         $this->beforeRunAction();
 
-        if (count($this->_columnActionButtons) > 0) {
-            $columnAction[0]["content"] .= implode("", $this->_columnActionButtons) . "</div>";
+        if (count($this->columnActionButtons) > 0) {
+            $columnAction[0]["content"] .= implode("", $this->columnActionButtons) . "</div>";
             $columnAction[0]["show_page_detail"] = false;
             $this->config["columns"] = array_merge($this->config["columns"], $columnAction);
         }
 
-        if (method_exists($this, $this->_action . "Action")) {
-        call_user_func(array($this, $this->_action . "Action"));
+        if (method_exists($this, $this->action . "Action")) {
+            call_user_func(array($this, $this->action . "Action"));
 
             /* Appel action dans plugins */
             if (isset($plugins) && count($plugins)) {
                 foreach ($plugins as $plugin) {
-                    if (method_exists($plugin, $this->_action . "Action")) {
-                        $this->_pluginsOutput = call_user_func(array($plugin, $this->_action . "Action"));
-    }
+                    if (method_exists($plugin, $this->action . "Action")) {
+                        $this->pluginsOutput = call_user_func(array($plugin, $this->action . "Action"));
+                    }
                 }
             }
         }
@@ -470,7 +479,7 @@ class Datatable
      * @return void
      */
     public function additionalWhereQuery($whereString) {
-        $this->_additionalWhereQuery = $whereString;
+        $this->additionalWhereQuery = $whereString;
     }
 
     /**
@@ -480,7 +489,7 @@ class Datatable
      * @return void
      */
     public function additionalJoinQueryCount($joinString) {
-        $this->_additionalJoinQueryCount = $joinString;
+        $this->additionalJoinQueryCount = $joinString;
     }
 
     // --------------------------------------------------------------------
@@ -491,7 +500,7 @@ class Datatable
      * @return 	void
      */
     public function beforeTable($html) {
-        $this->_beforeTableHTML = $html;
+        $this->beforeTableHTML = $html;
     }
 
     // --------------------------------------------------------------------
@@ -502,7 +511,7 @@ class Datatable
      * @return 	void
      */
     public function beforeHtml($html) {
-        $this->_beforeHTML = $html;
+        $this->beforeHTML = $html;
     }
 
     // --------------------------------------------------------------------
@@ -513,7 +522,7 @@ class Datatable
      * @return 	string
      */
     public function getAction() {
-        return $this->_action;
+        return $this->action;
     }
 
     // --------------------------------------------------------------------
@@ -528,7 +537,7 @@ class Datatable
 
         $breadCrumbs[] = array(
             "label" => $this->config["table"]["title"],
-            "url" => isset($this->customeURLRaw) ? $this->customeURLRaw : $this->_selfURLRaw(),
+            "url" => isset($this->customeURLRaw) ? $this->customeURLRaw : $this->selfURLRaw(),
         );
 
         switch ($this->getAction()) {
@@ -569,7 +578,7 @@ class Datatable
      * @return 	void
      */
     public function afterTable($html) {
-        $this->_afterTableHTML = $html;
+        $this->afterTableHTML = $html;
     }
 
     // --------------------------------------------------------------------
@@ -580,18 +589,18 @@ class Datatable
      * @return 	void
      */
     public function datatableAction() {
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.livequery.min.js");
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.dataTables.js");
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.jeditable.js");
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.autogrow.js");
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.jeditable.autogrow.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/jquery.livequery.min.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/jquery.dataTables.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/jquery.jeditable.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/jquery.autogrow.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/jquery.jeditable.autogrow.js");
 
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/FixedHeader.js");
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.dataTables.columnFilter.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/FixedHeader.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/jquery.dataTables.columnFilter.js");
 
         if (isset($this->config["extra"])
                 && isset($this->config["extra"]["hide_columns"]) && $this->config["extra"]["hide_columns"]) {
-            $this->_javascript->addLibrary($this->_jsPath . "jquery/ColVis.js");
+            $this->javascript->addLibrary($this->jsPath . "jquery/ColVis.js");
         }
 
         /* Formulaire de création AJAX ONLY */
@@ -601,17 +610,17 @@ class Datatable
                 && (!isset($this->config["form"])
                 || !isset($this->config["form"]["ajax"])
                 || $this->config["form"]["ajax"] == true)) {
-            $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.selectload.js");
-            $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.tmpl.min.js");
-            $this->_javascript->addLibrary("back/js/plupload/plupload.full.min.js");
-            $this->_javascript->addLibrary($this->_jsPath . "jquery/plupload_custom.js");
+            $this->javascript->addLibrary($this->jsPath . "jquery/jquery.selectload.js");
+            $this->javascript->addLibrary($this->jsPath . "jquery/jquery.tmpl.min.js");
+            $this->javascript->addLibrary("back/js/plupload/plupload.full.min.js");
+            $this->javascript->addLibrary($this->jsPath . "jquery/plupload_custom.js");
             $this->addRenderAction();
             if (isset($this->config["style"])
                     && isset($this->config["style"]["form"])) {
                 $path = isset($this->config["style"]["formpath"]) ? $this->config["style"]["formpath"] : null;
-                $this->_beforeTableHTML .= $this->addRender($this->config["style"]["form"], $path);
+                $this->beforeTableHTML .= $this->addRender($this->config["style"]["form"], $path);
             } else {
-                $this->_beforeTableHTML .= $this->addRender();
+                $this->beforeTableHTML .= $this->addRender();
             }
         }
 
@@ -621,30 +630,30 @@ class Datatable
                 && isset($this->config["form"])
                 && isset($this->config["form"]["ajax"])
                 && $this->config["form"]["ajax"] == false) {
-            $this->_beforeTableHTML .= '
+            $this->beforeTableHTML .= '
                 <div  class="btn-a gradient-green">
                     <a href="' . $this->url . '&dt_action=formAddRender' . '">Ajouter un' . $this->config["table"]["suffix_genre"] . ' ' . $this->config["table"]["title_item"] . '</a>
                 </div>';
         }
 
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/ZeroClipboard.js");
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/TableTools.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/ZeroClipboard.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/TableTools.js");
 
 
 
-        $this->_css->addLibrary($this->_cssPath . "demo_table_jui.css");
-        $this->_css->addLibrary($this->_cssPath . "ColVis.css");
-        $this->_css->addLibrary($this->_cssPath . "TableTools_JUI.css");
+        $this->css->addLibrary($this->cssPath . "demo_table_jui.css");
+        $this->css->addLibrary($this->cssPath . "ColVis.css");
+        $this->css->addLibrary($this->cssPath . "TableTools_JUI.css");
 
         if (isset($this->config["additional_script"]) && count($this->config["additional_script"]) > 0) {
             foreach ($this->config["additional_script"] as $script) {
-                $this->_javascript->addLibrary($script);
+                $this->javascript->addLibrary($script);
             }
         }
 
         if (isset($this->config["additional_stylesheet"]) && count($this->config["additional_stylesheet"]) > 0) {
             foreach ($this->config["additional_stylesheet"] as $stylesheet) {
-                $this->_css->addLibrary($stylesheet);
+                $this->css->addLibrary($stylesheet);
             }
         }
 
@@ -663,11 +672,11 @@ class Datatable
 
         foreach ($this->config["columns"] as $column) {
             if (isset($column["filter"]))
-                $sFilterColumn[] = $column["name"] . ' = ' . $this->_db->quote($column["filter"]);
+                $sFilterColumn[] = $column["name"] . ' = ' . $this->db->quote($column["filter"]);
         }
 
-        if ($this->_additionalWhereQuery != "")
-            $sFilterColumn[] = $this->_additionalWhereQuery;
+        if ($this->additionalWhereQuery != "")
+            $sFilterColumn[] = $this->additionalWhereQuery;
 
         $generalWhere = implode(" AND ", $sFilterColumn);
 
@@ -702,7 +711,7 @@ class Datatable
                                     } else
                                         $aVal[] = "`" . $column2["from"]["table"] . "_$iKeyJoin`.`$sColVal`";
                                 } else {
-                                    $aVal[] = $this->_db->quote($sColVal);
+                                    $aVal[] = $this->db->quote($sColVal);
                                 }
                             }
 
@@ -722,7 +731,7 @@ class Datatable
                                 } else
                                     $aVal[] = "`" . $column["from"]["table"] . "`.`$sColVal`";
                             } else {
-                                $aVal[] = $this->_db->quote($sColVal);
+                                $aVal[] = $this->db->quote($sColVal);
                             }
                             foreach ($column["from"]["index"] as $sColIndex => $sColIndexVal) {
                                 if ($sColIndexVal == "THIS") {
@@ -732,16 +741,16 @@ class Datatable
                         }
                     }
                     $selectSqlArray[] = "CONCAT(" . implode(",", $aVal) . ") name ";
-                    $column["values"] = $this->_db->query(
+                    $column["values"] = $this->db->query(
                                     'SELECT  DISTINCT ' . implode(",", $selectSqlArray) . '
                                      FROM ' . $table . (isset($column["filter_field_where"]) && $column["filter_field_where"] != "" ? " WHERE " . $column["filter_field_where"] : "") . ';')->fetchAll(\PDO::FETCH_COLUMN);
                 } elseif (isset($column["sql"])) {
-                    $column["values"] = $this->_db->query("SELECT DISTINCT " . $column["sql"] . ""
+                    $column["values"] = $this->db->query("SELECT DISTINCT " . $column["sql"] . ""
                                     . " FROM `" . $this->config["table"]["name"] . "` WHERE " . $column["sql"] . " <> '' "
                                     . ($generalWhere == "" ? "" : "AND $generalWhere" )
                                     . " ORDER BY `" . $column["name"] . "` ASC")->fetchAll(\PDO::FETCH_COLUMN);
                 } else {
-                    $column["values"] = $this->_db->query("SELECT DISTINCT `" . $column["name"] . "`"
+                    $column["values"] = $this->db->query("SELECT DISTINCT `" . $column["name"] . "`"
                                     . " FROM `" . $this->config["table"]["name"] . "` WHERE `" . $column["name"] . "` <> '' "
                                     . ($generalWhere == "" ? "" : "AND $generalWhere" )
                                     . " ORDER BY `" . $column["name"] . "` ASC")->fetchAll(\PDO::FETCH_COLUMN);
@@ -760,7 +769,7 @@ class Datatable
     public function showAction() {
         $index = intval($_GET["index"]);
         $this->data = $this->getDataFormat($index);
-        $this->_view = "show";
+        $this->view = "show";
     }
 
     // --------------------------------------------------------------------
@@ -818,17 +827,17 @@ class Datatable
 
 
 
-        $r = $this->_db->insert($sTable, $values);
-        $insertId = $this->_db->lastInsertId();
+        $r = $this->db->insert($sTable, $values);
+        $insertId = $this->db->lastInsertId();
 
-        if ($this->_log && isset($this->config["log"]) && isset($this->config["log"]["create"])) {
-            $this->_log->logThis("Ajout de " . $sTable, $this->_utilisateur->get("id"), "<b>Id</b> : " . $insertId);
+        if ($this->log && isset($this->config["log"]) && isset($this->config["log"]["create"])) {
+            $this->log->logThis("Ajout de " . $sTable, $this->utilisateur->get("id"), "<b>Id</b> : " . $insertId);
         }
 
         if (count($queryAfterData) > 0) {
             foreach ($queryAfterData["values"] as $queryData) {
                 $queryData[$queryAfterData["columnjoin"]] = $insertId;
-                $this->_db->insert($queryAfterData["table"], $queryData);
+                $this->db->insert($queryAfterData["table"], $queryData);
             }
         }
 
@@ -857,9 +866,9 @@ class Datatable
         $values = array();
         foreach ($this->config["columns"] as $column) {
             if (isset($column["index"]) && $column["index"]) {
-                $where[] = $column["name"] . " = " . $this->_db->quote($filter[$i]);
+                $where[] = $column["name"] . " = " . $this->db->quote($filter[$i]);
                 if ($column["name"] == "cle")
-                    $where[] = $column["name"] . " LIKE BINARY " . $this->_db->quote($filter[$i]);
+                    $where[] = $column["name"] . " LIKE BINARY " . $this->db->quote($filter[$i]);
                 $i++;
             }
             if (isset($column["creable_field"])) {
@@ -909,16 +918,16 @@ class Datatable
 
 
         if (count($where) != 0) {
-            $r = $this->_db->update($sTable, $values, implode(" AND ", $where));
+            $r = $this->db->update($sTable, $values, implode(" AND ", $where));
             if (count($queryAfterData) > 0) {
-                $this->_db->delete($queryAfterData["table"], $queryAfterData["columnjoin"] . " = " . intval($_GET["index"]));
+                $this->db->delete($queryAfterData["table"], $queryAfterData["columnjoin"] . " = " . intval($_GET["index"]));
                 foreach ($queryAfterData["values"] as $queryData) {
                     $queryData[$queryAfterData["columnjoin"]] = $_GET["index"];
-                    $this->_db->insert($queryAfterData["table"], $queryData);
+                    $this->db->insert($queryAfterData["table"], $queryData);
                 }
             }
-            if ($this->_log && isset($this->config["log"]) && isset($this->config["log"]["edit"])) {
-                $this->_log->logThis("Edition de " . $sTable, $this->_utilisateur->get("id"), "<b>Id</b> : " . $_GET["index"]);
+            if ($this->log && isset($this->config["log"]) && isset($this->config["log"]["edit"])) {
+                $this->log->logThis("Edition de " . $sTable, $this->utilisateur->get("id"), "<b>Id</b> : " . $_GET["index"]);
             }
 
             $this->afterEditAction($_GET["index"]);
@@ -939,12 +948,12 @@ class Datatable
      */
     public function formAddRenderAction() {
         $this->addRenderAction();
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.selectload.js");
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.tmpl.min.js");
-        $this->_javascript->addLibrary("back/plupload/plupload.full.min.js");
-        $this->_javascript->addLibrary($this->_jsPath . "jquery/plupload_custom.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/jquery.selectload.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/jquery.tmpl.min.js");
+        $this->javascript->addLibrary("back/plupload/plupload.full.min.js");
+        $this->javascript->addLibrary($this->jsPath . "jquery/plupload_custom.js");
         $this->noModal = "no";
-        $this->_view = "form/bootstrap-ajax-false";
+        $this->view = "form/bootstrap-ajax-false";
     }
 
     // --------------------------------------------------------------------
@@ -960,12 +969,12 @@ class Datatable
             $this->data = $this->getData($_GET["index"]);
             $this->modeEdit = true;
             $this->editRenderAction();
-            $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.selectload.js");
-            $this->_javascript->addLibrary($this->_jsPath . "jquery/jquery.tmpl.min.js");
-            $this->_javascript->addLibrary("back/plupload/plupload.full.min.js");
-            $this->_javascript->addLibrary($this->_jsPath . "jquery/plupload_custom.js");
+            $this->javascript->addLibrary($this->jsPath . "jquery/jquery.selectload.js");
+            $this->javascript->addLibrary($this->jsPath . "jquery/jquery.tmpl.min.js");
+            $this->javascript->addLibrary("back/plupload/plupload.full.min.js");
+            $this->javascript->addLibrary($this->jsPath . "jquery/plupload_custom.js");
             $this->noModal = "no";
-            $this->_view = "form/bootstrap-ajax-false";
+            $this->view = "form/bootstrap-ajax-false";
         }
     }
 
@@ -985,9 +994,9 @@ class Datatable
         $where = array();
         foreach ($this->config["columns"] as $column) {
             if (isset($column["index"]) && $column["index"]) {
-                $where[] = $column["name"] . " = " . $this->_db->quote($filter[$i]);
+                $where[] = $column["name"] . " = " . $this->db->quote($filter[$i]);
                 if ($column["name"] == "cle")
-                    $where[] = $column["name"] . " LIKE BINARY " . $this->_db->quote($filter[$i]);
+                    $where[] = $column["name"] . " LIKE BINARY " . $this->db->quote($filter[$i]);
                 $i++;
             }
         }
@@ -998,20 +1007,20 @@ class Datatable
         /* DB table to use */
         $sTable = $this->config["table"]["name"];
 
-        $row = $this->_db->select($sTable, "*", false, implode(" AND ", $where));
+        $row = $this->db->select($sTable, "*", false, implode(" AND ", $where));
 
         if (isset($this->config["extra"]["logical delete"])) {
             $values = array(
                 $this->config["extra"]["logical delete"]["column_bool"] => 1,
                 $this->config["extra"]["logical delete"]["column_date"] => date('Y-m-d H:i:s'),
             );
-            $r = $this->_db->update($sTable, $values, implode(" AND ", $where));
+            $r = $this->db->update($sTable, $values, implode(" AND ", $where));
         } else {
-            $r = $this->_db->delete($sTable, implode(" AND ", $where));
+            $r = $this->db->delete($sTable, implode(" AND ", $where));
         }
 
-        if ($this->_log && isset($this->config["log"]) && isset($this->config["log"]["delete"])) {
-            $this->_log->logThis("Suppression de " . $sTable, $this->_utilisateur->get("id"), "<b>Id</b> : " . implode(" AND ", $where));
+        if ($this->log && isset($this->config["log"]) && isset($this->config["log"]["delete"])) {
+            $this->log->logThis("Suppression de " . $sTable, $this->utilisateur->get("id"), "<b>Id</b> : " . implode(" AND ", $where));
         }
 
 
@@ -1029,17 +1038,17 @@ class Datatable
      */
     public function selectAction() {
         $selectArrayName = "tableau-" . $_GET["table"] . "_select";
-        $selectRows = isset($_SESSION[$selectArrayName]) ? $_SESSION[$selectArrayName] : array();
+        $selectRows = isset($SESSION[$selectArrayName]) ? $SESSION[$selectArrayName] : array();
         if($_POST["select"] == 0) {
             unset($selectRows[$_POST["row_id"]]);
         } else {
             $selectRows[$_POST["row_id"]] = $_POST["row_id"];
         }
 
-        $_SESSION[$selectArrayName] = $selectRows;
+        $SESSION[$selectArrayName] = $selectRows;
         $r = array(
             "status"    => 1,
-            "number"    =>  count($_SESSION[$selectArrayName])
+            "number"    =>  count($SESSION[$selectArrayName])
         );
         echo json_encode($r);
         exit();
@@ -1057,16 +1066,16 @@ class Datatable
             //Permet de supprimer le limit dans la requete
             $_POST["iDisplayLength"] = -1;
             $this->jsonAction();
-            $response = json_decode($this->_response);
+            $response = json_decode($this->response);
             for ($i = 0; $i < count($response->aaData); $i++) {
                 $selectRows[$response->aaData[$i]->DT_RowId] = $response->aaData[$i]->DT_RowId;
             }
         }
 
-        $_SESSION[$selectArrayName] = $selectRows;
+        $SESSION[$selectArrayName] = $selectRows;
         $r = array(
             "status"    => 1,
-            "number"    =>  count($_SESSION[$selectArrayName])
+            "number"    =>  count($SESSION[$selectArrayName])
         );
         echo json_encode($r);
         exit();
@@ -1075,7 +1084,7 @@ class Datatable
     public function getSelectedRows() {
         $selectRows = array();
         $selectArrayName = "tableau-" . $_GET["table"] . "_select";
-        $_SESSION[$selectArrayName] = $selectRows;
+        $SESSION[$selectArrayName] = $selectRows;
     }
 
     // --------------------------------------------------------------------
@@ -1087,22 +1096,22 @@ class Datatable
      */
     public function uploadAction() {
         if (isset($this->config["file"])) {
-            $this->_upload_path     = $this->config["file"]["upload_path"];
-            $this->_upload_temp     = $this->config["file"]["upload_temp"];
-            $this->_upload_vignette = $this->config["file"]["upload_vignette"];
-            $this->_upload_apercu   = $this->config["file"]["upload_apercu"];
+            $this->upload_path     = $this->config["file"]["upload_path"];
+            $this->upload_temp     = $this->config["file"]["upload_temp"];
+            $this->upload_vignette = $this->config["file"]["upload_vignette"];
+            $this->upload_apercu   = $this->config["file"]["upload_apercu"];
         }
         $fileManager = new fileManager();
-        $targetTmp      = $this->_upload_temp;
-        $targetDir      = $this->_upload_path;
-        $vignetteDir    = $this->_upload_vignette;
-        $apercuDir      = $this->_upload_apercu;
+        $targetTmp      = $this->upload_temp;
+        $targetDir      = $this->upload_path;
+        $vignetteDir    = $this->upload_vignette;
+        $apercuDir      = $this->upload_apercu;
 
-        $json = $fileManager->upload($this->_upload_path, $targetTmp,
+        $json = $fileManager->upload($this->upload_path, $targetTmp,
             $targetDir, $vignetteDir, $apercuDir);
 
-        $this->_view = "";
-        $this->_response = json_encode($json);
+        $this->view = "";
+        $this->response = json_encode($json);
     }
 
     // --------------------------------------------------------------------
@@ -1175,7 +1184,7 @@ class Datatable
                         } else
                             $aVal[] = "`" . $column2["from"]["table"] . "_$keyCol`.`$sColVal`";
                     } else {
-                        $aVal[] = $this->_db->quote($sColVal);
+                        $aVal[] = $this->db->quote($sColVal);
                     }
                 }
 
@@ -1195,7 +1204,7 @@ class Datatable
                     } else
                         $aVal[] = "`" . $column["from"]["table"] . "`.`$sColVal`";
                 } else {
-                    $aVal[] = $this->_db->quote($sColVal);
+                    $aVal[] = $this->db->quote($sColVal);
                 }
             }
         }
@@ -1203,7 +1212,7 @@ class Datatable
             if ($sColIndexVal == "THIS") {
                 $selectSqlArray[] = $sColIndex . " id";
             } else {
-                $selectSqlArrayWhere[] = $sColIndex . " = " . $this->_db->quote($sColIndexVal);
+                $selectSqlArrayWhere[] = $sColIndex . " = " . $this->db->quote($sColIndexVal);
             }
         }
 
@@ -1217,12 +1226,12 @@ class Datatable
 
 
         $response = array();
-        $response = $this->_db->query('
+        $response = $this->db->query('
             SELECT ' . implode(",", $selectSqlArray) . '
             FROM ' . $table .
                         (count($selectSqlArrayWhere) > 0 ? " WHERE " . implode(" AND ", $selectSqlArrayWhere) : "") . ';')->fetchAll(\PDO::FETCH_UNIQUE);
 
-        $this->_response = json_encode($response, JSON_FORCE_OBJECT);
+        $this->response = json_encode($response, JSON_FORCE_OBJECT);
     }
 
     // --------------------------------------------------------------------
@@ -1268,7 +1277,7 @@ class Datatable
                                 }
 
                                 foreach ($sColIndexVal as $ii => $v) {
-                                    $sColIndexVal[$ii] = $this->_db->quote($v);
+                                    $sColIndexVal[$ii] = $this->db->quote($v);
                                 }
 
                                 $sVal = implode(",", $sColIndexVal);
@@ -1290,7 +1299,7 @@ class Datatable
                                 } else
                                     $aVal[] = "`" . $column3["from"]["table"] . "_$keyCol`.`$sColVal2`";
                             } else {
-                                $aVal[] = $this->_db->quote($sColVal2);
+                                $aVal[] = $this->db->quote($sColVal2);
                             }
                         }
                     } else if ($sColKey === "name") {
@@ -1301,7 +1310,7 @@ class Datatable
                         } else
                             $aVal[] = "`" . $column2["from"]["table"] . "_$keyCol`.`$sColVal`";
                     } else {
-                        $aVal[] = $this->_db->quote($sColVal);
+                        $aVal[] = $this->db->quote($sColVal);
                     }
                 }
 
@@ -1320,7 +1329,7 @@ class Datatable
                     } else
                         $aVal[] = "`" . $column["from"]["table"] . "`.`$sColVal`";
                 } else {
-                    $aVal[] = $this->_db->quote($sColVal);
+                    $aVal[] = $this->db->quote($sColVal);
                 }
             }
         }
@@ -1334,12 +1343,12 @@ class Datatable
 
 
         $response = array();
-        $response = $this->_db->query('
+        $response = $this->db->query('
             SELECT ' . implode(",", $selectSqlArray) . '
             FROM ' . $table . '
             WHERE ' . $label . ' LIKE "%' . $term . '%";')->fetchAll(\PDO::FETCH_ASSOC);
 
-        $this->_response = json_encode($response);
+        $this->response = json_encode($response);
     }
 
     // --------------------------------------------------------------------
@@ -1359,9 +1368,9 @@ class Datatable
         $where = array();
         foreach ($this->config["columns"] as $column) {
             if (isset($column["index"]) && $column["index"]) {
-                $where[] = $column["name"] . " = " . $this->_db->quote($filter[$i]);
+                $where[] = $column["name"] . " = " . $this->db->quote($filter[$i]);
                 if ($column["name"] == "cle")
-                    $where[] = $column["name"] . " LIKE BINARY " . $this->_db->quote($filter[$i]);
+                    $where[] = $column["name"] . " LIKE BINARY " . $this->db->quote($filter[$i]);
                 $i++;
             }
             if (isset($column["show"]) && $column["show"]) {
@@ -1379,14 +1388,14 @@ class Datatable
 
 
 
-        $value = $this->_db->quote($_POST["value"]);
+        $value = $this->db->quote($_POST["value"]);
 
 
         $query = "
             UPDATE $sTable SET `$columnModified` = $value WHERE " . implode(" AND ", $where) . ";
         ";
 
-        $update = $this->_db->prepare($query);
+        $update = $this->db->prepare($query);
         $update->execute();
 
         $r = $update->rowCount();
@@ -1471,9 +1480,9 @@ class Datatable
             if (isset($column["format"])) {
                 foreach ($column["format"] as $type => $params) {
                     $paramsFunc = array();
-                    $aColumnsFunctions[$keyCol][]["name"] = "\Solire\Lib\Format\\" . ucfirst($type);
+                    $aColumnsFunctions[$keyCol][]["name"] = "\Solire\Lib\Format\\" . ($type);
                     $keyFunc = count($aColumnsFunctions[$keyCol]) - 1;
-                    switch ($type) {
+                    switch (strtolower($type)) {
                         case "datetime":
                             switch ($params["type"]) {
                                 case "short":
@@ -1543,7 +1552,7 @@ class Datatable
               `---------------------------------------------------------------------- */
             if (isset($column["content"]) && !isset($column["name"])) {
                 $columnRawName = "content_$keyCol";
-                $columnAdvancedName = $this->_db->quote($column["content"]);
+                $columnAdvancedName = $this->db->quote($column["content"]);
                 $column["name"] = $columnAdvancedName . " `content_$keyCol`";
                 $columnSelect = $column["name"];
             }
@@ -1568,7 +1577,7 @@ class Datatable
                             if (substr($v, 0, 1) == "`") {
                                 $sColIndexVal[$ii] = $v;
                             } else {
-                                $sColIndexVal[$ii] = $this->_db->quote($v);
+                                $sColIndexVal[$ii] = $this->db->quote($v);
                             }
                         }
 
@@ -1606,7 +1615,7 @@ class Datatable
                                     if (substr($v, 0, 1) == "`") {
                                         $sColIndexVal[$ii] = $v;
                                     } else {
-                                        $sColIndexVal[$ii] = $this->_db->quote($v);
+                                        $sColIndexVal[$ii] = $this->db->quote($v);
                                     }
                                 }
 
@@ -1651,7 +1660,7 @@ class Datatable
                                             if (substr($v, 0, 1) == "`") {
                                                 $sColIndexVal[$ii] = $v;
                                             } else {
-                                                $sColIndexVal[$ii] = $this->_db->quote($v);
+                                                $sColIndexVal[$ii] = $this->db->quote($v);
                                             }
                                         }
 
@@ -1687,8 +1696,8 @@ class Datatable
                                             $aVal3[] = "`" . $column3["from"]["table"] . "_${keyCol}_2`.`$sColVal`";
                                         }
                                     } else {
-                                        $aVal5[] = $this->_db->quote($sColVal);
-                                        $aVal3[] = $this->_db->quote($sColVal);
+                                        $aVal5[] = $this->db->quote($sColVal);
+                                        $aVal3[] = $this->db->quote($sColVal);
                                     }
                                 }
 
@@ -1757,8 +1766,8 @@ class Datatable
                                         $aVal3[] = "`" . $column2["from"]["table"] . "_${keyCol}_2`.`$sColVal`";
                                     }
                                 } else {
-                                    $aVal[] = $this->_db->quote($sColVal);
-                                    $aVal3[] = $this->_db->quote($sColVal);
+                                    $aVal[] = $this->db->quote($sColVal);
+                                    $aVal3[] = $this->db->quote($sColVal);
                                 }
                             }
                         }
@@ -1821,7 +1830,7 @@ class Datatable
                             } else
                                 $aVal[] = "`" . $column["from"]["table"] . "_$keyCol`.`$sColVal`";
                         } else {
-                            $aVal[] = $this->_db->quote($sColVal);
+                            $aVal[] = $this->db->quote($sColVal);
                         }
                     }
                 }
@@ -1937,7 +1946,7 @@ class Datatable
             }
 
             if (isset($column["filter"]))
-                $sFilterColumn[$keyCol] = $column["name"] . ' = ' . $this->_db->quote($column["filter"]);
+                $sFilterColumn[$keyCol] = $column["name"] . ' = ' . $this->db->quote($column["filter"]);
 
             if (isset($column["bottom"]) && $column["bottom"])
                 $aColumnsBottom[$keyCol] = $column["bottom"];
@@ -1945,7 +1954,7 @@ class Datatable
 
         /* = Si on a des filtres addionnal (exemple en param de lurl)
           `-------------------------------------------------------- */
-        $sFilterColumn = array_merge($this->_aFilterColumnAdditional, $sFilterColumn);
+        $sFilterColumn = array_merge($this->aFilterColumnAdditional, $sFilterColumn);
 
 
         /* = Construction du "LIMIT" de la requête.
@@ -1980,7 +1989,7 @@ class Datatable
           `-------------------------------------------------------- */
         if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
             $sWhere = array(); //"WHERE (";
-            $search = $this->_db->quote('%' . $_POST['sSearch'] . '%');
+            $search = $this->db->quote('%' . $_POST['sSearch'] . '%');
         }
         else
             $search = FALSE;
@@ -2008,15 +2017,15 @@ class Datatable
                 if (isset($aColumnsFull[$realIndex]["filter_field"]) && $aColumnsFull[$realIndex]["filter_field"] == "date-range") {
                     $dateRange = explode("~", $_POST['sSearch_' . $realIndex]);
                     $dateRange[0] = \Solire\Lib\Format\DateTime::frToSql($dateRange[0]);
-                    $sWhere2 .= ($sWhere2 != '' ? " AND " : " " ) . $aColumnsAdvanced[$realIndex] . " >= " . $this->_db->quote('' . $dateRange[0] . ' 00:00:00') . "";
+                    $sWhere2 .= ($sWhere2 != '' ? " AND " : " " ) . $aColumnsAdvanced[$realIndex] . " >= " . $this->db->quote('' . $dateRange[0] . ' 00:00:00') . "";
                     if ($dateRange[1] != "") {
                         $dateRange[1] = \Solire\Lib\Format\DateTime::frToSql($dateRange[1]);
-                        $sWhere2 .= " AND " . $aColumnsAdvanced[$realIndex] . " <= " . $this->_db->quote('' . $dateRange[1] . ' 23:59:59') . "";
+                        $sWhere2 .= " AND " . $aColumnsAdvanced[$realIndex] . " <= " . $this->db->quote('' . $dateRange[1] . ' 23:59:59') . "";
                     }
                 }
                 /* = Autres Filtres
                   `-------------------------------------------------------- */ else {
-                    $sWhere2 .= ($sWhere2 != '' ? " AND " : " " ) . $aColumnsAdvanced[$realIndex] . " LIKE " . $this->_db->quote('%' . $_POST['sSearch_' . $realIndex] . '%') . "";
+                    $sWhere2 .= ($sWhere2 != '' ? " AND " : " " ) . $aColumnsAdvanced[$realIndex] . " LIKE " . $this->db->quote('%' . $_POST['sSearch_' . $realIndex] . '%') . "";
                 }
             }
         }
@@ -2031,8 +2040,8 @@ class Datatable
         if (isset($this->config['where']) && count($this->config['where']))
             $sFilterColumn[] .= implode(" AND ", $this->config['where']);
 
-        if ($this->_additionalWhereQuery != "")
-            $sFilterColumn[] = $this->_additionalWhereQuery;
+        if ($this->additionalWhereQuery != "")
+            $sFilterColumn[] = $this->additionalWhereQuery;
 
         if (!isset($sWhere))
             $sWhere = "";
@@ -2060,7 +2069,7 @@ class Datatable
                     . " $sWhere"
                     . " $generalWhere";
 //            exit("$sWhere | $generalWhere | $sQuery");
-            $bottomsValue[$realIndexes[$keyCol]] = $this->_db->query($sQuery)->fetch(\PDO::FETCH_COLUMN);
+            $bottomsValue[$realIndexes[$keyCol]] = $this->db->query($sQuery)->fetch(\PDO::FETCH_COLUMN);
             $bottomsQuery[$realIndexes[$keyCol]] = $sQuery;
         }
 
@@ -2076,13 +2085,13 @@ class Datatable
                 . " $sOrder"
                 . " $sLimit";
         /** Pour debug * */
-//        $this->_debugQuery($sQuery);
-        $rResult = $this->_db->query($sQuery);
+//        $this->debugQuery($sQuery);
+        $rResult = $this->db->query($sQuery);
 
         /* = Data set length after filtering.
           `-------------------------------------------------------- */
         $sQuery2 = "SELECT FOUND_ROWS()";
-        $rResultFilterTotal = $this->_db->query($sQuery2);
+        $rResultFilterTotal = $this->db->query($sQuery2);
         $aResultFilterTotal = $rResultFilterTotal->fetch(\PDO::FETCH_NUM);
         $iFilteredTotal = $aResultFilterTotal[0];
 
@@ -2090,11 +2099,11 @@ class Datatable
           `-------------------------------------------------------- */
         $sQuery2 = "SELECT COUNT(*)"
                 . " FROM   $sTable "
-                . $this->_additionalJoinQueryCount
+                . $this->additionalJoinQueryCount
                 . (substr($generalWhere, 0, 5) == "WHERE" ? " " : " WHERE 1 " )
                 . " $generalWhere";
 
-        $rResultTotal = $this->_db->query($sQuery2);
+        $rResultTotal = $this->db->query($sQuery2);
         $aResultTotal = $rResultTotal->fetch(\PDO::FETCH_NUM);
         $iTotal = $aResultTotal[0];
 
@@ -2198,8 +2207,8 @@ class Datatable
             }
             $row["DT_RowId"] = substr($row["DT_RowId"], 0, -1);
             if (isset($this->config["extra"]["selectable"]) && $this->config["extra"]["selectable"]) {
-                if(isset($_SESSION[$selectArrayName])
-                        && in_array($row["DT_RowId"], $_SESSION[$selectArrayName])) {
+                if(isset($SESSION[$selectArrayName])
+                        && in_array($row["DT_RowId"], $SESSION[$selectArrayName])) {
                     $row[0] = str_replace('<input ', '<input checked="checked" ', $row[0]);
                 }
             }
@@ -2212,8 +2221,8 @@ class Datatable
             $output['aaData'][] = $row;
         }
 
-        $this->_view = "";
-        $this->_response = json_encode($output);
+        $this->view = "";
+        $this->response = json_encode($output);
     }
 
     // --------------------------------------------------------------------
@@ -2223,19 +2232,25 @@ class Datatable
      *
      * @return 	string
      */
-    public function __toString() {
-        if ($this->_viewPathRelative) {
+    public function display()
+    {
+        if ($this->viewPathRelative) {
             $rc = new \ReflectionClass(get_class($this));
         } else {
             $rc = new \ReflectionClass(__CLASS__);
         }
-        $view = $this->_view;
-        if ($this->_view == "" && $this->_response != "")
-            return $this->_response;
-        else if ($this->_view != "") {
-            return $this->output(dirname($rc->getFileName()) . DIRECTORY_SEPARATOR . $this->_viewPath . $view . ".phtml") . $this->_pluginsOutput;
+        $view = $this->view;
+        if ($this->view == "" && $this->response != "")
+            return $this->response;
+        else if ($this->view != "") {
+            return $this->output(dirname($rc->getFileName()) . DIRECTORY_SEPARATOR . $this->viewPath . $view . ".phtml") . $this->pluginsOutput;
         } else
-            return $this->_pluginsOutput;
+            return $this->pluginsOutput;
+    }
+
+    public function __toString()
+    {
+        return $this->display();
     }
 
     // --------------------------------------------------------------------
@@ -2261,7 +2276,7 @@ class Datatable
      * @return Javascript
      */
     public function getJavascriptLoader() {
-        return $this->_javascript;
+        return $this->javascript;
     }
 
     // --------------------------------------------------------------------
@@ -2272,7 +2287,7 @@ class Datatable
      * @return Css
      */
     public function getCssLoader() {
-        return $this->_css;
+        return $this->css;
     }
 
     // --------------------------------------------------------------------
@@ -2285,7 +2300,7 @@ class Datatable
     protected function addRender($view = "default", $path = null) {
         $rc = new \ReflectionClass(__CLASS__);
         if ($path == null) {
-            return $this->output(dirname($rc->getFileName()) . DIRECTORY_SEPARATOR . $this->_viewPath . "form/$view.phtml");
+            return $this->output(dirname($rc->getFileName()) . DIRECTORY_SEPARATOR . $this->viewPath . "form/$view.phtml");
         } else {
             return $this->output($path . "$view.phtml");
         }
@@ -2380,7 +2395,7 @@ class Datatable
                                             }
 
                                             foreach ($sColIndexVal as $ii => $v) {
-                                                $sColIndexVal[$ii] = $this->_db->quote($v);
+                                                $sColIndexVal[$ii] = $this->db->quote($v);
                                             }
 
                                             $sVal = implode(",", $sColIndexVal);
@@ -2402,7 +2417,7 @@ class Datatable
                                             } else
                                                 $aVal[] = "`" . $column3["from"]["table"] . "`.`$sColVal2`";
                                         } else {
-                                            $aVal[] = $this->_db->quote($sColVal2);
+                                            $aVal[] = $this->db->quote($sColVal2);
                                         }
                                     }
                                 } else if ($sColKey === "name") {
@@ -2413,7 +2428,7 @@ class Datatable
                                     } else
                                         $aVal[] = "`" . $column2["from"]["table"] . "`.`$sColVal`";
                                 } else {
-                                    $aVal[] = $this->_db->quote($sColVal);
+                                    $aVal[] = $this->db->quote($sColVal);
                                 }
                             }
 
@@ -2432,7 +2447,7 @@ class Datatable
                                 } else
                                     $aVal[] = "`" . $column["from"]["table"] . "`.`$sColVal`";
                             } else {
-                                $aVal[] = $this->_db->quote($sColVal);
+                                $aVal[] = $this->db->quote($sColVal);
                             }
                         }
                     }
@@ -2448,15 +2463,15 @@ class Datatable
 
                     $queryAfterData["columns"] = $selectSqlArray;
                     $queryAfterData["columnref"] = $column["name"];
-                    $queryAfterData["where"] = key($column["from"]["index"]) . " = " . $this->_db->quote((current($column["from"]["index"]) == "THIS" ? $index : current($column["from"]["index"])));
+                    $queryAfterData["where"] = key($column["from"]["index"]) . " = " . $this->db->quote((current($column["from"]["index"]) == "THIS" ? $index : current($column["from"]["index"])));
                 }
             }
 
 
             if (isset($column["index"]) && $column["index"]) {
-                $where[] = $column["name"] . " = " . $this->_db->quote($filter[$i]);
+                $where[] = $column["name"] . " = " . $this->db->quote($filter[$i]);
                 if ($column["name"] == "cle")
-                    $where[] = $column["name"] . " LIKE BINARY " . $this->_db->quote($filter[$i]);
+                    $where[] = $column["name"] . " LIKE BINARY " . $this->db->quote($filter[$i]);
                 $i++;
             }
         }
@@ -2470,14 +2485,14 @@ class Datatable
             SELECT * FROM $sTable WHERE " . implode(" AND ", $where) . ";
         ";
 
-        $data = $this->_db->query($query)->fetch(\PDO::FETCH_ASSOC);
+        $data = $this->db->query($query)->fetch(\PDO::FETCH_ASSOC);
 
         if (count($queryAfterData) > 0) {
             $query = "
                 SELECT " . implode(",", $queryAfterData["columns"]) . " FROM " . $queryAfterData["table"] . " WHERE " . $queryAfterData["where"] . ";
             ";
 
-            $dataM = $this->_db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+            $dataM = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
             $data[$queryAfterData["columnref"]] = htmlentities(json_encode($dataM));
         }
 
@@ -2503,13 +2518,13 @@ class Datatable
         $where = array();
         foreach ($this->config["columns"] as $column) {
             if (isset($column["index"]) && $column["index"]) {
-                $this->_aFilterColumnAdditional[] = "`" . $sTable . "`." . $column["name"] . ' = ' . $this->_db->quote($filter[$i]);
+                $this->aFilterColumnAdditional[] = "`" . $sTable . "`." . $column["name"] . ' = ' . $this->db->quote($filter[$i]);
                 $i++;
             }
         }
 
         $this->jsonAction();
-        $response = json_decode($this->_response, true);
+        $response = json_decode($this->response, true);
         return $response["aaData"][0];
     }
 
@@ -2520,13 +2535,13 @@ class Datatable
      *
      * @return string url complète
      */
-    private function _selfURL() {
+    private function selfURL() {
         $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
-        $protocol = self::_strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/") . $s;
+        $protocol = self::strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/") . $s;
         $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":" . $_SERVER["SERVER_PORT"]);
         $requestUri = $_SERVER['REQUEST_URI'];
 
-        $params = $this->_convertUrlQuery(str_replace($_SERVER['REDIRECT_URL'] . "?", "", $requestUri));
+        $params = $this->convertUrlQuery(str_replace($_SERVER['REDIRECT_URL'] . "?", "", $requestUri));
         $paramsString = "";
         foreach ($params as $paramsKey => $param) {
             if ($paramsKey == "name[]" || $paramsKey == "dt_action")
@@ -2540,7 +2555,7 @@ class Datatable
             $requestUri .= implode("&", $paramsString);
         }
 
-        $requestUri .= (count($params) == 0 ? "" : "&") . "name=" . $this->_configName;
+        $requestUri .= (count($params) == 0 ? "" : "&") . "name=" . $this->configName;
 
         return $protocol . "://" . $_SERVER['SERVER_NAME'] . $port . $requestUri;
     }
@@ -2550,9 +2565,9 @@ class Datatable
      *
      * @return string url complète
      */
-    private function _selfURLRaw() {
+    private function selfURLRaw() {
         $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
-        $protocol = self::_strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/") . $s;
+        $protocol = self::strleft(strtolower($_SERVER["SERVER_PROTOCOL"]), "/") . $s;
         $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":" . $_SERVER["SERVER_PORT"]);
         $requestUri = $_SERVER['REQUEST_URI'];
 
@@ -2572,7 +2587,7 @@ class Datatable
         return $protocol . "://" . $_SERVER['SERVER_NAME'] . $port . $requestUri;
     }
 
-    private function _convertUrlQuery($query) {
+    private function convertUrlQuery($query) {
         $queryParts = explode('&', $query);
         $params = array();
         foreach ($queryParts as $param) {
@@ -2599,11 +2614,12 @@ class Datatable
      * @param string $s2 Chaine à couper
      * @return string chaine coupée
      */
-    private function _strleft($s1, $s2) {
+    private static function strleft($s1, $s2)
+    {
         return substr($s1, 0, strpos($s1, $s2));
     }
 
-    private function _debugQuery($query) {
+    private function debugQuery($query) {
         require_once 'external/geshi/geshi.php';
         $geshi = new \GeSHi($query, "sql");
         $geshi->set_header_type(GESHI_HEADER_DIV);

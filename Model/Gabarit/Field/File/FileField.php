@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Champ File
  *
@@ -8,6 +7,8 @@
  */
 
 namespace Solire\Lib\Model\Gabarit\Field\File;
+
+use \Solire\Lib\Model\FileManager;
 
 /**
  * Champ File
@@ -56,7 +57,7 @@ class FileField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
         }
 
         $ext = strtolower(array_pop(explode('.', $this->value)));
-        if (array_key_exists($ext, \Solire\Lib\Model\fileManager::$_extensions['image'])) {
+        if (array_key_exists($ext, FileManager::$extensions['image'])) {
             $this->isImage = true;
         }
     }
