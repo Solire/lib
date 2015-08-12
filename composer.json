@@ -13,6 +13,7 @@
     "ensepar/html2pdf": "1.0.1",
     "zendframework/zend-mail": "2.2.5",
 	"solire/conf": "2.3.*",
+    "twig/twig": "~1.0",
     "easybook/geshi": "1.0.8.12"
   },
   "autoload": {
