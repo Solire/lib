@@ -29,7 +29,12 @@ class Twig extends Templating
         }
 
         Twig_Autoloader::register();
+
         $loader = new Twig_Loader_Filesystem($this->fileLocator->getSrcDirs());
+        foreach ($this->fileLocator->getSrcDirs() as $namespace => $pathDir) {
+            $loader->setPaths($pathDir, str_replace('\\', '', $namespace));
+        }
+
         $twig = new Twig_Environment($loader);
         echo $twig->render($templatingFilePath, $variables);
     }
