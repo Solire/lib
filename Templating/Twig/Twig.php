@@ -10,6 +10,7 @@ namespace Solire\Lib\Templating\Twig;
 
 use Solire\Lib\Exception\Lib as Exception;
 use Solire\Lib\Templating\Templating;
+use Solire\Lib\Templating\Twig\Extensions\I18n;
 use Twig_Autoloader;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
@@ -22,6 +23,16 @@ use Twig_Environment;
  */
 class Twig extends Templating
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @param string $templatingFilePath Chemin du template
+     * @param array  $variables          Variables à inclure dans le scope du template
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
     public function render($templatingFilePath, $variables = [])
     {
         if ($templatingFilePath === false) {
@@ -39,6 +50,15 @@ class Twig extends Templating
         echo $twig->render($templatingFilePath, $variables);
     }
 
+    /**
+     * N'a aucun effet sur twig
+     *
+     * {@inheritdoc}
+     *
+     * @param string $mainPath Chemin du template de base à utiliser
+     *
+     * @return mixed
+     */
     public function setMainPath($mainPath)
     {
         // Aucun traitement pour Twig
