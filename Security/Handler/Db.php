@@ -40,7 +40,7 @@ class Db extends AbstractHandler
         }
 
         $dateTimeC = $this->conf['datetime-column'];
-        $ipC       = $this->conf['datetime-column'];
+        $ipC       = $this->conf['ip-column'];
 
         $query = 'SELECT COUNT(*) FROM ' . $this->conf['table']
             . ' WHERE (' . implode(' OR ', $where) . ')'
