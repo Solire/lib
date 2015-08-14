@@ -10,7 +10,7 @@ namespace Solire\Lib\Templating\Twig;
 
 use Solire\Lib\Exception\Lib as Exception;
 use Solire\Lib\Templating\Templating;
-use Solire\Lib\Templating\Twig\Extensions\I18n;
+use Solire\Lib\Templating\Twig\Extensions\Extension\I18n;
 use Twig_Autoloader;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
@@ -47,6 +47,9 @@ class Twig extends Templating
         }
 
         $twig = new Twig_Environment($loader);
+
+        $twig->addExtension(new I18n());
+
         echo $twig->render($templatingFilePath, $variables);
     }
 
