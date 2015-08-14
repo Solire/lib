@@ -626,6 +626,7 @@ class FrontController
 
         $this->translate = new TranslateMysql(ID_VERSION, ID_API, Registry::get('db'));
         $this->translate->addTranslation();
+        Registry::set('translator', $this->translate);
 
         return $this->translate;
     }
