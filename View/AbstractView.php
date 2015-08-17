@@ -290,8 +290,10 @@ abstract class AbstractView
 
         switch ($templatingRenderType) {
             case 'twig':
-                // Dans le cas de Twig, un loader se charge de gérer le chargement, on lui passe donc le chamin de base
+                // Dans le cas de Twig, un loader se charge de gérer le chargement, on lui passe donc le chemin de base
                 $templatingPath = $path . $responseFormatExtension . '.' . $templatingRenderType;
+                /** @todo Petit hack pour ne pas avoir "view/" dans le chemin à améliorer */
+                $templatingPath = preg_replace('#^' . preg_quote($this->prefixPath) . '#', '', $templatingPath);
                 break;
             default:
                 if ($this->mainPath !== false && $useMain) {

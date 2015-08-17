@@ -90,4 +90,23 @@ class FileLocator extends AbstractFileLocator
 
         return false;
     }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return array|string
+     */
+    public function getSrcDirs()
+    {
+        $srcDirs = parent::getSrcDirs();
+        $viewSrcDirs = [];
+        foreach ($srcDirs as $namespace => $dir) {
+            $viewdir = $dir . '/view';
+            if (file_exists($viewdir)) {
+                $viewSrcDirs[$namespace] = $viewdir;
+            }
+        }
+
+        return $viewSrcDirs;
+    }
 }

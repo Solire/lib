@@ -43,7 +43,9 @@ class Twig extends Templating
 
         $loader = new Twig_Loader_Filesystem($this->fileLocator->getSrcDirs());
         foreach ($this->fileLocator->getSrcDirs() as $namespace => $pathDir) {
-            $loader->setPaths($pathDir, str_replace('\\', '', $namespace));
+            if (file_exists($pathDir)) {
+                $loader->setPaths($pathDir, str_replace('\\', '', $namespace));
+            }
         }
 
         $twig = new Twig_Environment($loader);
