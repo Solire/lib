@@ -97,7 +97,10 @@ class Php extends Templating
     public function add($templatingFilePath)
     {
         $resolvedPath = $this->fileLocator->locate('view/' . $templatingFilePath);
-        include $resolvedPath;
+
+        if ($resolvedPath !== false) {
+            include $resolvedPath;
+        }
 
         return $this;
     }
