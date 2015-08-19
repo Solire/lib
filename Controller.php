@@ -8,8 +8,9 @@
 
 namespace Solire\Lib;
 
-use \Solire\Lib\Exception\HttpError;
+use Solire\Lib\Exception\HttpError;
 use \PDO;
+use Solire\Lib\View\View;
 
 /**
  * Base controller
@@ -51,7 +52,7 @@ class Controller
 
     /**
      *
-     * @var View
+     * @var View\View
      */
     public $view = null;
 
