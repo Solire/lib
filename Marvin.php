@@ -7,6 +7,7 @@
  */
 
 namespace Solire\Lib;
+use Solire\Conf\Loader;
 
 /**
  * Marvin est une methode de rapport d'erreur
@@ -38,7 +39,7 @@ class Marvin
      */
     public function __construct($title, $error)
     {
-        $this->config = new Config(self::CONFIG_PATH);
+        $this->config = new Loader(self::CONFIG_PATH);
         if (method_exists($error, 'getPrevious') && $error->getPrevious()) {
             $this->exc = $error->getPrevious();
         } else {
