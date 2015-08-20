@@ -39,7 +39,7 @@ class Marvin
      */
     public function __construct($title, $error)
     {
-        $this->config = new Loader(self::CONFIG_PATH);
+        $this->config = Loader::load(self::CONFIG_PATH);
         if (method_exists($error, 'getPrevious') && $error->getPrevious()) {
             $this->exc = $error->getPrevious();
         } else {
