@@ -8,9 +8,11 @@
 
 namespace Solire\Lib;
 
+use Solire\Conf\Loader;
 use Solire\Lib\Exception\HttpError;
 use Solire\Lib\Loader\Css;
 use Solire\Lib\Loader\Javascript;
+use Solire\Lib\Loader\Img;
 use Solire\Lib\View\View;
 use Solire\Lib\Filesystem\FileLocator;
 use Solire\Lib\View\Filesystem\FileLocator as ViewFileLocator;
@@ -218,13 +220,21 @@ class FrontController
     public static function init()
     {
         /* Chargement de la configuration */
-        self::$mainConfig = new Config('config/main.ini');
-        self::$envConfig = new Config('config/local.ini');
+        self::$mainConfig = Loader::load('config/main.yml');
+        self::$envConfig  = Loader::load('config/local.yml');
 
         /* Fichiers de configuration */
         Registry::set('mainconfig', self::$mainConfig);
         Registry::set('envconfig', self::$envConfig);
 
+        /* On paramètre les applications à utiliser */
+        if (count(self::$mainConfig['applications']) == 0) {
+            throw new Exception\Lib('Aucune application n\'a été configurée.');
+        }
+
+        foreach (self::$mainConfig['applications'] as $application) {
+            self::setApp((array) $application);
+        }
 
         /* Base de données */
         try {
@@ -677,7 +687,7 @@ class FrontController
     /**
      * Chargement des librairies Javascript
      *
-     * @return Loader\Javascript
+     * @return Javascript
      */
     public function loadJsLoader()
     {
@@ -685,7 +695,7 @@ class FrontController
             return $this->loaderJs;
         }
 
-        $this->loaderJs = new Loader\Javascript(self::$publicDirs);
+        $this->loaderJs = new Javascript(self::$publicDirs);
 
         return $this->loaderJs;
     }
@@ -693,7 +703,7 @@ class FrontController
     /**
      * Chargement des librairies Css
      *
-     * @return Loader\Css
+     * @return Css
      */
     public function loadCssLoader()
     {
@@ -701,7 +711,7 @@ class FrontController
             return $this->loaderCss;
         }
 
-        $this->loaderCss = new Loader\Css(self::$publicDirs);
+        $this->loaderCss = new Css(self::$publicDirs);
 
         return $this->loaderCss;
     }
@@ -709,7 +719,7 @@ class FrontController
     /**
      * Chargement des librairies Img
      *
-     * @return Loader\Img
+     * @return Img
      */
     public function loadImgLoader()
     {
@@ -717,7 +727,7 @@ class FrontController
             return $this->loaderImg;
         }
 
-        $this->loaderImg = new Loader\Img(self::$publicDirs);
+        $this->loaderImg = new Img(self::$publicDirs);
 
         return $this->loaderImg;
     }

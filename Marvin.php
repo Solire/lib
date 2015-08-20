@@ -26,7 +26,7 @@ class Marvin
     /**
      * Chemin de configuration du fichier de configuration
      */
-    const CONFIG_PATH = 'config/marvin.ini';
+    const CONFIG_PATH = 'config/marvin.yml';
 
     /**
      * Génère un rapport d'alerte
