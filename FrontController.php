@@ -183,7 +183,7 @@ class FrontController
         $this->app = self::$appDirs[$count - 1]['namespace'];
         unset($count);
         
-        /* Création du FileLocator */
+        /* Création du FileLocator pour la recherche dans les applications */
         $this->fileLocator = new ApplicationFileLocator(self::$appDirs);
     }
 
