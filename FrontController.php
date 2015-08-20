@@ -227,6 +227,14 @@ class FrontController
         Registry::set('mainconfig', self::$mainConfig);
         Registry::set('envconfig', self::$envConfig);
 
+        /* On paramètre les applications à utiliser */
+        if (count(self::$mainConfig['applications']) == 0) {
+            throw new Exception\Lib('Aucune application n\'a été configurée.');
+        }
+
+        foreach (self::$mainConfig['applications'] as $application) {
+            self::setApp((array) $application);
+        }
 
         /* Base de données */
         try {

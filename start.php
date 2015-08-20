@@ -11,12 +11,6 @@ namespace Solire\Lib;
 /* = lancement du script
   ------------------------------- */
 try {
-    FrontController::setApp([
-        'name' => 'Solire',
-        'dir' => 'vendor/solire',
-        'namespace' => 'Solire',
-        'public' => 'public/default',
-    ]);
     FrontController::init();
     FrontController::run();
 } catch (Exception\Marvin $exc) {
