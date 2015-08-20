@@ -221,7 +221,7 @@ class FrontController
     {
         /* Chargement de la configuration */
         self::$mainConfig = Loader::load('config/main.yml');
-        self::$envConfig = Loader::load('config/local.yml');
+        self::$envConfig  = Loader::load('config/local.yml');
 
         /* Fichiers de configuration */
         Registry::set('mainconfig', self::$mainConfig);
