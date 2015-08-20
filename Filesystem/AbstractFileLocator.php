@@ -5,62 +5,49 @@ namespace Solire\Lib\Filesystem;
 use Solire\Lib\Path;
 
 /**
- * Classe abstraite pour la recherche de fichier dans les applications
+ * Classe abstraite pour la recherche de fichier dans des répertoires
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class AbstractFileLocator
+abstract class AbstractFileLocator
 {
 
     /**
-     * Liste des répertoires app à utiliser
+     * Liste des répertoires dans lesquels chercher
      *
      * @var array
      */
-    protected $appDirs = [];
-
-    /**
-     * Liste des correspondances des répertoires d'application
-     * Exemple: array('vel/catalogue' => 'vel/front')
-     *
-     * @var array
-     */
-    protected $appLibDir = [];
-
-    /**
-     * Nom de l'application courante
-     *
-     * @var array
-     */
-    protected $currentAppName = null;
+    protected $dirs = [];
 
     /**
      * Constructeur
      *
-     * @param array $appDirs   Liste des répertoires app à utiliser
-     * @param array $appLibDir Liste des correspondance des répertoires d'application
+     * @param array $dirs Liste des répertoires à utiliser
      */
-    public function __construct(
-        $appDirs = array(),
-        $appLibDir = array()
-    ) {
-        $this->appDirs   = $appDirs;
-        $this->appLibDir = $appLibDir;
+    public function __construct($dirs = [])
+    {
+        $this->dirs = $dirs;
     }
 
     /**
-     * Paramètre l'application courante
+     * Cherche un fichier dans les répertoires définis
      *
-     * @param string $currentAppName Nom de l'application courante
+     * @param string $path Chemin du dossier / fichier à chercher dans les répertoires
      *
-     * @return self
+     * @return string|boolean
      */
-    public function setCurrentAppName($currentAppName)
+    public function locate($path)
     {
-        $this->currentAppName = $currentAppName;
+        $dirs = $this->getSrcDirs();
+        foreach ($dirs as $dir) {
+            $testPath = new Path($dir . Path::DS . $path, Path::SILENT);
+            if ($testPath->get() !== false) {
+                return $testPath->get();
+            }
+        }
 
-        return $this;
+        return false;
     }
 
     /**
@@ -70,40 +57,6 @@ class AbstractFileLocator
      */
     public function getSrcDirs()
     {
-        $appLibDir = $this->appLibDir;
-
-        $appDirs = [
-            Path::DS . $this->currentAppName,
-            Path::DS . strtolower($this->currentAppName),
-            '',
-        ];
-
-        $srcDirs = [];
-
-        foreach ($appDirs as $appKey => $appDir) {
-            $fooPaths = \array_map(function ($app) use ($appDir, $appLibDir) {
-                $dir = $app['dir'] . $appDir;
-
-                /*
-                 * Permet de faire correspondre des répertoires d'application
-                 */
-                if (!empty($appLibDir)
-                    && isset($appLibDir[$dir])
-                ) {
-                    $dir = $appLibDir[$dir];
-                }
-
-                return array($app['namespace'] . '\\' . ucfirst(str_replace('/', '', $appDir)), $dir);
-            }, $this->appDirs);
-
-            foreach ($fooPaths as $fooPath) {
-                $testPath = new Path($fooPath[1], Path::SILENT);
-                if ($testPath->get() !== false) {
-                    $srcDirs[$fooPath[0]] = $testPath->get();
-                }
-            }
-        }
-
-        return $srcDirs;
+        return $this->dirs;
     }
 }

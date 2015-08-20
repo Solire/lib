@@ -3,7 +3,7 @@
 namespace Solire\Lib\View\Filesystem;
 
 use Solire\Lib\Path;
-use Solire\Lib\Filesystem\AbstractFileLocator;
+use Solire\Lib\Application\Filesystem\FileLocator as ApplicationFileLocator;
 
 /**
  * Classe permettant de chercher un fichier de templating dans les applications
@@ -11,102 +11,31 @@ use Solire\Lib\Filesystem\AbstractFileLocator;
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class FileLocator extends AbstractFileLocator
+class FileLocator extends ApplicationFileLocator
 {
-    const RELATIVE_PATH = 1;
-    const ABSOLUTE_PATH = 2;
-    const EXTENSION_PATH = 3;
-
     /**
      * Cherche un fichier de vues dans les applications
      *
-     * @param string  $path           Chemin du dossier / fichier à chercher dans
+     * @param string $path       Chemin du dossier / fichier à chercher dans
      * les applications
-     * @param boolean $current        Utiliser le nom de l'application courante
-     * @param int     $returnPathType Format du chemin retourné
-     * @param array   $extensions     Liste des extensions des templates possibles
+     * @param int    $type       Permet de choisir les répertoires de recherche (applications / sous application)
+     * @param array  $extensions Liste des extensions des templates possibles
      *
      * @return bool|string
      */
-    public function locate(
-        $path,
-        $current = true,
-        $returnPathType = self::ABSOLUTE_PATH,
-        $extensions = ['twig', 'phtml', 'php']
-    ) {
-        $appLibDir = $this->appLibDir;
-        /*
-         * @todo Définir les répertoires dans un fichier de config (voir SoEolia\Framework)
-         */
-        if ($current === true) {
-            $appDirs = [
-                Path::DS . $this->currentAppName,
-                Path::DS . strtolower($this->currentAppName),
-            ];
-        } else {
-            $appDirs = [
-                '',
-            ];
-        }
-
-        foreach ($this->appDirs as $app) {
-            $fooPaths = \array_map(function ($appDir) use ($path, $app, $appLibDir) {
-                $dir = $app['dir'] . $appDir;
-
-                /*
-                 * Permet de faire correspondre des répertoires d'application
-                 */
-                if (!empty($appLibDir)
-                    && isset($appLibDir[$dir])
-                ) {
-                    $dir = $appLibDir[$dir];
-                }
-
-                return $dir . Path::DS . $path;
-            }, $appDirs);
-
-            foreach ($fooPaths as $fooPath) {
-                foreach ($extensions as $extension) {
-                    $fooPathWithExt = $fooPath . '.' . $extension;
-
-                    $testPath = new Path($fooPathWithExt, Path::SILENT);
-                    if ($testPath->get() !== false) {
-                        switch ($returnPathType) {
-                            case 1:
-                                return $testPath->get();
-                                break;
-                            case 2:
-                                return $fooPathWithExt;
-                                break;
-                            case 3:
-                                return '.' . $extension;
-                                break;
-                        }
-
-                    }
+    public function locate($path, $type = self::TYPE_SUB_APPLICATION, $extensions = ['twig', 'phtml', 'php'])
+    {
+        $dirs = $this->getSrcDirs($type);
+        foreach ($dirs as $dir) {
+            foreach ($extensions as $extension) {
+                $fooPathWithExt = $dir . Path::DS . $path . '.' . $extension;
+                $testPath = new Path($fooPathWithExt, Path::SILENT);
+                if ($testPath->get() !== false) {
+                    return $testPath->get();
                 }
             }
         }
 
         return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return array|string
-     */
-    public function getSrcDirs()
-    {
-        $srcDirs = parent::getSrcDirs();
-        $viewSrcDirs = [];
-        foreach ($srcDirs as $namespace => $dir) {
-            $viewdir = $dir . '/view';
-            if (file_exists($viewdir)) {
-                $viewSrcDirs[$namespace] = $viewdir;
-            }
-        }
-
-        return $viewSrcDirs;
     }
 }

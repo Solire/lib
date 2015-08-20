@@ -14,7 +14,7 @@ use Solire\Lib\Loader\Css;
 use Solire\Lib\Loader\Javascript;
 use Solire\Lib\Loader\Img;
 use Solire\Lib\View\View;
-use Solire\Lib\Filesystem\FileLocator;
+use Solire\Lib\Application\Filesystem\FileLocator as ApplicationFileLocator;
 use Solire\Lib\View\Filesystem\FileLocator as ViewFileLocator;
 
 /**
@@ -184,8 +184,7 @@ class FrontController
         unset($count);
         
         /* Création du FileLocator */
-        $appLibDir = self::$mainConfig->get('appLibDir');
-        $this->fileLocator = new FileLocator(self::$appDirs, $appLibDir);
+        $this->fileLocator = new ApplicationFileLocator(self::$appDirs);
     }
 
     /**
@@ -316,7 +315,7 @@ class FrontController
         /* Nom de l'application par défaut */
         $this->application = self::$mainConfig->get('project', 'defaultApp');
         self::$appName = $this->application;
-        $this->fileLocator->setCurrentAppName(self::$appName);
+        $this->fileLocator->setCurrentSubApplicationName(self::$appName);
 
         self::loadAppConfig();
 
@@ -398,7 +397,7 @@ class FrontController
 
             /* Si l'application à changé on charge sa configuration */
             if ($application === true) {
-                $this->fileLocator->setCurrentAppName(self::$appName);
+                $this->fileLocator->setCurrentSubApplicationName(self::$appName);
                 self::loadAppConfig();
             }
         }
@@ -443,7 +442,12 @@ class FrontController
     final public static function search($path, $current = true)
     {
         $front = self::getInstance();
-        return $front->fileLocator->locate($path, $current);
+
+        $type = ApplicationFileLocator::TYPE_ALL;
+        if ($current) {
+            $type = ApplicationFileLocator::TYPE_SUB_APPLICATION;
+        }
+        return $front->fileLocator->locate($path, $type);
     }
 
     /**
@@ -657,7 +661,7 @@ class FrontController
         /* Création du FileLocator pour le chargement des templates */
         $appLibDir = self::$mainConfig->get('appLibDir');
         $viewFileLocator = new ViewFileLocator(self::$appDirs, $appLibDir);
-        $viewFileLocator->setCurrentAppName(self::$appName);
+        $viewFileLocator->setCurrentSubApplicationName(self::$appName);
 
         $this->view = new View($viewFileLocator);
 

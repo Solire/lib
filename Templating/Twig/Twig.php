@@ -11,6 +11,7 @@ namespace Solire\Lib\Templating\Twig;
 use Solire\Lib\Exception\Lib as Exception;
 use Solire\Lib\Templating\Templating;
 use Solire\Lib\Templating\Twig\Extensions\Extension\I18n;
+use Solire\Lib\Path;
 use Twig_Autoloader;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
@@ -41,8 +42,19 @@ class Twig extends Templating
 
         Twig_Autoloader::register();
 
-        $loader = new Twig_Loader_Filesystem($this->fileLocator->getSrcDirs());
-        foreach ($this->fileLocator->getSrcDirs() as $namespace => $pathDir) {
+        /** @todo Améliorer ce petit hack pour ne pas spécifier "view/" dans les extends */
+        /** @todo Et tester si le rep existe */
+        $srcDirs = $this->fileLocator->getSrcDirs();
+        $viewSrcDirs = [];
+        foreach ($srcDirs as $namespace => $dir) {
+            $dir = $dir . Path::DS . 'view';
+            if (file_exists($dir)) {
+                $viewSrcDirs[$namespace] = $dir;
+            }
+        }
+
+        $loader = new Twig_Loader_Filesystem($viewSrcDirs);
+        foreach ($viewSrcDirs as $namespace => &$pathDir) {
             if (file_exists($pathDir)) {
                 $loader->setPaths($pathDir, str_replace('\\', '', $namespace));
             }
