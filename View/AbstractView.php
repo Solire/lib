@@ -250,7 +250,7 @@ abstract class AbstractView
         // On cherche le fichier à charger
         $resolvedContentPath = $this->fileLocator->locate(
             $path . $responseFormatExtension,
-            FileLocator::TYPE_SUB_APPLICATION
+            FileLocator::TYPE_APPLICATION
         );
 
         // Cas où le fichier n'a pas le format en première extension (compatibilité '.phtml')
@@ -259,7 +259,7 @@ abstract class AbstractView
             // On cherche le fichier à charger sans double extension
             $resolvedContentPath = $this->fileLocator->locate(
                 $path . $responseFormatExtension,
-                FileLocator::TYPE_SUB_APPLICATION
+                FileLocator::TYPE_APPLICATION
             );
         }
 

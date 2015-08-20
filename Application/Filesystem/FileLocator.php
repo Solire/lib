@@ -13,30 +13,30 @@ use Solire\Lib\Filesystem\AbstractFileLocator;
  */
 class FileLocator extends AbstractFileLocator
 {
-    const TYPE_ALL             = 1;
-    const TYPE_APPLICATION     = 2;
-    const TYPE_SUB_APPLICATION = 3;
+    const TYPE_ALL              = 1;
+    const TYPE_SOURCE_DIRECTORY = 2;
+    const TYPE_APPLICATION      = 3;
 
     /**
-     * Liste des répertoires des applications (ex: Project, vendor/Solire, ...)
+     * Liste des répertoires de sources
      *
      * @var array
      */
-    protected $applicationDirs = [];
+    protected $sourceDirectoriesDirs = [];
 
     /**
-     * Liste des répertoires de la sous application courante (ex: Front, Back, ...)
+     * Liste des répertoires de l'application courante
      *
      * @var array
      */
-    protected $currentSubApplicationDirs = [];
+    protected $currentApplicationDirs = [];
 
     /**
      * Liste des applications
      *
      * @var array
      */
-    protected $applications = [];
+    protected $sourceDirectories = [];
 
     /**
      * Nom de l'application courante
@@ -48,68 +48,67 @@ class FileLocator extends AbstractFileLocator
     /**
      * Constructeur
      *
-     * @param array $applications Liste des applications
+     * @param array $sourceDirectories Tableau de répertoires de sources
      */
-    public function __construct($applications = [])
+    public function __construct($sourceDirectories = [])
     {
-        $this->applications = $applications;
-        $this->buildApplicationDirs();
+        $this->sourceDirectories = $sourceDirectories;
+        $this->buildSourceDirectoriesDirs();
     }
-
 
     /**
      * Paramètre la sous application courante
      *
-     * @param string $currentSubApplicationName Nom de la sous application courante
+     * @param string $currentApplicationName Nom de l'application courante
      *
      * @return self
      */
-    public function setCurrentSubApplicationName($currentSubApplicationName)
+    public function setCurrentApplicationName($currentApplicationName)
     {
-        $this->currentSubApplicationName = $currentSubApplicationName;
-        $this->buildCurrentSubApplicationDirs();
+        $this->currentApplicationName = $currentApplicationName;
+        $this->buildCurrentApplicationDirs();
 
         return $this;
     }
 
     /**
-     * Retourne la liste complète des répertoires de sources
+     * Retourne la liste complète des répertoires
      *
-     * @param int $type Permet de retourner seulement les répertoires des applications ou de la sous application
+     * @param int $type Permet de retourner seulement les répertoires de sources ou de l'application
      * courante
      *
      * @return array
      */
-    public function getSrcDirs($type = self::TYPE_ALL)
+    public function getDirs($type = self::TYPE_ALL)
     {
-        $srcDirs = [];
+        $dirs = [];
         switch ($type) {
             case self::TYPE_ALL:
-                $srcDirs = $this->currentSubApplicationDirs + $this->applicationDirs;
+                $dirs = $this->currentApplicationDirs + $this->sourceDirectoriesDirs;
+                break;
+            case self::TYPE_SOURCE_DIRECTORY:
+                $dirs = $this->sourceDirectoriesDirs;
                 break;
             case self::TYPE_APPLICATION:
-                $srcDirs = $this->applicationDirs;
-                break;
-            case self::TYPE_SUB_APPLICATION:
-                $srcDirs = $this->currentSubApplicationDirs;
+                $dirs = $this->currentApplicationDirs;
                 break;
 
         }
 
-        return $srcDirs;
+        return $dirs;
     }
 
     /**
-     * Cherche un fichier dans les applications
+     * Cherche un fichier
      *
-     * @param string $path Chemin du dossier / fichier à chercher dans les applications
-     * @param int    $type Permet de choisir les répertoires de recherche (applications / sous application)
+     * @param string $path Chemin du dossier / fichier à chercher
+     * @param int    $type Permet de choisir les répertoires de recherche (sources / application)
      *
      * @return string|boolean
      */
-    public function locate($path, $type = self::TYPE_SUB_APPLICATION)
+    public function locate($path, $type = self::TYPE_APPLICATION)
     {
-        $dirs = $this->getSrcDirs($type);
+        $dirs = $this->getDirs($type);
         foreach ($dirs as $dir) {
             $testPath = new Path($dir . Path::DS . $path, Path::SILENT);
             if ($testPath->get() !== false) {
@@ -121,24 +120,24 @@ class FileLocator extends AbstractFileLocator
     }
 
     /**
-     * Construit la liste des répertoires pour la sous application courante
+     * Construit la liste des répertoires pour l'application courante
      *
      * @return void
      */
-    protected function buildCurrentSubApplicationDirs()
+    protected function buildCurrentApplicationDirs()
     {
-        $this->currentSubApplicationDirs = [];
+        $this->currentApplicationDirs = [];
 
         $appDirs = [
-            Path::DS . $this->currentSubApplicationName,
-            Path::DS . strtolower($this->currentSubApplicationName),
+            Path::DS . $this->currentApplicationName,
+            Path::DS . strtolower($this->currentApplicationName),
         ];
 
-        foreach ($this->applications as $app) {
+        foreach ($this->sourceDirectories as $sourceDirectory) {
             foreach ($appDirs as $appDir) {
-                $namespace = $app['namespace'] . '\\' . ucfirst(str_replace('/', '', $appDir));
-                if (file_exists($app['dir'] . $appDir)) {
-                    $this->currentSubApplicationDirs[$namespace] = $app['dir'] . $appDir;
+                $namespace = $sourceDirectory['namespace'] . '\\' . ucfirst(str_replace('/', '', $appDir));
+                if (file_exists($sourceDirectory['dir'] . $appDir)) {
+                    $this->currentApplicationDirs[$namespace] = $sourceDirectory['dir'] . $appDir;
                 }
             }
         }
@@ -149,14 +148,14 @@ class FileLocator extends AbstractFileLocator
      *
      * @return void
      */
-    protected function buildApplicationDirs()
+    protected function buildSourceDirectoriesDirs()
     {
-        $this->applicationDirs = [];
+        $this->sourceDirectoriesDirs = [];
 
-        foreach ($this->applications as $app) {
-            $namespace = $app['namespace'];
-            if (file_exists($app['dir'])) {
-                $this->applicationDirs[$namespace] = $app['dir'];
+        foreach ($this->sourceDirectories as $sourceDirectory) {
+            $namespace = $sourceDirectory['namespace'];
+            if (file_exists($sourceDirectory['dir'])) {
+                $this->sourceDirectoriesDirs[$namespace] = $sourceDirectory['dir'];
             }
         }
     }

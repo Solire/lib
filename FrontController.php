@@ -10,6 +10,7 @@ namespace Solire\Lib;
 
 use Solire\Conf\Loader;
 use Solire\Lib\Exception\HttpError;
+use Solire\Lib\Filesystem\FileLocator;
 use Solire\Lib\Loader\Css;
 use Solire\Lib\Loader\Javascript;
 use Solire\Lib\Loader\Img;
@@ -65,7 +66,7 @@ class FrontController
      *
      * @var array
      */
-    protected static $appDirs = [];
+    protected static $sourceDirectories = [];
 
     /**
      * Liste des répertoires app à utiliser
@@ -174,17 +175,17 @@ class FrontController
      */
     private function __construct()
     {
-        $this->dirs = self::$mainConfig->get('dirs');
-        $this->format = self::$mainConfig->get('format');
-        $this->debug = self::$mainConfig->get('debug');
+        $this->dirs = Registry::get('mainconfig')->get('dirs');
+        $this->format = Registry::get('mainconfig')->get('format');
+        $this->debug = Registry::get('mainconfig')->get('debug');
 
         /* Chargement du rep app par défaut */
-        $count = count(self::$appDirs);
-        $this->app = self::$appDirs[$count - 1]['namespace'];
+        $count = count(self::$sourceDirectories);
+        $this->app = self::$sourceDirectories[$count - 1]['namespace'];
         unset($count);
-        
+
         /* Création du FileLocator pour la recherche dans les applications */
-        $this->fileLocator = new ApplicationFileLocator(self::$appDirs);
+        $this->fileLocator = new ApplicationFileLocator(self::$sourceDirectories);
     }
 
     /**
@@ -205,9 +206,9 @@ class FrontController
      *
      * @return array
      */
-    public static function getAppDirs()
+    public static function getSourceDirectories()
     {
-        return self::$appDirs;
+        return self::$sourceDirectories;
     }
 
     /**
@@ -218,33 +219,43 @@ class FrontController
      */
     public static function init()
     {
+        /* Création du FileLocator pour les fichiers de configuration main et env */
+        $configFileLocator = new FileLocator(['./']);
+
         /* Chargement de la configuration */
-        self::$mainConfig = Loader::load('config/main.yml');
-        self::$envConfig  = Loader::load('config/local.yml');
+        $mainConfigFilePath = $configFileLocator->locate('config/main.yml');
+        $envConfigFilePath  = $configFileLocator->locate('config/local.yml');
+
+        $mainConfig = Loader::load($mainConfigFilePath);
+        $envConfig  = Loader::load($envConfigFilePath);
 
         /* Fichiers de configuration */
-        Registry::set('mainconfig', self::$mainConfig);
-        Registry::set('envconfig', self::$envConfig);
+        Registry::set('mainconfig', $mainConfig);
+        Registry::set('envconfig', $envConfig);
 
         /* On paramètre les applications à utiliser */
-        if (count(self::$mainConfig['applications']) == 0) {
+        if (count($mainConfig['applications']) == 0) {
             throw new Exception\Lib('Aucune application n\'a été configurée.');
         }
 
-        foreach (self::$mainConfig['applications'] as $application) {
-            self::setApp((array) $application);
-        }
+        self::setSourceDirectories($mainConfig['applications']);
+
+        // Hook post paramètrages des applications
+        $hook = new Hook();
+        $hook->setSubdirName('Lib');
+
+        $hook->exec('PostSetSourceDirectories');
 
         /* Base de données */
         try {
-            $db = DB::factory(self::$envConfig->get('database'));
+            $db = DB::factory(Registry::get('envconfig')->get('database'));
         } catch (\PDOException $exc) {
             throw new Exception\Lib($exc->getMessage());
         }
         Registry::set('db', $db);
 
-        Registry::set('project-name', self::$mainConfig->get('project', 'name'));
-        $emails = self::$envConfig->get('email');
+        Registry::set('project-name', Registry::get('mainconfig')->get('project', 'name'));
+        $emails = Registry::get('envconfig')->get('email');
 
         /* Ajout d'un prefix au mail */
         if (isset($emails['prefix']) && $emails['prefix'] != '') {
@@ -313,9 +324,9 @@ class FrontController
     public function parseUrl()
     {
         /* Nom de l'application par défaut */
-        $this->application = self::$mainConfig->get('project', 'defaultApp');
+        $this->application = Registry::get('mainconfig')->get('project', 'defaultApp');
         self::$appName = $this->application;
-        $this->fileLocator->setCurrentSubApplicationName(self::$appName);
+        $this->fileLocator->setCurrentApplicationName(self::$appName);
 
         self::loadAppConfig();
 
@@ -397,7 +408,7 @@ class FrontController
 
             /* Si l'application à changé on charge sa configuration */
             if ($application === true) {
-                $this->fileLocator->setCurrentSubApplicationName(self::$appName);
+                $this->fileLocator->setCurrentApplicationName(self::$appName);
                 self::loadAppConfig();
             }
         }
@@ -445,7 +456,7 @@ class FrontController
 
         $type = ApplicationFileLocator::TYPE_ALL;
         if ($current) {
-            $type = ApplicationFileLocator::TYPE_SUB_APPLICATION;
+            $type = ApplicationFileLocator::TYPE_APPLICATION;
         }
         return $front->fileLocator->locate($path, $type);
     }
@@ -460,7 +471,7 @@ class FrontController
      */
     final public static function searchClass($className)
     {
-        foreach (self::$appDirs as $app) {
+        foreach (self::$sourceDirectories as $app) {
             $testClass = $app['namespace'] . '\\' . $className;
 
             if (class_exists($testClass)) {
@@ -507,7 +518,7 @@ class FrontController
      */
     private function testApp($ctrl)
     {
-        foreach (self::$appDirs as $app) {
+        foreach (self::$sourceDirectories as $app) {
             $testPath = new Path($app['dir'] . Path::DS . $ctrl, Path::SILENT);
             if ($testPath->get()) {
                 return $app['dir'];
@@ -526,7 +537,7 @@ class FrontController
      */
     protected function classExists($ctrl)
     {
-        foreach (self::$appDirs as $app) {
+        foreach (self::$sourceDirectories as $app) {
             $class = $this->getClassName(ucfirst($ctrl), $app['namespace']);
             if (class_exists($class)) {
                 $this->app = $app['namespace'];
@@ -659,9 +670,9 @@ class FrontController
         }
 
         /* Création du FileLocator pour le chargement des templates */
-        $appLibDir = self::$mainConfig->get('appLibDir');
-        $viewFileLocator = new ViewFileLocator(self::$appDirs, $appLibDir);
-        $viewFileLocator->setCurrentSubApplicationName(self::$appName);
+        $appLibDir = Registry::get('mainconfig')->get('appLibDir');
+        $viewFileLocator = new ViewFileLocator(self::$sourceDirectories, $appLibDir);
+        $viewFileLocator->setCurrentApplicationName(self::$appName);
 
         $this->view = new View($viewFileLocator);
 
@@ -669,7 +680,7 @@ class FrontController
 
         try {
             $this->view
-                ->setPathPrefix(self::$mainConfig->get('dirs', 'views'))
+                ->setPathPrefix(Registry::get('mainconfig')->get('dirs', 'views'))
                 ->setTranslate($this->loadTranslate())
 
                 ->setJsLoader($this->loadJsLoader())
@@ -846,7 +857,7 @@ class FrontController
                 $version = $db->query($query)->fetch(\PDO::FETCH_ASSOC);
             }
 
-            $serverUrl = self::$envConfig->get('base', 'url');
+            $serverUrl = Registry::get('envconfig')->get('base', 'url');
             Registry::set('url', $serverUrl);
             Registry::set('basehref', $serverUrl);
 
@@ -867,31 +878,40 @@ class FrontController
     }
 
     /**
-     * Enregistre un nouveau répertoire d'app
+     * Enregistre un nouveau répertoire de sources
      *
-     * @param string|array $app Configuration de l'app
+     * @param array $sourceDirectory Configuration du répertoire de sources
      *
      * @return void
      */
-    public static function setApp($app)
+    public static function addSourceDirectory($sourceDirectory)
     {
-        if (is_array($app)) {
-            $name = $app['name'];
-            $namespace = $app['namespace'];
-            $dir = $app['dir'];
-            $public = $app['public'];
-        } else {
-            $name = ucfirst(strtolower($app));
-            $namespace = $name;
-            $dir = strtolower($app);
-            $public = $dir;
-        }
-        self::$appDirs[] = array(
-            'name' => $name,
-            'dir' => $dir,
+        $name      = $sourceDirectory['name'];
+        $namespace = $sourceDirectory['namespace'];
+        $dir       = $sourceDirectory['dir'];
+        $public    = $sourceDirectory['public'];
+
+        self::$sourceDirectories[] = array(
+            'name'      => $name,
+            'dir'       => $dir,
             'namespace' => $namespace,
         );
         self::$publicDirs[] = $public;
+    }
+
+    /**
+     * Définie les répertoires de sources
+     *
+     * @param array $sourceDirectories Configuration des répertoire de sources
+     *
+     * @return void
+     */
+    public static function setSourceDirectories($sourceDirectories)
+    {
+        self::$sourceDirectories = [];
+        foreach ($sourceDirectories as $sourceDirectory) {
+            self::addSourceDirectory($sourceDirectory);
+        }
     }
 
     /**

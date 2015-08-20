@@ -39,7 +39,7 @@ abstract class AbstractFileLocator
      */
     public function locate($path)
     {
-        $dirs = $this->getSrcDirs();
+        $dirs = $this->getDirs();
         foreach ($dirs as $dir) {
             $testPath = new Path($dir . Path::DS . $path, Path::SILENT);
             if ($testPath->get() !== false) {
@@ -51,11 +51,11 @@ abstract class AbstractFileLocator
     }
 
     /**
-     * Retourne la liste complète des répertoires de sources
+     * Retourne la liste complète des répertoires
      *
      * @return array
      */
-    public function getSrcDirs()
+    public function getDirs()
     {
         return $this->dirs;
     }

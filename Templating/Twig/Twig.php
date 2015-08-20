@@ -44,7 +44,7 @@ class Twig extends Templating
 
         /** @todo Améliorer ce petit hack pour ne pas spécifier "view/" dans les extends */
         /** @todo Et tester si le rep existe */
-        $srcDirs = $this->fileLocator->getSrcDirs();
+        $srcDirs = $this->fileLocator->getDirs();
         $viewSrcDirs = [];
         foreach ($srcDirs as $namespace => $dir) {
             $dir = $dir . Path::DS . 'view';

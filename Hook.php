@@ -51,7 +51,7 @@ class Hook
      */
     public function __construct()
     {
-        $this->dirs = array_reverse(FrontController::getAppDirs(), true);
+        $this->dirs = array_reverse(FrontController::getSourceDirectories(), true);
     }
 
     /**
@@ -110,7 +110,7 @@ class Hook
         $baseDir .= $this->codeName;
         $hooks = array();
         foreach ($this->dirs as $dirInfo) {
-            $dir = $dirInfo['dir'] . Path::DS . 'hook' . Path::DS . $baseDir;
+            $dir = $dirInfo['dir'] . Path::DS . 'Hook' . Path::DS . $baseDir;
             $path = new Path($dir, Path::SILENT);
             if ($path->get() === false) {
                 continue;

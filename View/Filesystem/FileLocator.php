@@ -16,16 +16,15 @@ class FileLocator extends ApplicationFileLocator
     /**
      * Cherche un fichier de vues dans les applications
      *
-     * @param string $path       Chemin du dossier / fichier à chercher dans
-     * les applications
-     * @param int    $type       Permet de choisir les répertoires de recherche (applications / sous application)
+     * @param string $path       Chemin du dossier / fichier à chercher
+     * @param int    $type       Permet de choisir les répertoires de recherche (sources / application)
      * @param array  $extensions Liste des extensions des templates possibles
      *
      * @return bool|string
      */
-    public function locate($path, $type = self::TYPE_SUB_APPLICATION, $extensions = ['twig', 'phtml', 'php'])
+    public function locate($path, $type = self::TYPE_APPLICATION, $extensions = ['twig', 'phtml', 'php'])
     {
-        $dirs = $this->getSrcDirs($type);
+        $dirs = $this->getDirs($type);
         foreach ($dirs as $dir) {
             foreach ($extensions as $extension) {
                 $fooPathWithExt = $dir . Path::DS . $path . '.' . $extension;
