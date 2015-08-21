@@ -122,11 +122,13 @@ class String
     ];
 
     /**
-     * Renvoi une chaine de n ($strLen) caracteres aleatoirement.
+     * Renvoie une chaîne de n ($strLen) caractères aléatoirement.
      *
-     * @param int    $strLen Longueur de la chaîne
-     * @param string $type   "all" / "numeric" / "alphalower" / "alphaupper"
-     *
+     * @param int $strLen Longueur de la chaîne
+     * @param int $type   [optional] <p>
+     * Type de caractères utilisés dans la chaîne générée. Doit être
+     * une des constantes the String::RANDOM_*.
+     * </p>
      * @return string
      */
     public static function random($strLen, $type = self::RANDOM_ALL)
