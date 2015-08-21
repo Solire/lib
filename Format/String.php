@@ -27,7 +27,7 @@ class String
      *
      * @var array
      */
-    static protected $charMap = array(
+    static protected $charMap = [
         // Latin
         'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A',
         'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
@@ -119,7 +119,7 @@ class String
         // Japanese
         'Ā' => 'A', 'Ū' => 'U', 'Ē' => 'E', 'Ō' => 'O',
         'ā' => 'a', 'ū' => 'u', 'ē' => 'e', 'ō' => 'o'
-    );
+    ];
 
     /**
      * Renvoi une chaine de n ($strLen) caracteres aleatoirement.
