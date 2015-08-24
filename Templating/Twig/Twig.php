@@ -60,7 +60,7 @@ class Twig extends Templating
             }
         }
 
-        $twig = new Twig_Environment($loader);
+        $twig = new Twig_Environment($loader, ['autoescape' => false]);
 
         $twig->addExtension(new I18n());
 
