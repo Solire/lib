@@ -29,35 +29,35 @@ class GabaritPage extends GabaritBloc
      *
      * @var array
      */
-    protected $meta = array();
+    protected $meta = [];
 
     /**
      * Tableau des données de la version de la page
      *
      * @var array
      */
-    protected $version = array();
+    protected $version = [];
 
     /**
      * Tableau des blocs dynamiques de la page
      *
      * @var array
      */
-    protected $blocs = array();
+    protected $blocs = [];
 
     /**
      * Tableau des pages parentes
      *
      * @var array
      */
-    protected $parents = array();
+    protected $parents = [];
 
     /**
      * Tableau des pages enfants
      *
      * @var array
      */
-    protected $children = array();
+    protected $children = [];
 
     /**
      * Première page enfant
@@ -71,7 +71,7 @@ class GabaritPage extends GabaritBloc
      */
     public function __construct()
     {
-        $this->values = array();
+        $this->values = [];
     }
 
     /**
@@ -397,17 +397,17 @@ class GabaritPage extends GabaritBloc
     public function getForm(
         $action,
         $retour,
-        $redirections = array(),
-        $authors = array()
+        $redirections = [],
+        $authors = []
     ) {
-        $this->view = array();
+        $this->view = [];
 
         $this->view['action'] = $action;
         $this->view['retour'] = $retour;
         $this->view['authors'] = $authors;
 
         if (count($redirections) == 0) {
-            $this->view['redirections'] = array('');
+            $this->view['redirections'] = [''];
         } else {
             $this->view['redirections'] = $redirections;
         }

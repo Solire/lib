@@ -59,7 +59,7 @@ abstract class GabaritFieldSet
     public function start()
     {
         if (count($this->values) == 0) {
-            $this->values[] = array();
+            $this->values[] = [];
         }
     }
 
@@ -190,10 +190,10 @@ abstract class GabaritFieldSet
             $valueLabel = 'Bloc en cours de création';
         }
 
-        return array(
+        return [
             'html'  => $form,
             'label' => $valueLabel,
-        );
+        ];
     }
 
     /**

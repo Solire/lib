@@ -29,32 +29,32 @@ class FileManager extends manager
      *
      * @var array
      */
-    public static $extensions = array(
-        'image' => array(
+    public static $extensions = [
+        'image' => [
             'jpg' => 'jpeg',
             'jpeg' => 'jpeg',
             'gif' => 'gif',
             'png' => 'png',
-        )
-    );
+        ]
+    ];
 
     /**
      *
      * @var array
      */
-    public static $vignette = array(
+    public static $vignette = [
         'max-width' => 200,
         'max-height' => 50,
-    );
+    ];
 
     /**
      *
      * @var array
      */
-    public static $apercu = array(
+    public static $apercu = [
         'max-width' => 200,
         'max-height' => 90,
-    );
+    ];
 
     /**
      * Renvoi l'extension de l'image (utilisé dans le nom des fonctions de
@@ -177,7 +177,7 @@ class FileManager extends manager
         $files = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
         if (is_array($extensions)) {
-            $files2 = array();
+            $files2 = [];
 
             foreach ($files as $file) {
                 $ext = pathinfo($file['rewriting'], PATHINFO_EXTENSION);
@@ -288,41 +288,41 @@ class FileManager extends manager
                             fwrite($out, $buff);
                         }
                     } else {
-                        return array(
+                        return [
                             'jsonrpc' => '2.0',
                             'status' => 'error',
-                            'error' => array(
+                            'error' => [
                                 'code' => 101,
                                 'message' => 'Failed to open input stream.'
-                            ),
+                            ],
                             'id' => 'id'
-                        );
+                        ];
                     }
 
                     fclose($in);
                     fclose($out);
                     @unlink($_FILES['file']['tmp_name']);
                 } else {
-                    return array(
+                    return [
                         'jsonrpc' => '2.0',
                         'status' => 'error',
-                        'error' => array(
+                        'error' => [
                             'code' => 102,
                             'message' => 'Failed to open output stream.'
-                        ),
+                        ],
                         'id' => 'id'
-                    );
+                    ];
                 }
             } else {
-                return array(
+                return [
                     'jsonrpc' => '2.0',
                     'status' => 'error',
-                    'error' => array(
+                    'error' => [
                         'code' => 103,
                         'message' => 'Failed to move uploaded file.',
-                    ),
+                    ],
                     'id' => 'id'
-                );
+                ];
             }
         } else {
             /** Open temp file */
@@ -343,38 +343,38 @@ class FileManager extends manager
                         fwrite($out, $buff);
                     }
                 } else {
-                    return array(
+                    return [
                         'jsonrpc' => '2.0',
                         'status' => 'error',
-                        'error' => array(
+                        'error' => [
                             'code' => 101,
                             'message' => 'Failed to open input stream.'
-                        ),
+                        ],
                         'id' => 'id'
-                    );
+                    ];
                 }
 
                 fclose($in);
                 fclose($out);
             } else {
-                return array(
+                return [
                     'jsonrpc' => '2.0',
                     'status' => 'error',
-                    'error' => array(
+                    'error' => [
                         'code' => 102,
                         'message' => 'Failed to open output stream.'
-                    ),
+                    ],
                     'id' => 'id'
-                );
+                ];
             }
         }
 
         /* Construct JSON-RPC response */
-        $jsonrpc = array(
+        $jsonrpc = [
             'jsonrpc' => '2.0',
             'status' => 'success',
             'result' => $fileName,
-        );
+        ];
 
         /* Dernière partie. */
         if ($chunk == $chunks - 1) {
@@ -608,7 +608,7 @@ class FileManager extends manager
         $width  = $sizes[0];
         $height = $sizes[1];
 
-        $json = array(
+        $json = [
             'taille' => $sizes[0] . ' x ' . $sizes[1],
             'filename' => $fileNameNew,
             'size' => $size,
@@ -616,7 +616,7 @@ class FileManager extends manager
             'height' => $height,
             'path' => $targetDir . Path::DS . $fileNameNew,
             'date' => date('d/m/Y H:i:s'),
-        );
+        ];
 
         /* On créé la vignette */
         $largeurmax = self::$vignette['max-width'];
@@ -737,7 +737,7 @@ class FileManager extends manager
                 $ratioH = $hauteurSource / $hauteurmax;
             }
 
-            $ratio = max(array($ratioH, $ratioL));
+            $ratio = max([$ratioH, $ratioL]);
 
             $largeurDestination = $largeurSource / $ratio;
             $hauteurDestination = $hauteurSource / $ratio;

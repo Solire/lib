@@ -156,17 +156,17 @@
             foreach ($champs as $champ) {
                 if($champ["type"] == "GMAP") {
                     if(isset($this->values[$champ['name'] . "_lat"])) {
-                        $value = array(
+                        $value = [
                             "lat"          =>  $this->values[$champ['name'] . "_lat"],
                             "lng"         =>  $this->values[$champ['name'] . "_lng"],
                             "zoom"     =>  $this->values[$champ['name'] . "_zoom"],
-                        );
+                        ];
                     } else {
-                        $value = array(
+                        $value = [
                             "lat"          =>  "",
                             "lng"         =>  "",
                             "zoom"     =>  "",
-                        );
+                        ];
                     }
                 } else {
                     $value = isset($this->values[$champ['name']]) ? $this->values[$champ['name']] : '';

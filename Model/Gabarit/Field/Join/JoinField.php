@@ -134,7 +134,7 @@ class JoinField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
      */
     private function simple()
     {
-        $values = array();
+        $values = [];
         foreach ($this->value as $value) {
             if (isset($value[$this->champ['name']])) {
                 $values[] = $value[$this->champ['name']];

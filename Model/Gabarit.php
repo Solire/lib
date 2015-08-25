@@ -17,13 +17,13 @@ namespace Solire\Lib\Model;
 class Gabarit
 {
 
-    private $data = array();
+    private $data = [];
     private $table;
-    private $api = array();
-    private $champs = array();
-    private $joins = array();
-    private $gabaritParent = array();
-    private $parents = array();
+    private $api = [];
+    private $champs = [];
+    private $joins = [];
+    private $gabaritParent = [];
+    private $parents = [];
 
     /**
      * Initialisation d'un gabarit
@@ -373,7 +373,7 @@ class Gabarit
     {
         foreach ($this->champs as $champsGroup) {
             if ($bloc) {
-                $champsGroup = array($champsGroup);
+                $champsGroup = [$champsGroup];
             }
             foreach ($champsGroup as $champ) {
                 if ($champ['name'] == $name) {

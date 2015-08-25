@@ -35,7 +35,7 @@ class GabaritBloc
      *
      * @var array
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      * Constructeur

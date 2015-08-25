@@ -40,7 +40,7 @@ class AutocompleteMultiField extends \Solire\Lib\Model\Gabarit\Field\GabaritFiel
 
             $this->valuesUnique = $this->db->query($sql)->fetchAll(\PDO::FETCH_UNIQUE | \PDO::FETCH_ASSOC);
             $valuesArray = explode(',', $this->value);
-            $this->values = array();
+            $this->values = [];
             foreach ($valuesArray as $v) {
                 $this->values[] = $this->valuesUnique[$v];
             }
