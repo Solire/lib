@@ -84,7 +84,7 @@ class AntiBruteforce
                 $countFailed = 0;
                 foreach ($filter['log'] as $configName => $handlerConfig) {
                     $handlerClassname = 'Solire\\Lib\\Security\\Handler\\'
-                        . $handlerConfig['handler'];
+                        . $handlerConfig['handler'] . 'Handler';
                     $handler = new $handlerClassname($handlerConfig);
                     $countFailed += $handler->countFailed($ip, $filter['findtime']);
 

@@ -10,7 +10,7 @@ use Solire\Lib\Registry;
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class Db extends AbstractHandler
+class DbHandler extends AbstractHandler
 {
     /**
      * The database connection
