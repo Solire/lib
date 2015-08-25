@@ -28,7 +28,7 @@ trait InstanceTrait
      *
      * @param string $name Nom du fichier de configuration du formulaire
      *
-     * @return \Solire\Lib\Formulaire
+     * @return Formulaire
      */
     protected function chargeForm($name)
     {
@@ -44,7 +44,7 @@ trait InstanceTrait
      *
      * @param string $name Nom du fichier de configuration du formulaire
      *
-     * @return \Solire\Lib\Config
+     * @return Config
      */
     protected function chargeFormConfig($name)
     {
