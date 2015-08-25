@@ -1,6 +1,7 @@
 <?php
 namespace Solire\Lib\Security\AntiBruteforce;
 
+use Solire\Conf\Conf;
 use Solire\Lib\MyPDO;
 use Solire\Lib\Registry;
 use Solire\Lib\Security\AntiBruteforce\Exception\InvalidIpException;
@@ -36,16 +37,22 @@ class AntiBruteforce
     protected $connection = null;
 
     /**
-     * Constructeur
+     * Construct
      *
-     * @param Conf  $conf       La configuration
-     * @param MyPDO $connection La connexion à la base de données
+     * @param Conf        $conf La configuration
+     * @param null|string $ip   L'ip à tester, si null, l'ip du client
      *
+     * @throws InvalidIpException
+     * @internal param MyPDO $connection La connexion à la base de données
      */
-    public function __construct($conf, $ip)
+    public function __construct($conf, $ip = null)
     {
         $this->conf       = $conf;
         $this->connection = Registry::get('db');
+
+        if ($ip === null) {
+            $ip = Registry::get('request')->getClientIp();
+        }
 
         if (!$this->isBlocking($ip)) {
             $this->checkFilters($ip);
@@ -72,7 +79,7 @@ class AntiBruteforce
 
         // Liste blanche des IPs à ne pas bloquer
         if (isset($this->conf['ignoreip'])
-            && in_array($this->ip, (array)$this->conf['ignoreip'])
+            && in_array($this->ip, (array) $this->conf['ignoreip'])
         ) {
             return true;
         }
@@ -80,12 +87,11 @@ class AntiBruteforce
         // On boucle sur les filtres définis
         foreach ($this->conf['filter'] as $filterName => $filter) {
             if ($filter['enabled']) {
-                $typeHandler = $filter['enabled'];
                 $countFailed = 0;
                 foreach ($filter['log'] as $configName => $handlerConfig) {
                     $handlerClassname = 'Solire\\Lib\\Security\\AntiBruteforce\\Handler\\'
                         . $handlerConfig['handler'] . 'Handler';
-                    $handler = new $handlerClassname($handlerConfig);
+                    $handler          = new $handlerClassname($handlerConfig);
                     $countFailed += $handler->countFailed($ip, $filter['findtime']);
 
                     // Limite atteinte
@@ -96,6 +102,7 @@ class AntiBruteforce
                 }
             }
         }
+
         return true;
     }
 
@@ -121,12 +128,12 @@ class AntiBruteforce
         }
 
         $query = 'SELECT COUNT(*) FROM so_fail2ban'
-            . ' WHERE ip = '  . $this->connection->quote($this->ip)
+            . ' WHERE ip = ' . $this->connection->quote($this->ip)
             . '     AND endDate >= NOW()';
 
         $statement = $this->connection->query($query);
         if ($statement !== false) {
-            $result = $statement->fetchColumn();
+            $result  = $statement->fetchColumn();
             $blocked = $result == 0 ? false : true;
         }
 
@@ -154,11 +161,11 @@ class AntiBruteforce
 
         $query = 'SELECT TIMESTAMPDIFF(SECOND, NOW(), MAX(endDate))'
             . ' FROM so_fail2ban'
-            . ' WHERE ip = '  . $this->connection->quote($this->ip)
+            . ' WHERE ip = ' . $this->connection->quote($this->ip)
             . '     AND endDate >= NOW()';
 
         $statement = $this->connection->query($query);
-        $result = $statement->fetchColumn();
+        $result    = $statement->fetchColumn();
 
         return $result;
     }
@@ -177,11 +184,11 @@ class AntiBruteforce
     protected function blockIp($ip, $banTime)
     {
 
-        $date = date("Y-m-d H:i:s", time() + $banTime);
+        $date = date('Y-m-d H:i:s', time() + $banTime);
 
         // Insertion de l'ip dans la table de ban
         $query = 'INSERT INTO so_fail2ban'
-            . ' SET ip = ' . $this->connection->quote($ip) .', '
+            . ' SET ip = ' . $this->connection->quote($ip) . ', '
             . '   endDate = ' . $this->connection->quote($date);
 
         return $this->connection->exec($query);

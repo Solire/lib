@@ -2,16 +2,17 @@
 
 namespace Solire\Lib\Security\AntiBruteforce\Handler;
 
+use Solire\Conf\Conf;
 use Solire\Lib\MyPDO;
 use Solire\Lib\Registry;
 
 /**
- * DB Handler class providing the Handler structure
+ * MonologPDO Handler class
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class DbHandler extends AbstractHandler
+class MonologPDOHandler extends AbstractHandler
 {
     /**
      * The database connection

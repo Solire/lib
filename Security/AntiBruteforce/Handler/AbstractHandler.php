@@ -1,6 +1,8 @@
 <?php
 namespace Solire\Lib\Security\AntiBruteforce\Handler;
 
+use Solire\Conf\Conf;
+
 /**
  * Base Handler class providing the Handler structure
  *
@@ -12,15 +14,14 @@ abstract class AbstractHandler
     /**
      * The configuration
      *
-     * @var Conf
+     * @var Conf|array
      */
     protected $conf = null;
 
     /**
-     * Constructor
+     * Construct
      *
-     * @param Conf $conf The configuration
-     * 
+     * @param Conf|array $conf Antibruteforce configuration
      */
     public function __construct($conf)
     {
@@ -28,7 +29,10 @@ abstract class AbstractHandler
     }
 
     /**
-     * Return the total of fail
+     * Count failed
+     *
+     * @param string $ip       Remote URI
+     * @param string $findTime Find time in seconds
      *
      * @return int Total number
      */
