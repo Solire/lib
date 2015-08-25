@@ -43,7 +43,7 @@ class FileLocator extends AbstractFileLocator
      *
      * @var array
      */
-    protected $currentSubApplicationName = null;
+    protected $currentApplicationName = null;
 
     /**
      * Constructeur
