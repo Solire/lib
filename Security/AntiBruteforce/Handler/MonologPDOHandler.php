@@ -56,6 +56,15 @@ class MonologPDOHandler extends AbstractHandler
             . '   AND ' . $dateTimeC . ' >= NOW()-INTERVAL ' . ((int) $findTime) . ' SECOND'
             . '   AND ' . $ipC . ' = ' . $this->connection->quote($ip);
 
+        /* Channel filter */
+        if (isset($this->conf['channel-column'])
+            && isset($this->conf['channel'])
+        ) {
+            $channelC  = $this->conf['channel-column'];
+            $channel   = $this->conf['channel'];
+            $query .= ' AND ' . $channelC . ' = ' . $this->connection->quote($channel);
+        }
+
         return $this->connection->query($query)->fetchColumn();
     }
 }
