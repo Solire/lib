@@ -35,7 +35,7 @@ trait ExceptionTrait
     /**
      * Renvois le nom du champ du formulaire qui pose problème
      *
-     * @return type
+     * @return string|array
      */
     public function getTargetInputName()
     {
