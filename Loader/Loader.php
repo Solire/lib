@@ -137,7 +137,7 @@ abstract class Loader
      *
      * @param string $url     Url de la librairie
      * @param array  $options Options de la librairie
-     * @param array  $force   Si la librairie n'est pas trouvé, qu'on veut l'url
+     * @param bool   $force   Si la librairie n'est pas trouvé, qu'on veut l'url
      * donné sans traitement on met ce paramètre à vrai sinon la méthode
      * errorNotFound() sera utilisé
      *
