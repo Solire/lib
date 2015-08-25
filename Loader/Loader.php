@@ -82,6 +82,8 @@ abstract class Loader
      * @param array  $options Options de la librairie
      *
      * @return void
+     *
+     * @throws LibException
      */
     final public function addLibrary($url, array $options = [])
     {
