@@ -11,6 +11,7 @@ namespace Solire\Lib;
 use Solire\Conf\Loader;
 use Solire\Lib\Exception\HttpError;
 use Solire\Lib\Filesystem\FileLocator;
+use Solire\Lib\Http\Request;
 use Solire\Lib\Loader\Css;
 use Solire\Lib\Loader\Javascript;
 use Solire\Lib\Loader\Img;
@@ -171,6 +172,13 @@ class FrontController
     private $fileLocator = null;
 
     /**
+     * Représentation de la requête HTTP courante
+     *
+     * @var Request
+     */
+    private $request = null;
+
+    /**
      * Instantiation du frontController
      */
     private function __construct()
@@ -184,8 +192,15 @@ class FrontController
         $this->app = self::$sourceDirectories[$count - 1]['namespace'];
         unset($count);
 
+        /* Création de notre objet Request */
+        $this->request = new Request();
+
         /* Création du FileLocator pour la recherche dans les applications */
         $this->fileLocator = new ApplicationFileLocator(self::$sourceDirectories);
+
+        // On fournit au Registre le filelocator et la request
+        Registry::set('request', $this->request);
+        Registry::set('fileLocator', $this->fileLocator);
     }
 
     /**
