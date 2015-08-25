@@ -1,9 +1,9 @@
 <?php
-namespace Solire\Lib\Security;
+namespace Solire\Lib\Security\AntiBruteforce;
 
 use Solire\Lib\MyPDO;
 use Solire\Lib\Registry;
-use Solire\Lib\Security\Exception\InvalidIpException;
+use Solire\Lib\Security\AntiBruteforce\Exception\InvalidIpException;
 
 /**
  * Gestionnaire de blocages des attacks par bruteforce
@@ -83,7 +83,7 @@ class AntiBruteforce
                 $typeHandler = $filter['enabled'];
                 $countFailed = 0;
                 foreach ($filter['log'] as $configName => $handlerConfig) {
-                    $handlerClassname = 'Solire\\Lib\\Security\\Handler\\'
+                    $handlerClassname = 'Solire\\Lib\\Security\\AntiBruteforce\\Handler\\'
                         . $handlerConfig['handler'] . 'Handler';
                     $handler = new $handlerClassname($handlerConfig);
                     $countFailed += $handler->countFailed($ip, $filter['findtime']);

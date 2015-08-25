@@ -1,6 +1,6 @@
 <?php
 
-namespace Solire\Lib\Security\Handler;
+namespace Solire\Lib\Security\AntiBruteforce\Handler;
 
 use Solire\Lib\Registry;
 

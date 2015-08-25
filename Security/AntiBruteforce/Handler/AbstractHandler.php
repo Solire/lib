@@ -1,5 +1,5 @@
 <?php
-namespace Solire\Lib\Security\Handler;
+namespace Solire\Lib\Security\AntiBruteforce\Handler;
 
 /**
  * Base Handler class providing the Handler structure

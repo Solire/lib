@@ -6,7 +6,7 @@
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 
-namespace Solire\Lib\Security\Exception;
+namespace Solire\Lib\Security\AntiBruteforce\Exception;
 
 /**
  * Exception class quand une ip n'est pas valide
