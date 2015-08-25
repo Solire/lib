@@ -26,7 +26,7 @@ class DateTime
      */
     public static function relativeTime1($timestampOrDate, $modeDate = false)
     {
-        $periods = array(
+        $periods = [
             'seconde',
             'minute',
             'heure',
@@ -34,15 +34,15 @@ class DateTime
             'semaine',
             'mois',
             'année',
-        );
-        $lengths = array(
+        ];
+        $lengths = [
             '60',
             '60',
             '24',
             '7',
             '4.35',
             '12',
-        );
+        ];
         $difference = time() - $timestampOrDate;
         if ($difference >= 0) {
             /**
@@ -87,27 +87,27 @@ class DateTime
         /**
          * Tableau des noms des périodes
          */
-        $periods = array(
+        $periods = [
             'année',
             'mois',
             'jour',
             'heure',
             'minute',
             'seconde',
-        );
+        ];
 
         /**
          * Tableau des attributs de la classe DateInterval
          * http://www.php.net/manual/fr/class.dateinterval.php
          */
-        $periodsMember = array(
+        $periodsMember = [
             'y',
             'm',
             'd',
             'h',
             'i',
             's',
-        );
+        ];
 
         $max = count($periodsMember);
         if ($modeDate) {
@@ -205,7 +205,7 @@ class DateTime
             $timestamp = strtotime($date);
             $nbJour = date('w', $timestamp);
 
-            $jours = array(
+            $jours = [
                 'dimanche',
                 'lundi',
                 'mardi',
@@ -213,13 +213,13 @@ class DateTime
                 'jeudi',
                 'vendredi',
                 'samedi',
-            );
+            ];
 
             $ladate .= $jours[$nbJour];
         }
 
         if ($moiscomplet) {
-            $lesmois = array(
+            $lesmois = [
                 '',
                 'janvier',
                 'février',
@@ -233,9 +233,9 @@ class DateTime
                 'octobre',
                 'novembre',
                 'décembre'
-            );
+            ];
         } else {
-            $lesmois = array(
+            $lesmois = [
                 '',
                 'janv.',
                 'fév.',
@@ -249,7 +249,7 @@ class DateTime
                 'oct.',
                 'nov.',
                 'déc.'
-            );
+            ];
         }
 
         $dateTab = explode('-', substr($date, 0, 10));
@@ -277,7 +277,7 @@ class DateTime
     public static function toShortText($datetime, $moiscomplet = false)
     {
         if ($moiscomplet) {
-            $lesmois = array(
+            $lesmois = [
                 '',
                 'janvier',
                 'février',
@@ -291,9 +291,9 @@ class DateTime
                 'octobre',
                 'novembre',
                 'décembre'
-            );
+            ];
         } else {
-            $lesmois = array(
+            $lesmois = [
                 '',
                 'janv.',
                 'fév.',
@@ -307,7 +307,7 @@ class DateTime
                 'oct.',
                 'nov.',
                 'déc.'
-            );
+            ];
         }
 
         /**
