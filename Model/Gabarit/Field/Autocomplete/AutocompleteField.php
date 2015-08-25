@@ -9,13 +9,15 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\Autocomplete;
 
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+
 /**
  * Champ en autocompletion
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class AutocompleteField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
+class AutocompleteField extends GabaritField
 {
 
     /**

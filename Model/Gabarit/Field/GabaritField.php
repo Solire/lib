@@ -7,6 +7,8 @@
  */
 namespace Solire\Lib\Model\Gabarit\Field;
 
+use Solire\Lib\Registry;
+
 /**
  * Champ d'un gabarit
  *
@@ -119,7 +121,7 @@ abstract class GabaritField
         if ($db) {
             $this->db = $db;
         } else {
-            $this->db = \Solire\Lib\Registry::get('db');
+            $this->db = Registry::get('db');
         }
 
         $this->idGabPage = $idGabPage;

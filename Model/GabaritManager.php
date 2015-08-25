@@ -8,7 +8,10 @@
 
 namespace Solire\Lib\Model;
 
+use Solire\Lib\Format\DateTime;
+use Solire\Lib\FrontController;
 use Solire\Lib\Hook;
+use Solire\Lib\Exception\Lib as LibException;
 
 /**
  * Description of gabaritmanager
@@ -114,7 +117,7 @@ class GabaritManager extends Manager
      *
      * @return boolean Vrais si la classe à été enregistrée comme class à utiliser
      * pour le GabaritPage
-     * @throws \Solire\Lib\Exception\Lib Lorsqu'aucune classe n'est trouvée
+     * @throws LibException Lorsqu'aucune classe n'est trouvée
      */
     public function setPageClass($className)
     {
@@ -124,14 +127,14 @@ class GabaritManager extends Manager
             return true;
         }
 
-        $classNameOff = \Solire\Lib\FrontController::searchClass($className);
+        $classNameOff = FrontController::searchClass($className);
 
         if (!empty($classNameOff)) {
             $this->gabaritClassName = $classNameOff;
             return true;
         }
 
-        throw new \Solire\Lib\Exception\Lib('Aucune classe trouvée ' . $className);
+        throw new LibException('Aucune classe trouvée ' . $className);
     }
 
     /**
@@ -142,7 +145,7 @@ class GabaritManager extends Manager
      *
      * @return boolean Vrais si la classe à été enregistrée comme class à utiliser
      * pour le GabaritBloc
-     * @throws \Solire\Lib\Exception\Lib Lorsqu'aucune classe n'est trouvée
+     * @throws LibException Lorsqu'aucune classe n'est trouvée
      */
     public function setBlocClass($className)
     {
@@ -152,14 +155,14 @@ class GabaritManager extends Manager
             return true;
         }
 
-        $classNameOff = \Solire\Lib\FrontController::searchClass($className);
+        $classNameOff = FrontController::searchClass($className);
 
         if (!empty($classNameOff)) {
             $this->gabaritBlocClassName = $classNameOff;
             return true;
         }
 
-        throw new \Solire\Lib\Exception\Lib('Aucune classe trouvée ' . $className);
+        throw new LibException('Aucune classe trouvée ' . $className);
     }
 
     /**
@@ -173,7 +176,7 @@ class GabaritManager extends Manager
      * @param bool $join        Chercher les infos sur les pages jointes
      * @param bool $visible     Si oui uniquement les blocs visibles seront récupérés
      *
-     * @return boolean|\Solire\Lib\Model\GabaritPage
+     * @return boolean|GabaritPage
      * @hook gabarit/ <gabaritName>Page A la fin du chargement de la page
      */
     public function getPage(
@@ -1769,7 +1772,7 @@ class GabaritManager extends Manager
                 }
 
                 if ($champ['typedonnee'] == 'DATE' && $value != '') {
-                    $value = \Solire\Lib\Format\DateTime::frToSql($value);
+                    $value = DateTime::frToSql($value);
                 }
 
                 if ($champ['trad'] == 0 && $updating) {
@@ -2038,7 +2041,7 @@ class GabaritManager extends Manager
 
 
             if ($champ['typedonnee'] == 'DATE' && $value != '') {
-                $value = \Solire\Lib\Format\DateTime::frToSql($value);
+                $value = DateTime::frToSql($value);
             }
 
             switch ($champ['type']) {
@@ -2271,7 +2274,7 @@ class GabaritManager extends Manager
                 }
 
                 if ($champ['typedonnee'] == 'DATE' && $value != '') {
-                    $value = \Solire\Lib\Format\DateTime::frToSql($value);
+                    $value = DateTime::frToSql($value);
                 }
 
                 $values[$champ['name']] = $value;
@@ -2317,7 +2320,7 @@ class GabaritManager extends Manager
                 }
 
                 if ($champ['typedonnee'] == 'DATE' && $value != '') {
-                    $value = \Solire\Lib\Format\DateTime::frToSql($value);
+                    $value = DateTime::frToSql($value);
                 }
 
                 $values[$champ['name']] = $value;

@@ -7,6 +7,8 @@
  */
 
 namespace Solire\Lib\Model\Gabarit\FieldSet;
+use Solire\Lib\Format\DateTime;
+use Solire\Lib\FrontController;
 
 /**
  * Fieldset
@@ -138,7 +140,7 @@ abstract class GabaritFieldSet
 
         if ($champ['typedonnee'] == 'DATE') {
             if ($value != '0000-00-00' && $value != '') {
-                $value = \Solire\Lib\Format\DateTime::sqlTo($value);
+                $value = DateTime::sqlTo($value);
             } else {
                 $value = '';
             }
@@ -148,7 +150,7 @@ abstract class GabaritFieldSet
 
         $classNameType = 'Model\\Gabarit\\Field\\' . ucfirst($type) . '\\'
                        . ucfirst($type) . 'Field';
-        $classNameType = \Solire\Lib\FrontController::searchClass($classNameType);
+        $classNameType = FrontController::searchClass($classNameType);
 
         if ($classNameType === false) {
             $classNameType  = '\Solire\Lib\Model\Gabarit\Field\\' . ucfirst($type) . '\\'

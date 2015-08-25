@@ -8,13 +8,15 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\Text;
 
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+
 /**
  * Champ Text
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class TextField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
+class TextField extends GabaritField
 {
 
     /**

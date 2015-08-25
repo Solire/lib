@@ -8,6 +8,8 @@
 
 namespace Solire\Lib\Model;
 
+use Solire\Lib\Format\Number;
+use Solire\Lib\Format\String;
 use Solire\Lib\Path;
 
 /**
@@ -246,7 +248,7 @@ class FileManager extends manager
         }
 
         /* Clean the fileName for security reasons */
-        $name = \Solire\Lib\Format\String::urlSlug($name);
+        $name = String::urlSlug($name);
         $fileName = $name . '.' . $ext;
 
         /* Look for the content type header */
@@ -441,7 +443,7 @@ class FileManager extends manager
             } else {
                 $width = 0;
                 $height = 0;
-                $jsonrpc['taille'] = \Solire\Lib\Format\Number::formatSize($size);
+                $jsonrpc['taille'] = Number::formatSize($size);
             }
 
             /* Ajout d'informations utiles (ou pas) */

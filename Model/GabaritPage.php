@@ -7,6 +7,7 @@
  */
 
 namespace Solire\Lib\Model;
+use Solire\Lib\FrontController;
 
 /**
  * Gabarit Page
@@ -423,7 +424,7 @@ class GabaritPage extends GabaritBloc
         $this->view['api'] = $this->gabarit->getApi();
 
         ob_start();
-        $customForm = \Solire\Lib\FrontController::search('Model/Gabarit/form/default/default.phtml', false);
+        $customForm = FrontController::search('Model/Gabarit/form/default/default.phtml', false);
 
         if ($customForm !== false) {
             include $customForm;
@@ -445,7 +446,7 @@ class GabaritPage extends GabaritBloc
     {
         $path = '/Gabarit/form/default/selectparents.phtml';
 
-        $customForm = \Solire\Lib\FrontController::search('Model' . $path, false);
+        $customForm = FrontController::search('Model' . $path, false);
 
         if ($customForm !== false) {
             include $customForm;

@@ -10,13 +10,15 @@ namespace Solire\Lib\Model\Gabarit\Field\File;
 
 use \Solire\Lib\Model\FileManager;
 
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+
 /**
  * Champ File
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class FileField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
+class FileField extends GabaritField
 {
     /**
      * Création du champ

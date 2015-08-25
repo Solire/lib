@@ -9,13 +9,15 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\Join;
 
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+
 /**
  * Champ Join
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class JoinField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
+class JoinField extends GabaritField
 {
 
     /**

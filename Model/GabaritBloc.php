@@ -8,6 +8,8 @@
  */
 
 namespace Solire\Lib\Model;
+use Solire\Lib\Format\DateTime;
+use Solire\Lib\FrontController;
 
 /**
  * Bloc
@@ -241,7 +243,7 @@ class GabaritBloc
         }
 
         $className = 'Model\\Gabarit\\FieldSet\\' . ucfirst($type) . '\\' . ucfirst($type);
-        $className = \Solire\Lib\FrontController::searchClass($className);
+        $className = FrontController::searchClass($className);
 
 
         if ($className === false) {
@@ -280,7 +282,7 @@ class GabaritBloc
 
         if ($champ['typedonnee'] == 'DATE') {
             if ($value != '0000-00-00' && $value != '') {
-                $value = \Solire\Lib\Format\DateTime::sqlTo($value);
+                $value = DateTime::sqlTo($value);
             } else {
                 $value = '';
             }
@@ -290,7 +292,7 @@ class GabaritBloc
 
         $classNameType = 'Model\\Gabarit\\Field\\' . ucfirst($type) . '\\'
         . ucfirst($type) . 'Field';
-        $classNameType = \Solire\Lib\FrontController::searchClass($classNameType);
+        $classNameType = FrontController::searchClass($classNameType);
 
         if ($classNameType === false) {
             $classNameType = '\\Solire\\Lib\\Model\\Gabarit\\Field\\' . ucfirst($type) . '\\'
