@@ -8,6 +8,8 @@
 
 namespace Solire\Lib\Exception;
 
+use Solire\Lib\Formulaire\ExceptionTrait;
+
 /**
  * Erreur de l'utilisateur
  *
@@ -21,7 +23,7 @@ namespace Solire\Lib\Exception;
  */
 class User extends \Exception
 {
-    use \Solire\Lib\Formulaire\ExceptionTrait;
+    use ExceptionTrait;
 
     /**
      * Lien vers la page qui suit le message
