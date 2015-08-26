@@ -7,7 +7,7 @@ use Solire\Lib\MyPDO;
 use Solire\Lib\Registry;
 
 /**
- * MonologPDO Handler class
+ * Monolog PDO Handler class
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -24,7 +24,7 @@ class MonologPDOHandler extends AbstractHandler
     /**
      * {@inheritdoc}
      *
-     * @param Conf|array $conf Antibruteforce configuration
+     * @param Conf|array[] $conf Antibruteforce configuration
      */
     public function __construct($conf)
     {

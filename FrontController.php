@@ -109,7 +109,7 @@ class FrontController
      *
      * @var array
      */
-    protected $rewriting = array();
+    protected $rewriting = [];
 
     /**
      *
@@ -160,7 +160,7 @@ class FrontController
     /**
      * Loader des librairies img
      *
-     * @var Loader\Img
+     * @var Img
      */
     private $loaderImg = false;
 
@@ -348,7 +348,7 @@ class FrontController
         /* On met la valeur par défaut pour pouvoir tester l'app par défaut */
         $this->controller = $this->getDefault('controller');
 
-        $this->rewriting = array();
+        $this->rewriting = [];
 
         $controller = false;
         /* Contrôle du controller */
@@ -906,11 +906,11 @@ class FrontController
         $dir       = $sourceDirectory['dir'];
         $public    = $sourceDirectory['public'];
 
-        self::$sourceDirectories[] = array(
+        self::$sourceDirectories[] = [
             'name'      => $name,
             'dir'       => $dir,
             'namespace' => $namespace,
-        );
+        ];
         self::$publicDirs[] = $public;
     }
 

@@ -16,7 +16,7 @@
 ?>
                 <div>
                     <input style="" class="join-simple" <?php echo $checked ? 'checked="checked"' : ''; ?> type="checkbox" value="<?php echo $value["id"]; ?>" name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id . $value["id"]; ?>" class="<?php echo $this->classes; ?> join" />
-                    <label style="margin-left:0;display: inline;float:none;" for="<?php echo $this->id . $value["id"]; ?>"><?php echo $value["label"]; ?></label>
+                    <label style="margin-left:0;display: inline;float:none;" for="<?php echo $this->id . $value['id']; ?>"><?php echo $value['label']; ?></label>
                 </div>
 <?php
         }

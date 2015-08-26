@@ -20,18 +20,18 @@ class DB
     /**
      * Contient les objets PDO de connection
      *
-     * @var array
+     * @var MyPDO[]
      */
     static private $present;
 
     /**
-     * Parametrage de base
+     * Paramétrage de base
      *
      * @var array
      */
-    static private $config = array(
+    static private $config = [
         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-    );
+    ];
 
     /**
      * Inutilisé
@@ -47,7 +47,7 @@ class DB
      * Crée une connection à la base de données.
      *
      * @param array  $ini         Doit être sous la forme :<ul>
-     * <li>dsn => ''        // chaine de connexion propre à pdo, par exemple :
+     * <li>dsn => ''        // chaîne de connexion propre à pdo, par exemple :
      * "mysql:dbname=%s;host=%s" ou "mysql:dbname=%s;host=%s;port=%s"</li>
      * <li>host => ''       // host de la connexion à la bdd</li>
      * <li>dbname => ''     // Nom de la base de données</li>
@@ -92,7 +92,7 @@ class DB
 
         /**
          * Option d'affichage des erreurs
-         * Parametrable dans le config.ini de la bdd
+         * Paramétrable dans le config.ini de la bdd
          */
         if (isset($ini['error']) && $ini['error'] == true) {
             self::$present[$ini['name']]->setAttribute(
@@ -109,7 +109,7 @@ class DB
         /**
          * Spécifique à mysql
          * Modifie l'encodage du buffer de sortie de la base qui est par
-         * defaut en ISO pour être en accord avec l'encodage de la base.
+         * défaut en ISO pour être en accord avec l'encodage de la base.
          */
         if (isset($ini['utf8']) && $ini['utf8'] == true) {
             self::$present[$ini['name']]->exec('SET NAMES UTF8');
@@ -129,7 +129,7 @@ class DB
      * @param string $dbName Nom de la base de données
      *
      * @return MyPDO
-     * @throws LibExeception Si il n'y a pas de bdd répondant au nom $dbName
+     * @throws Exception\Lib
      */
     final public static function get($dbName)
     {

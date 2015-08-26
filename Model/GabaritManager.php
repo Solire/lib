@@ -187,6 +187,7 @@ class GabaritManager extends Manager
         $join = false,
         $visible = false
     ) {
+        /** @var GabaritPage $page */
         $page = new $this->gabaritClassName();
 
         /**
@@ -299,8 +300,6 @@ class GabaritManager extends Manager
      */
     public function getParentsPotentiels($id_version, $id_api, $parentData)
     {
-        $parents = [];
-
         /**
          * Si le gabarit parent est lui-même son propre parent
          */
@@ -439,7 +438,6 @@ class GabaritManager extends Manager
                 $params2[$param['code_champ_param']] = $param['value'];
             }
             foreach ($champs as &$group) {
-
                 foreach ($group as &$champ) {
                     if (!isset($champ['params'])) {
                         if (isset($paramsDefault[$champ['type']])) {
@@ -472,7 +470,7 @@ class GabaritManager extends Manager
      *
      * @param gabarit $gabarit Gabarit parent des blocs
      *
-     * @return GabaritBloc tableau associatif des blocs dynamiques
+     * @return GabaritBloc[] tableau associatif des blocs dynamiques
      */
     public function getBlocs($gabarit)
     {
@@ -558,6 +556,7 @@ class GabaritManager extends Manager
             $gabarit_bloc->setChamps($champs);
             $gabarit_bloc->setJoins($joins);
 
+            /** @var GabaritBloc $bloc */
             $bloc = new $this->gabaritBlocClassName();
 
             $bloc->setGabarit($gabarit_bloc);
@@ -804,6 +803,7 @@ class GabaritManager extends Manager
             /**
              * Si on a des parents pour une des valeurs d'un bloc
              */
+            /** @var GabaritPage[] $parentsPage */
             $parentsPage = [];
             $parentsMeta = [];
             if (count($parents) > 0) {
@@ -845,7 +845,6 @@ class GabaritManager extends Manager
                            . ' AND `id` IN (' . implode(', ', $parentsUnique2) . ')'
                            . ' AND `suppr` = 0';
                     $parentTmp = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
-                    $parentsMeta = array_merge($parentsMeta, $parentTmp);
 
                     foreach ($parentTmp as $parentMeta) {
                         if ($parentMeta['id_parent'] != 0) {
@@ -874,7 +873,6 @@ class GabaritManager extends Manager
                                . ' AND `suppr` = 0';
                         $parentTmp = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
-                        $parentsMeta2 = array_merge($parentsMeta, $parentTmp);
                         foreach ($parentTmp as $parentMeta) {
                             if ($parentMeta['id_parent'] != 0) {
                                 $parents[] = $parentMeta['id_parent'];
@@ -954,7 +952,7 @@ class GabaritManager extends Manager
      * @param int $id_gab_page_parent Identifiant de la page parente
      * @param int $id_version         Identifiant de la version
      *
-     * @return array
+     * @return GabaritPage[]
      */
     public function getParents($id_gab_page_parent, $id_version)
     {
@@ -988,20 +986,20 @@ class GabaritManager extends Manager
      * Retourne un tableau de page a partir de l'identifiant d'un parent.
      * <br />On peut préciser l'identifiant du gabarit.
      *
-     * @param int    $id_version Identifiant de la version
-     * @param int    $id_api     Identifiant de l'api
-     * @param int    $id_parent  Identifiant de la page parente.
-     *  si page les plus haute dans le plan du site : __0__.
-     *  si ce critère ne doit pas être pris en compte : __false__
-     * @param int    $id_gabarit Identifiant(s) du/des gabarits
-     * @param bool   $visible    Si vrai uniquement les pages visibles
-     * @param string $orderby    Champ dans la bdd pour ordonner les pages
-     * @param string $sens       ASC/DESC sens d'ordre
-     * @param int    $debut      Rang à partir duquel récupérer les pages
-     * @param int    $nbre       Nombre de pages à récupérer
-     * @param bool   $main       ???
+     * @param int      $id_version Identifiant de la version
+     * @param int      $id_api     Identifiant de l'api
+     * @param int|bool $id_parent  Identifiant de la page parente.
+     *                             si page les plus haute dans le plan du site : __0__.
+     *                             si ce critère ne doit pas être pris en compte : __false__
+     * @param int      $id_gabarit Identifiant(s) du/des gabarits
+     * @param bool     $visible    Si vrai uniquement les pages visibles
+     * @param string   $orderby    Champ dans la bdd pour ordonner les pages
+     * @param string   $sens       ASC/DESC sens d'ordre
+     * @param int      $debut      Rang à partir duquel récupérer les pages
+     * @param int      $nbre       Nombre de pages à récupérer
+     * @param bool     $main       ???
      *
-     * @return \Solire\Lib\Model\GabaritPage|array tableau de page
+     * @return GabaritPage[] tableau de page
      */
     public function getList(
         $id_version,
@@ -1116,11 +1114,11 @@ class GabaritManager extends Manager
     /**
      * Retourne un tableau de page dont le titre contient un terme
      *
-     * @param int    $id_version Identifiant de la version
-     * @param string $term       Chaine de caractère à chercher
-     * @param int    $id_gabarit Identifiant du gabarit
-     * @param int    $id_parent  Identifiant de la page parente
-     * @param bool   $visible    Si vrai uniquement les pages visible
+     * @param int      $id_version Identifiant de la version
+     * @param string   $term       Chaine de caractère à chercher
+     * @param int      $id_gabarit Identifiant du gabarit
+     * @param int|bool $id_parent  Identifiant de la page parente
+     * @param bool     $visible    Si vrai uniquement les pages visible
      *
      * @return GabaritPage tableau de page
      */
@@ -1418,6 +1416,7 @@ class GabaritManager extends Manager
         /*
          * Insertion dans la table `gab_page`.
          */
+        $visibles_parents = [];
         if (isset($donnees['id_parent']) && $donnees['id_parent']) {
             $id_parent = $donnees['id_parent'];
 
@@ -1680,7 +1679,7 @@ class GabaritManager extends Manager
      * @param GabaritPage $page  Page
      * @param string      $titre Titre à partir duquel construire le rewriting
      *
-     * @return type
+     * @return string
      */
     protected function buildRewriting($page, $titre)
     {
@@ -1857,7 +1856,7 @@ class GabaritManager extends Manager
      * @param GabaritBloc $bloc        Bloc à sauver
      * @param int         $id_gab_page Identifiant de la page parente du bloc
      * @param int         $id_version  Identifiant de la version
-     * @param array       &$donnees    Données à enregistrer
+     * @param array       $donnees     Données à enregistrer
      * @param boolean     $partialSave Ne sauvegarde que les champs présents
      *
      * @return boolean Retourne TRUE si une des lignes du bloc a été modifié,
@@ -1872,15 +1871,14 @@ class GabaritManager extends Manager
         $partialSave = false
     ) {
         $gabarit = $bloc->getGabarit();
-        $table = $gabarit->getTable();
-        $champs = $gabarit->getChamps();
-        $ordre = 1;
+        $table   = $gabarit->getTable();
+        $champs  = $gabarit->getChamps();
+        $ordre   = 1;
 
         $modif = false;
 
         $firstField = current($bloc->getGabarit()->getJoins());
-        if (
-            count($bloc->getGabarit()->getJoins()) == 1
+        if (count($bloc->getGabarit()->getJoins()) == 1
             && $firstField['type'] == 'JOIN'
             && $firstField['params']['VIEW'] == 'simple'
         ) {
@@ -1961,7 +1959,7 @@ class GabaritManager extends Manager
         $hook = new Hook();
         $hook->setSubdirName('gabarit');
 
-        $hook->data = $donnees;
+        $hook->data      = $donnees;
         $hook->idGabPage = $id_gab_page;
         $hook->idVersion = $id_version;
         $hook->tableName = $table;
@@ -1977,7 +1975,7 @@ class GabaritManager extends Manager
      * @param array   $champs      Champs du bloc dynamique
      * @param int     $id_bloc     Identifiant du bloc
      * @param int     $ordre       Ordre du bloc
-     * @param array   &$donnees    Données à enregistrer
+     * @param array   $donnees     Données à enregistrer
      * @param int     $id_gab_page Identifiant de la page
      * @param int     $id_version  Identifiant de la version
      * @param boolean $partialSave Identifiant de la version
@@ -2055,12 +2053,12 @@ class GabaritManager extends Manager
                             . $this->db->quote($lng) . ',';
                     $query .= '`' . $champ['name'] . '_zoom` = '
                             . $this->db->quote($zoom) . ',';
-                break;
+                    break;
 
                 default:
                     $query .= '`' . $champ['name'] . '` = '
                             . $this->db->quote($value) . ',';
-                break;
+                    break;
             }
         }
 
@@ -2141,9 +2139,9 @@ class GabaritManager extends Manager
         foreach ($filesUsed as $file) {
             if ($file != '') {
                 $query = 'INSERT IGNORE INTO `media_fichier_utilise` SET'
-                . ' id_gab_page = ' . $id_gab_page . ','
-                . ' rewriting = ' . $this->db->quote($file) . ','
-                . ' id_version = ' . $id_version;
+                       . ' id_gab_page = ' . $id_gab_page . ','
+                       . ' rewriting = ' . $this->db->quote($file) . ','
+                       . ' id_version = ' . $id_version;
 
                 $tmpModif = $this->db->exec($query);
                 if (!$modif && $tmpModif) {
@@ -2287,8 +2285,8 @@ class GabaritManager extends Manager
     /**
      * Rempli les données de contenu des blocs dynamiques de prévisualisation
      *
-     * @param GabaritBloc $bloc     Bloc
-     * @param array       &$donnees Données à prévisualisée
+     * @param GabaritBloc $bloc    Bloc
+     * @param array       $donnees Données à prévisualiser
      *
      * @return boolean
      */
@@ -2313,8 +2311,8 @@ class GabaritManager extends Manager
 
                 $value = array_shift($donnees['champ' . $champ['id']]);
 
-                if (
-                $champ['type'] != 'WYSIWYG' && $champ['type'] != 'TEXTAREA'
+                if ($champ['type'] != 'WYSIWYG'
+                    && $champ['type'] != 'TEXTAREA'
                 ) {
                     $value = str_replace('"', '&quot;', $value);
                 }

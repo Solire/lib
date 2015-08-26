@@ -34,8 +34,8 @@
                                     <div style="display:none;">
                                         <div class="line form-line">
                                             <div class="line"<?php if ($this->view['metaId'] == 1) {echo ' style="display:none;"';} ?>>
-                                                <label for="rewriting-<?php echo $this->view['metaLang']; ?>">Rewriting<?php echo isset($this->meta['rewriting']) && $this->meta['rewriting'] != "" ? ' <span class="required">*</span>' : ''; ?></label>
-                                                <input type="text" name="rewriting" id="rewriting-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['rewriting']) ? $this->meta['rewriting'] : ''; ?>" class="form-controle<?php echo isset($this->meta['rewriting']) && $this->meta['rewriting'] != "" ? ' form-oblig form-notnul' : ''; ?>" />
+                                                <label for="rewriting-<?php echo $this->view['metaLang']; ?>">Rewriting<?php echo isset($this->meta['rewriting']) && $this->meta['rewriting'] != '' ? ' <span class="required">*</span>' : ''; ?></label>
+                                                <input type="text" name="rewriting" id="rewriting-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['rewriting']) ? $this->meta['rewriting'] : ''; ?>" class="form-controle<?php echo isset($this->meta['rewriting']) && $this->meta['rewriting'] != '' ? ' form-oblig form-notnul' : ''; ?>" />
                                             </div>
 
                                             <div class="line form-other-line" style="display:none;">

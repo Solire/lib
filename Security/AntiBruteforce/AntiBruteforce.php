@@ -5,6 +5,7 @@ use Solire\Conf\Conf;
 use Solire\Lib\MyPDO;
 use Solire\Lib\Registry;
 use Solire\Lib\Security\AntiBruteforce\Exception\InvalidIpException;
+use Solire\Lib\Security\AntiBruteforce\Handler\AbstractHandler;
 
 /**
  * Gestionnaire de blocages des attacks par bruteforce
@@ -18,14 +19,14 @@ class AntiBruteforce
     /**
      * La configuration
      *
-     * @var Conf
+     * @var Conf|array[]
      */
     protected $conf = null;
 
     /**
      * L'ip courante testée
      *
-     * @var Conf
+     * @var string
      */
     protected $ip = null;
 
@@ -39,8 +40,8 @@ class AntiBruteforce
     /**
      * Construct
      *
-     * @param Conf        $conf La configuration
-     * @param null|string $ip   L'ip à tester, si null, l'ip du client
+     * @param Conf|array[] $conf La configuration
+     * @param null|string  $ip   L'ip à tester, si null, l'ip du client
      *
      * @throws InvalidIpException
      * @internal param MyPDO $connection La connexion à la base de données
@@ -91,7 +92,8 @@ class AntiBruteforce
                 foreach ($filter['log'] as $configName => $handlerConfig) {
                     $handlerClassname = 'Solire\\Lib\\Security\\AntiBruteforce\\Handler\\'
                         . $handlerConfig['handler'] . 'Handler';
-                    $handler          = new $handlerClassname($handlerConfig);
+                    /** @var AbstractHandler $handler */
+                    $handler = new $handlerClassname($handlerConfig);
                     $countFailed += $handler->countFailed($ip, $filter['findtime']);
 
                     // Limite atteinte
@@ -107,11 +109,11 @@ class AntiBruteforce
     }
 
     /**
-     * Teste si une IP est blockée ou non
+     * Teste si une IP est bloquée ou non
      *
      * @param string $ip L'ip a testé
      *
-     * @return boolean True si l'ip est blockée
+     * @return boolean True si l'ip est bloquée
      *
      * @throws InvalidIpException Ip invalide
      */
@@ -176,7 +178,7 @@ class AntiBruteforce
      * @param string $ip      Ip à bloquer
      * @param int    $banTime Temps de bannissement en secondes
      *
-     * @return boolean True si la requête s'est bien executée
+     * @return boolean True si la requête s'est bien exécutée
      *
      * @todo gérer des handlers différents pour le stockage des ips
      * bloquées, un peu comme les handlers pour la lecture des logs

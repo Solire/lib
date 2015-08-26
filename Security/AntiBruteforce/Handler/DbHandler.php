@@ -2,6 +2,7 @@
 
 namespace Solire\Lib\Security\AntiBruteforce\Handler;
 
+use Solire\Conf\Conf;
 use Solire\Lib\MyPDO;
 use Solire\Lib\Registry;
 
@@ -23,7 +24,7 @@ class DbHandler extends AbstractHandler
     /**
      * {@inheritdoc}
      *
-     * @param Conf|array $conf Antibruteforce configuration
+     * @param Conf|array[] $conf Antibruteforce configuration
      */
     public function __construct($conf)
     {

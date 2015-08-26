@@ -9,6 +9,12 @@
 
 namespace Solire\Lib;
 
+use Solire\Lib\View\View;
+use Zend\Mail\Message;
+use Zend\Mail\Transport\Sendmail;
+use Zend\Mime\Message as MimeMessage;
+use Zend\Mime\Part;
+
 /**
  * Classe simple d'envois de mails utilisant les View (avec TranslateMysql)
  *  et Zend_Mail()
@@ -23,7 +29,7 @@ class Mail
      *
      * @var array
      */
-    private $data = array();
+    private $data = [];
 
     /**
      * Identifiant du mail
@@ -163,7 +169,7 @@ class Mail
      */
     public function send()
     {
-        $mail = new \Zend\Mail\Message();
+        $mail = new Message();
 
         $mail->setEncoding('utf-8')
              ->setFrom($this->from)
@@ -175,15 +181,15 @@ class Mail
         }
 
         $htmlMarkup = $this->loadBody();
-        $html = new \Zend\Mime\Part($htmlMarkup);
+        $html = new Part($htmlMarkup);
         $html->type = 'text/html; charset="utf-8"';
 
-        $body = new \Zend\Mime\Message();
-        $body->setParts(array($html));
+        $body = new MimeMessage();
+        $body->setParts([$html]);
 
         $mail->setBody($body);
 
-        $transport = new \Zend\Mail\Transport\Sendmail();
+        $transport = new Sendmail();
         $transport->send($mail);
     }
 
@@ -259,6 +265,7 @@ class Mail
      * @param string $name Nom de la variable
      *
      * @return mixed
+     * @throws Exception\Lib
      * @ignore
      */
     public function __get($name)

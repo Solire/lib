@@ -52,7 +52,7 @@ class Controller
 
     /**
      *
-     * @var View\View
+     * @var View
      */
     public $view = null;
 
@@ -82,16 +82,9 @@ class Controller
     protected $translate = null;
 
     /**
-     * Log
-     *
-     * @var Log
-     */
-    protected $log = null;
-
-    /**
      * Informations de rewriting
      *
-     * @var stdClass
+     * @var \stdClass
      */
     protected $rew;
 
@@ -128,51 +121,35 @@ class Controller
         }
 
         $this->mainConfig = Registry::get('mainconfig');
-        $this->appConfig = Registry::get('appconfig');
-        $this->envConfig = Registry::get('envconfig');
+        $this->appConfig  = Registry::get('appconfig');
+        $this->envConfig  = Registry::get('envconfig');
 
         $this->request = $_REQUEST;
-        $this->url = Registry::get('basehref');
-        $this->root = Registry::get('baseroot');
-        $this->db = Registry::get('db');
-        $this->log = Registry::get('log');
+        $this->url     = Registry::get('basehref');
+        $this->root    = Registry::get('baseroot');
+        $this->db      = Registry::get('db');
     }
 
     /**
-     * Fonction éxécutée avant l'execution de la fonction relative à la page en cours
+     * Méthode exécutée avant l'execution de la fonction relative à la page en cours
      *
      * @return void
      */
     public function start()
     {
-//        $this->css = new Loader\Css();
-//        $this->javascript = new Loader\Javascript();
-
         $this->seo = new Seo();
+
         $this->view->mainConfig = Registry::get('mainconfig');
-        $this->view->appConfig = Registry::get('appconfig');
-        $this->view->envConfig = Registry::get('envconfig');
-        $this->view->css = $this->css;
+        $this->view->appConfig  = Registry::get('appconfig');
+        $this->view->envConfig  = Registry::get('envconfig');
+        $this->view->css        = $this->css;
         $this->view->javascript = $this->javascript;
-        $this->view->ajax = $this->ajax;
-
-        $this->view->seo = $this->seo;
-
-        if (isset($this->option['mobile.enable'])) {
-            $mobile = new Mobile(
-                Registry::get('base'),
-                $_SERVER['HTTP_USER_AGENT'],
-                'mobile',
-                'mobile'
-            );
-            $this->version = $mobile->currentVersion();
-            $this->view->version = $this->version;
-            Registry::set('base', $mobile->baseHref());
-        }
+        $this->view->ajax       = $this->ajax;
+        $this->view->seo        = $this->seo;
     }
 
     /**
-     * Fonction éxécutée après l'execution de la fonction relative à la page en cours
+     * Méthode exécutée après l'execution de la fonction relative à la page en cours
      *
      * @return void
      */
@@ -192,7 +169,7 @@ class Controller
     {
         $this->view = $view;
 
-        $this->css = $this->view->getCssLoader();
+        $this->css        = $this->view->getCssLoader();
         $this->javascript = $this->view->getJsLoader();
 
         return $this;
@@ -246,7 +223,7 @@ class Controller
     public function redirect($controller, $action, $params = null, $teardown = true)
     {
         if (!$params) {
-            $params = array();
+            $params = [];
         }
 
         if (!$teardown) {
@@ -254,7 +231,7 @@ class Controller
         }
 
         $redirect = $controller . '/' . $action . '.html?'
-                  . http_build_query($params);
+            . http_build_query($params);
         header('Location:' . $this->root . $redirect);
         exit();
     }
@@ -290,14 +267,14 @@ class Controller
             $appUrl .= '/';
         }
 
-        $urlsToTest = array();
+        $urlsToTest = [];
 
-        $mask = '`'
-              . '^/'
-              . FrontController::$envConfig->get('base', 'root')
-              . $appUrl
-              . '`';
-        $url = preg_replace($mask, '', $_SERVER['REQUEST_URI']);
+        $mask     = '`'
+            . '^/'
+            . FrontController::$envConfig->get('base', 'root')
+            . $appUrl
+            . '`';
+        $url      = preg_replace($mask, '', $_SERVER['REQUEST_URI']);
         $urlParts = explode('/', $url);
 
         if (substr($url, -1) == '/') {
@@ -317,33 +294,32 @@ class Controller
                 $url .= '/';
             }
 
-            $urlsToTest[] = array(
+            $urlsToTest[] = [
                 $url,
                 $urlFollowing
-            );
+            ];
         } while (!empty($urlParts));
 
         // On ajoute aussi l'url entière à tester
-        $urlsToTest[] = array(
+        $urlsToTest[] = [
             FrontController::getCurrentURL(),
             ''
-        );
+        ];
 
         $urlsToTest = array_reverse($urlsToTest);
 
-        $urlPartRedirect = '';
-        $redirection301 = false;
+        $redirection301  = false;
         foreach ($urlsToTest as $key => $row) {
             list($urlToTest, $urlFollowing) = $row;
 
             $query = 'SELECT new '
-                    . 'FROM redirection '
-                    . 'WHERE id_version = ' . ID_VERSION . ' '
-                    . ' AND id_api = ' . FrontController::$idApiRew . ' '
-                    . ' AND old LIKE ' . $this->db->quote($urlToTest) . ' '
-                    . 'LIMIT 1';
+                . 'FROM redirection '
+                . 'WHERE id_version = ' . ID_VERSION . ' '
+                . ' AND id_api = ' . FrontController::$idApiRew . ' '
+                . ' AND old LIKE ' . $this->db->quote($urlToTest) . ' '
+                . 'LIMIT 1';
 
-            $redirection301  = $this->db->query($query)->fetch(PDO::FETCH_COLUMN);
+            $redirection301 = $this->db->query($query)->fetch(PDO::FETCH_COLUMN);
 
             if ($redirection301 !== false) {
                 $redirection301 .= $urlFollowing;
@@ -353,11 +329,9 @@ class Controller
 
         if ($redirection301 !== false) {
             // Si l'url de redirection est une url absolue
-            if (substr($redirection301, 0, 7) == 'http://'
-                || substr($redirection301, 0, 8) == 'https://'
+            if (substr($redirection301, 0, 7) != 'http://'
+                && substr($redirection301, 0, 8) != 'https://'
             ) {
-                $redirection301 = $redirection301;
-            } else {
                 $redirection301 = $this->url . $appUrl . $redirection301;
             }
         }
@@ -390,6 +364,8 @@ class Controller
      * @param string $url       Url vers laquelle rediriger l'utilisateur
      *
      * @return void
+     *
+     * @throws HttpError
      * @uses Solire\Lib\Exception\HttpError marque l'erreur HTTP
      */
     final public function redirectError($codeError = null, $url = null)
@@ -464,9 +440,9 @@ class Controller
     /**
      * Alias à l'utilisation de translate
      *
-     * @param string $string Chaine à traduire
+     * @param string $string Chaîne à traduire
      * @param string $aide   Texte permettant de situer l'emplacement de la
-     * chaine à traduire, exemple : 'Situé sur le bas de page'
+     *                       chaîne à traduire, exemple : 'Situé sur le bas de page'
      *
      * @return string
      * @uses TranslateMysql

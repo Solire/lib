@@ -24,19 +24,19 @@ class Seo
 
     /**
      *
-     * @var array  keywords of the page
+     * @var array Keywords of the page
      */
-    private $keywords = array();
+    private $keywords = [];
 
     /**
      *
-     * @var string  description of the page
+     * @var string  Description of the page
      */
     private $description = '';
 
     /**
      *
-     * @var string  url canonical of the page
+     * @var string  Url canonical of the page
      */
     private $urlCanonical = '';
 

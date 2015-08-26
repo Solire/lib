@@ -15,7 +15,15 @@ use Solire\Lib\Registry;
 class PDOHandler extends AbstractProcessingHandler
 {
     private $initialized = false;
+
+    /**
+     * @var \PDO
+     */
     private $pdo;
+
+    /**
+     * @var \PDOStatement
+     */
     private $statement;
 
     /**
@@ -46,11 +54,14 @@ class PDOHandler extends AbstractProcessingHandler
 
         $remoteIp = Registry::get('request')->getClientIp();
 
+        /** @var \DateTime $datetime */
+        $datetime = $record['datetime'];
+
         $this->statement->execute([
             'channel'  => $record['channel'],
             'level'    => $record['level'],
             'message'  => $record['formatted'],
-            'time'     => $record['datetime']->format('U'),
+            'time'     => $datetime->format('U'),
             'remoteip' => $remoteIp
         ]);
     }
@@ -67,7 +78,8 @@ class PDOHandler extends AbstractProcessingHandler
             . '(channel VARCHAR(255), level INTEGER, message LONGTEXT, time INTEGER UNSIGNED, remoteip VARCHAR(255))'
         );
         $this->statement = $this->pdo->prepare(
-            'INSERT INTO monolog (channel, level, message, time, remoteip) VALUES (:channel, :level, :message, :time, :remoteip)'
+            'INSERT INTO monolog (channel, level, message, time, remoteip) '
+            . 'VALUES (:channel, :level, :message, :time, :remoteip)'
         );
 
         $this->initialized = true;

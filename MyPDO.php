@@ -61,13 +61,14 @@ class MyPDO extends \PDO
      *
      * @param string $table Nom de la table où il faudrait controller l'existence
      *
-     * @return type
+     * @return array[]
      */
     public function listTable($table)
     {
         $query  = 'SELECT *'
                 . ' FROM `' . $table . '`';
         $result = $this->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+
         return $result;
     }
 
@@ -95,11 +96,11 @@ class MyPDO extends \PDO
      * @param string $table  Nom de la table où il faudrait controller l'existence
      * @param array  $values Tableau des valeurs à insérer
      *
-     * @return type
+     * @return int|bool Le nombre de ligne qui a été inséré ou false en cas d'erreur
      */
     public function insert($table, $values)
     {
-        $values = array_map(array($this, 'quote'), (array) $values);
+        $values = array_map([$this, 'quote'], (array) $values);
         $fieldNames = array_keys($values);
         $query  = 'INSERT INTO `' . $table . '`'
                 . ' (`' . implode('`,`', $fieldNames) . '`)'
@@ -110,14 +111,14 @@ class MyPDO extends \PDO
     /**
      * replace de données dans MySQL
      *
-     * @param type $table  Table sur laquelle remplacer les données
-     * @param type $values Valeurs à remplacer
+     * @param string $table  Table sur laquelle remplacer les données
+     * @param array  $values Valeurs à remplacer
      *
-     * @return type
+     * @return int|bool Le nombre de ligne qui a été inséré ou false en cas d'erreur
      */
     public function replace($table, $values)
     {
-        $values = array_map(array($this, 'quote'), (array) $values);
+        $values = array_map([$this, 'quote'], (array) $values);
         $fieldNames = array_keys($values);
         $query  = 'REPLACE INTO `' . $table . '`'
                 . ' (`' . implode('`,`', $fieldNames) . '`)'
@@ -165,9 +166,9 @@ class MyPDO extends \PDO
      */
     public function order($fields, $order = 'ASC')
     {
-        $order = array_map(array($this, 'quote'), (array) $order);
+        $order = array_map([$this, 'quote'], (array) $order);
         if (count($fields) == count($order)) {
-            $set = array();
+            $set = [];
             $fields = (array) $fields;
             for ($i = 0; $i < count($fields); $i++) {
                 $set[] = $fields[$i] . ' ' . $order[$i];
@@ -199,17 +200,16 @@ class MyPDO extends \PDO
     /**
      * mis à jour de données de MySQL
      *
-     * @param string $table  Nom de la table dans laquelle maj les données
-     * @param array  $values Données à maj
-     * @param string $where  Where optionnel en SQL
+     * @param string      $table  Nom de la table dans laquelle maj les données
+     * @param array       $values Données à maj
+     * @param string|bool $where  Where optionnel en SQL
      *
      * @return int
      */
     public function update($table, $values, $where = false)
     {
-        $set = array();
+        $set = [];
         foreach ((array) $values as $field => $value) {
-
             $set[] = '`' . $field . '` = ' . $this->quote($value);
         }
 
@@ -248,7 +248,7 @@ class MyPDO extends \PDO
         $query  = 'SHOW FIELDS FROM `' . $table . '` LIKE \'' . $field . '\'';
         $row    = $this->query($query)->fetch(\PDO::FETCH_ASSOC);
 
-        $match  = array();
+        $match  = [];
         if (!preg_match('`^enum\((.*?)\)$`ism', $row['Type'], $match)) {
             return null;
         }
@@ -301,8 +301,8 @@ class MyPDO extends \PDO
             array_unshift($words, $stringSearch);
         }
 
-        $filterWords = array();
-        $orderBy     = array();
+        $filterWords = [];
+        $orderBy     = [];
         foreach ($words as $word) {
             foreach ($columns as $key => $value) {
                 if (is_numeric($value)) {
@@ -320,9 +320,9 @@ class MyPDO extends \PDO
             }
         }
 
-        return array(
+        return [
             'where'  => ' (' . implode(' OR ', $filterWords) . ')',
             'order'  => ' ' . implode(' + ', $orderBy),
-        );
+        ];
     }
 }

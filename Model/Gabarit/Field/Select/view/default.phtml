@@ -1,6 +1,6 @@
 <div class="line">
     <label for="<?php echo $this->id; ?>">
-        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
+        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
     </label>
     <select name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="<?php echo $this->classes; ?>">
         <option value="">---</option>

@@ -7,8 +7,10 @@
  */
 
 namespace Solire\Lib\Model\Gabarit\FieldSet;
+
 use Solire\Lib\Format\DateTime;
 use Solire\Lib\FrontController;
+use Solire\Lib\Model\GabaritBloc;
 
 /**
  * Fieldset
@@ -38,11 +40,10 @@ abstract class GabaritFieldSet
     /**
      * Constructeur
      *
-     * @param \Solire\Lib\Model\GabaritBloc $bloc      Bloc pour lequel on désire contruire le formulaire
-     * @param int                           $idGabPage Identifiant de la page contenant le bloc
-     * @param int                           $versionId Identifiant de la version
+     * @param GabaritBloc $bloc      Bloc pour lequel on désire construire le formulaire
+     * @param int         $idGabPage Identifiant de la page contenant le bloc
+     * @param int         $versionId Identifiant de la version
      *
-     * @return void
      */
     public function __construct($bloc, $idGabPage, $versionId)
     {
@@ -109,11 +110,11 @@ abstract class GabaritFieldSet
     }
 
     /**
-     * Contruit l'élément de formulaire correspondant à un champ
+     * Construit l'élément de formulaire correspondant à un champ
      *
      * @param array  $champ     Tableau d'info sur le champ
      * @param string $value     Valeur du champ
-     * @param string $idpage    Identifiant à concatainer à l'attribut 'id' du champ
+     * @param string $idpage    Identifiant à concaténer à l'attribut 'id' du champ
      * @param int    $idGabPage Nom du dossier dans lequel sont les images.
      * @param type   $gabarit   Gabarit
      *

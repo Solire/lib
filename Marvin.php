@@ -7,6 +7,7 @@
  */
 
 namespace Solire\Lib;
+
 use Solire\Conf\Loader;
 
 /**
@@ -32,8 +33,8 @@ class Marvin
     /**
      * Génère un rapport d'alerte
      *
-     * @param string    $title Titre du rapport
-     * @param Exception $error Exception à exploiter
+     * @param string     $title Titre du rapport
+     * @param \Exception $error Exception à exploiter
      *
      * @uses Config
      */
@@ -67,7 +68,7 @@ class Marvin
           ------------------------------------------------- */
         if (!empty($REQUEST)) {
             foreach ($REQUEST as $key => $value) {
-                $loc = array();
+                $loc = [];
 
                 if (isset($_GET[$key])) {
                     $loc[] = 'GET';
@@ -85,7 +86,7 @@ class Marvin
                     $loc[] = 'SERVER';
                 }
 
-                $req = array();
+                $req = [];
                 $req['loc'] = implode(' | ', $loc);
                 $req['key'] = $key;
                 $req['value'] = $this->varDump($value);
@@ -98,7 +99,7 @@ class Marvin
         if (method_exists($error, 'getData')) {
             $data = $error->getData();
             foreach ($data as $key => $value) {
-                $req = array();
+                $req = [];
                 $req['key'] = $key;
                 $req['value'] = $this->varDump($value);
                 $this->data[] = $req;

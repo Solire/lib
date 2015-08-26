@@ -67,8 +67,8 @@ class Param
      */
     public function tests($options)
     {
-        if (!is_array($options) || empty ($options)) {
-            return $this->error('$options doit être un tableau');
+        if (!is_array($options) || empty($options)) {
+            $this->error('$options doit être un tableau');
         }
 
         foreach ($options as $option) {
@@ -81,7 +81,7 @@ class Param
             }
             $method = 'test' . ucwords($option);
             if (!method_exists(__CLASS__, $method)) {
-                return $this->error('erreur : ' . $method . ' n\'existe pas');
+                $this->error('erreur : ' . $method . ' n\'existe pas');
             }
 
             if (!$this->$method($param)) {
@@ -113,7 +113,7 @@ class Param
      */
     public function testIsInt()
     {
-        if ((string)((int)$this->foo) == (string)$this->foo) {
+        if ((string) ((int) $this->foo) == (string) $this->foo) {
             return true;
         }
         return false;
@@ -152,7 +152,7 @@ class Param
      */
     public function testIsFloat()
     {
-        if ((string)((float)$this->foo) == (string)$this->foo) {
+        if ((string) ((float) $this->foo) == (string) $this->foo) {
             return true;
         }
         return false;
@@ -192,7 +192,7 @@ class Param
      */
     public function testIsString()
     {
-        if ((string)$this->foo === $this->foo) {
+        if ((string) $this->foo === $this->foo) {
             return true;
         }
         return false;

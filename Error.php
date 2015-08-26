@@ -28,7 +28,7 @@ final class Error
      * @todo Déporter les descriptions des erreurs http possible dans un tutorial
      * @var array
      */
-    static private $headers = array(
+    static private $headers = [
         301 => '301 Moved Permanently',
         // Une authentification est nécessaire pour accéder à la ressource
         401 => '401 Unauthorized',
@@ -42,7 +42,7 @@ final class Error
         500 => '500 Internal Server Error',
         // Service temporairement indisponible ou en maintenance
         503 => '503 Service Unavailable',
-    );
+    ];
 
     /**
      * Fonctionnement par défaut, fait passer la page en erreur 500
@@ -93,7 +93,7 @@ final class Error
      */
     private static function getPath($code)
     {
-        $dirs = FrontController::getAppDirs();
+        $dirs = FrontController::getSourceDirectories();
         foreach ($dirs as $dir) {
             $path = $dir['dir'] . Path::DS . 'error' . Path::DS;
             $path = new Path($path . $code . '.phtml', Path::SILENT);

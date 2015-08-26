@@ -37,12 +37,14 @@ class Message
      */
     public $auto = null;
 
+    public $url;
+
     /**
      * Valeurs possible pour l'etat
      *
      * @var array
      */
-    private $etats = array('alert', 'error', 'success');
+    private $etats = ['alert', 'error', 'success'];
 
     /**
      * Basehref du site
@@ -127,6 +129,7 @@ class Message
      */
     private function displayJson()
     {
+        $data = [];
         foreach ($this as $key => $value) {
             if (strpos($key, '_') === 0) {
                 continue;
@@ -145,7 +148,7 @@ class Message
      */
     private function getPath()
     {
-        $dirs = FrontController::getAppDirs();
+        $dirs = FrontController::getSourceDirectories();
         foreach ($dirs as $dir) {
             $path = $dir['dir'] . Path::DS . 'error' . Path::DS . 'message.phtml';
             $path = new Path($path, Path::SILENT);
@@ -168,7 +171,7 @@ class Message
      * Affiche le message en html
      *
      * @return void
-     * @throws Solire\Lib\Exception\Lib
+     * @throws Exception\Lib
      */
     private function displayHtml()
     {

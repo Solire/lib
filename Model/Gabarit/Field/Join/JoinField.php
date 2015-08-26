@@ -9,6 +9,7 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\Join;
 
+use Solire\Lib\Model\Gabarit;
 use Solire\Lib\Model\Gabarit\Field\GabaritField;
 
 /**
@@ -35,14 +36,14 @@ class JoinField extends GabaritField
 
     /**
      *
-     * @var type
+     * @var Gabarit
      */
     protected $gabarit = null;
 
     /**
      * Création du champ
      *
-     * @param \Solire\Lib\Model\gabarit $gabarit Gabarit à afficher
+     * @param Gabarit $gabarit Gabarit à afficher (utilisé dans le cas de SimpleFieldSet)
      *
      * @return void
      */
