@@ -26,7 +26,7 @@ class Trans extends \Twig_Node
      */
     public function __construct($body, $lineno, $tag = 'trans')
     {
-        parent::__construct(array ('body' => $body), array (), $lineno, $tag);
+        parent::__construct(['body' => $body], [], $lineno, $tag);
     }
 
     /**
@@ -42,7 +42,9 @@ class Trans extends \Twig_Node
             ->addDebugInfo($this)
             ->write("ob_start();\n")
             ->subcompile($this->getNode('body'))
-            ->write("echo Solire\\Lib\\Registry::get('translator')->trad(trim(preg_replace('/\s+/', ' ', ob_get_clean())));\n")
-        ;
+            ->write(
+                "echo Solire\\Lib\\Registry::get('translator')"
+                . "->trad(trim(preg_replace('/\s+/', ' ', ob_get_clean())));\n"
+            );
     }
 }

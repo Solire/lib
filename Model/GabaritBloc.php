@@ -8,8 +8,11 @@
  */
 
 namespace Solire\Lib\Model;
+
 use Solire\Lib\Format\DateTime;
 use Solire\Lib\FrontController;
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+use Solire\Lib\Model\Gabarit\FieldSet\Defaut\DefautFieldSet;
 
 /**
  * Bloc
@@ -86,9 +89,9 @@ class GabaritBloc
     /**
      * Enregistre une valeur
      *
-     * @param type $i     I
-     * @param type $value Value
-     * @param type $key   Key
+     * @param int                       $i     Indice auquel insérer la valeur
+     * @param array|boolean|GabaritPage $value Valeur à enregistrer
+     * @param string                    $key   Clé de la valeur
      *
      * @return boolean
      */
@@ -121,7 +124,7 @@ class GabaritBloc
     /**
      * Renvoie le gabarit
      *
-     * @return gabarit
+     * @return Gabarit
      */
     public function getGabarit()
     {
@@ -247,9 +250,11 @@ class GabaritBloc
 
 
         if ($className === false) {
-            $className = '\\Solire\\Lib\\Model\\Gabarit\\FieldSet\\' . ucfirst($type) . '\\' . ucfirst($type) . 'FieldSet';
+            $className = '\\Solire\\Lib\\Model\\Gabarit\\FieldSet\\'
+                . ucfirst($type) . '\\' . ucfirst($type) . 'FieldSet';
         }
 
+        /** @var DefautFieldSet $fieldset */
         $fieldset = new $className($this, $idGabPage, $versionId);
         $fieldset->start();
         $form .= $fieldset->toString();
@@ -299,6 +304,7 @@ class GabaritBloc
             . ucfirst($type) . 'Field';
         }
 
+        /** @var GabaritField $field */
         $field = new $classNameType($champ, $label, $value, $id, $classes, $idGabPage, $idVersion);
         $field->start();
         $form .= $field;

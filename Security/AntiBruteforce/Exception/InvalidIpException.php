@@ -16,11 +16,19 @@ namespace Solire\Lib\Security\AntiBruteforce\Exception;
  */
 class InvalidIpException extends \Exception
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @param string     $message  [optional] The Exception message to throw.
+     * @param int        $code     [optional] The Exception code.
+     * @param \Exception $previous [optional] The previous exception used for the exception chaining. Since 5.3.0
+     */
     public function __construct($message = '', $code = 0, $previous = null)
     {
         if ($message == '') {
             $message = 'Invalid Ip';
         }
-        parent::__construct((string)$message, (int)$code, $previous);
+
+        parent::__construct((string) $message, (int) $code, $previous);
     }
 }

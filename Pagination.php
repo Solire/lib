@@ -78,7 +78,7 @@ class Pagination
     /**
      * Permet de limiter l'affichage des pages à N pages avant et après la page
      * courante (-1 pour la liste complete des pages)
-     * @var string
+     * @var int
      */
     protected $delta = 1;
 
@@ -120,7 +120,7 @@ class Pagination
         }
 
         $this->calculNbPages();
-        $currentPage = $this->setCurrentPage($currentPage);
+        $this->setCurrentPage($currentPage);
         $this->calculLimit();
         $this->executeQuery();
     }
@@ -175,28 +175,28 @@ class Pagination
      */
     public function getPaginationArray()
     {
-        $pages = array();
+        $pages = [];
 
         /* Lien page précédente */
         if ($this->prevHtml && $this->currentPage > 1) {
-            $pages[] = array(
+            $pages[] = [
                 'text'    => $this->prevHtml,
                 'num'     => $this->currentPage - 1,
                 'current' => false,
                 'link'    => true
-            );
+            ];
         }
 
         /* Lien des pages numérotées */
         for ($i = 1; $i <= $this->nbPages; $i++) {
             //Si il s'agit de la page actuelle
             if ($i == $this->currentPage) {
-                $pages[] = array(
+                $pages[] = [
                     'text'    => $i,
                     'num'     => $i,
                     'current' => true,
                     'link'    => false
-                );
+                ];
             } else {
                 /* Si première page
                  *  ou dernière page
@@ -210,35 +210,35 @@ class Pagination
                     || $i > $this->currentPage
                     && ($i - $this->delta) <= $this->currentPage
                 ) {
-                    $pages[] = array(
+                    $pages[] = [
                         'text'    => $i,
                         'num'     => $i,
                         'current' => false,
                         'link'    => true
-                    );
+                    ];
                 } elseif ($i < $this->currentPage
                     && ($i + $this->delta + 1) == $this->currentPage
                     || $i > $this->currentPage
                     && ($i - $this->delta - 1) == $this->currentPage
                 ) {
-                    $pages[] = array(
+                    $pages[] = [
                         'text'    => $this->deltaHtml,
                         'num'     => $this->deltaHtml,
                         'current' => false,
                         'link'    => false
-                    );
+                    ];
                 }
             }
         }
 
         /* Lien page suivante*/
         if ($this->nextHtml && $this->currentPage < $this->nbPages) {
-            $pages[] = array(
+            $pages[] = [
                 'text'    => $this->nextHtml,
                 'num'     => $this->currentPage + 1,
                 'current' => false,
                 'link'    => true
-            );
+            ];
         }
 
         return $pages;
@@ -309,13 +309,12 @@ class Pagination
     }
 
     /**
-     * Renvoie la clause LIMIT de la requete à executer
+     * Renvoie la clause LIMIT de la requête à exécuter
      *
      * @return string
      */
     private function getLimit()
     {
-        $limit = '';
         if (is_null($this->limit) || $this->limit == '' || $this->limit[1] == 0) {
             $limit = '';
         } else {

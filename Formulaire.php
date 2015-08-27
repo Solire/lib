@@ -8,6 +8,8 @@
 
 namespace Solire\Lib;
 
+use Solire\Lib\Formulaire\PluginInterface;
+
 /**
  * Contrôle des formulaires
  *
@@ -35,7 +37,7 @@ class Formulaire
     /**
      * Liste des plugins
      *
-     * @var array
+     * @var PluginInterface[]
      */
     protected $plugins;
 
@@ -177,9 +179,9 @@ class Formulaire
      */
     protected function parseArchi()
     {
-        if (isset($this->architecture[\Solire\Lib\Config::KEY_CONF])) {
-            $this->config = $this->architecture[\Solire\Lib\Config::KEY_CONF];
-            unset($this->architecture[\Solire\Lib\Config::KEY_CONF]);
+        if (isset($this->architecture[Config::KEY_CONF])) {
+            $this->config = $this->architecture[Config::KEY_CONF];
+            unset($this->architecture[Config::KEY_CONF]);
         }
 
         if (isset($this->config['ordre'])) {
@@ -336,7 +338,7 @@ class Formulaire
                 if (in_array('Solire\Lib\Formulaire\PluginInterface', class_implements($plugin))) {
                     $plugin::form($this->data);
                 } else {
-                    $this->throwError(array('erreur' => 'plugin incompatible'));
+                    $this->throwError(['erreur' => 'plugin incompatible']);
                 }
             }
         }
@@ -358,7 +360,7 @@ class Formulaire
      */
     public function getList()
     {
-        $list = array();
+        $list = [];
         foreach ($this->data as $value) {
             $list[] = $value;
         }
@@ -387,7 +389,7 @@ class Formulaire
         $query = 'DESC ' . $table;
         $archi = $db->query($query)->fetchAll(\PDO::FETCH_COLUMN, 0);
 
-        $values = array();
+        $values = [];
         foreach ($archi as $col) {
             if (isset($this->data[$col])) {
                 $values[] = $col . ' = ' . $db->quote($this->data[$col]);
@@ -464,13 +466,13 @@ class Formulaire
      */
     protected function catchData()
     {
-        $datas = array(
+        $datas = [
             'g' => $_GET,
             'p' => $_POST,
             'c' => $_COOKIE,
-        );
+        ];
 
-        $result = array();
+        $result = [];
         for ($i = 0; $i < strlen($this->ordre); $i++) {
             $lettre = $this->ordre[$i];
             if (isset($datas[$lettre]) && !empty($datas[$lettre])) {

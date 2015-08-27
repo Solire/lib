@@ -1,6 +1,6 @@
 <div class="line">
     <label for="<?php echo $this->id; ?>">
-        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
+        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
     </label>
     <input type="text" value="<?php echo $this->value; ?>" name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class=" autocomplete-multi" />
     <input type="hidden" class="join-param join-table" value="<?php echo $this->params["TABLE.NAME"]; ?>" />

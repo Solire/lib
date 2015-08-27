@@ -1,6 +1,6 @@
 <div class="line">
     <label for="<?php echo $this->id; ?>">
-        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
+        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
     </label>
 
     <div class="champ-image" style="float:left;">
@@ -23,10 +23,10 @@
     }
 ?>
         <a class="previsu" style="cursor:pointer;<?php echo $style; ?>" href="<?php echo $href; ?>">
-            <div class="fl" style="margin-left:0px;">
+            <div class="fl" style="margin-left:0;">
                 <img style="max-height:80px;width:auto;height:auto;max-width: 80px;" src="<?php echo $minSrc; ?>" class="img-polaroid champ-image-vignette">
             </div>
-            <div class="fl" style="margin-left:0px;width:315px">
+            <div class="fl" style="margin-left:0;width:315px">
                 <dl class="dl-horizontal">
                     <dt>Nom de fichier</dt>
                     <dd class="champ-image-value"><span><?php echo $this->value; ?></span></dd>

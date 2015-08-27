@@ -7,6 +7,7 @@
  */
 
 namespace Solire\Lib\Model;
+
 use Solire\Lib\FrontController;
 
 /**
@@ -17,6 +18,14 @@ use Solire\Lib\FrontController;
  */
 class GabaritPage extends GabaritBloc
 {
+    /**
+     * Tableau des données utilisées dans la génération HTML du formulaire
+     *
+     * @todo Passer par un objet view pour pouvoir générer via twig (et bcp plus propre)
+     *
+     * @var array
+     */
+    private $view;
 
     /**
      * Est-ce que l'utilisateur est connecté
@@ -42,7 +51,7 @@ class GabaritPage extends GabaritBloc
     /**
      * Tableau des blocs dynamiques de la page
      *
-     * @var array
+     * @var GabaritBloc[]
      */
     protected $blocs = [];
 
@@ -76,7 +85,7 @@ class GabaritPage extends GabaritBloc
     }
 
     /**
-     * Défini si l'utilisateur est connecté (utile en cas de middleoffice)
+     * Définit si l'utilisateur est connecté (utile en cas de middleoffice)
      *
      * @param bool $connected Etat de connexion utilisateur
      *
@@ -100,16 +109,13 @@ class GabaritPage extends GabaritBloc
     public function setMeta($meta)
     {
         $this->meta = $meta;
-        if (isset($meta['id'])) {
-            $this->id = $meta['id'];
-        }
     }
 
     /**
      * Setter d'un attribut des meta
      *
-     * @param type $key   Clé de l'attribut
-     * @param type $value Valeur
+     * @param string     $key   Clé de l'attribut
+     * @param string|int $value Valeur
      *
      * @return void
      */
@@ -145,8 +151,8 @@ class GabaritPage extends GabaritBloc
     /**
      * Setter d'une valeur
      *
-     * @param type  $key   Key
-     * @param array $value Valeur
+     * @param string                    $key   Key
+     * @param array|boolean|GabaritPage $value Valeur
      *
      * @return void
      */
@@ -334,7 +340,7 @@ class GabaritPage extends GabaritBloc
      *
      * @param mixed $name Nom
      *
-     * @return GabaritBloc | array
+     * @return GabaritBloc[]|GabaritBloc
      */
     public function getBlocs($name = null)
     {
@@ -458,7 +464,7 @@ class GabaritPage extends GabaritBloc
     /**
      * Création du formulaire
      *
-     * @return type
+     * @return string
      */
     public function buildForm()
     {

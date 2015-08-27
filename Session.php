@@ -52,7 +52,6 @@ class Session
      * configuration de la sessions, laisser vide pour prendre l'application
      * courante
      *
-     * @return boolean
      * @throws Exception\Lib
      * @config main [format] session Format du bloc session dans la config main
      * @uses Session->regen()
@@ -89,6 +88,7 @@ class Session
             $foo = explode('_', $_COOKIE[$this->cookieName]);
 
             if (count($foo) == 2) {
+                /** @var MyPDO $db */
                 $db = Registry::get('db');
                 $query = $db->prepare($this->config['query']);
                 $query->bindValue(':id', $foo[1], \PDO::PARAM_INT);
@@ -102,7 +102,7 @@ class Session
                     $this->user = $this->presentVars($user);
                     $this->oldData = $user;
                     $this->regen();
-                    return $this;
+                    return;
                 }
             }
         }
@@ -208,7 +208,7 @@ class Session
      */
     final private function presentVars(array $array)
     {
-        $result = array();
+        $result = [];
         foreach ($array as $key => $value) {
             $key = strtolower($key);
             if (strpos($key, '_') === false) {
@@ -253,6 +253,7 @@ class Session
             throw new Exception\Lib('Format du Courriel / Mot de passe incorrect');
         }
 
+        /** @var MyPDO $db */
         $db = Registry::get('db');
         $query = $db->prepare($this->config['queryLogin']);
         $query->bindValue(':login', $login, \PDO::PARAM_STR);
@@ -343,6 +344,7 @@ class Session
      */
     public function genKey($login)
     {
+        /** @var MyPDO $db */
         $db = Registry::get('db');
 
         $query = $db->prepare($this->config['queryLogin']);
@@ -376,6 +378,7 @@ class Session
      */
     public function newPassword($cle, $login)
     {
+        /** @var MyPDO $db */
         $db = Registry::get('db');
 
         $query = $db->prepare($this->config['queryKey']);

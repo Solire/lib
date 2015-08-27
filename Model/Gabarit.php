@@ -28,7 +28,7 @@ class Gabarit
     /**
      * Initialisation d'un gabarit
      *
-     * @param type $row Row
+     * @param array $row Row
      */
     public function __construct($row)
     {
@@ -38,7 +38,7 @@ class Gabarit
     /**
      * Enregistrement de l'id parent
      *
-     * @param type $id_parent Id_parent
+     * @param int $id_parent Id_parent
      *
      * @return void
      */
@@ -50,7 +50,7 @@ class Gabarit
     /**
      * Enregistrement de l'id Api
      *
-     * @param type $api Api
+     * @param int $api Api
      *
      * @return void
      */
@@ -62,7 +62,7 @@ class Gabarit
     /**
      * Enregistrement du nom
      *
-     * @param type $name Nom
+     * @param string $name Nom
      *
      * @return void
      */
@@ -74,7 +74,7 @@ class Gabarit
     /**
      * Enregistrement du label
      *
-     * @param type $label Label
+     * @param string $label Label
      *
      * @return void
      */
@@ -86,7 +86,7 @@ class Gabarit
     /**
      * Enregistrement de la table
      *
-     * @param type $table Table
+     * @param string $table Table
      *
      * @return void
      */
@@ -98,7 +98,7 @@ class Gabarit
     /**
      * Enregistrement des champs
      *
-     * @param type $champs Champs
+     * @param array $champs Champs
      *
      * @return void
      */
@@ -110,7 +110,7 @@ class Gabarit
     /**
      * Enregistrement des jointures
      *
-     * @param type $joins Joins
+     * @param array $joins Joins
      *
      * @return void
      */
@@ -122,7 +122,7 @@ class Gabarit
     /**
      * Enregistrement du gabarit parent
      *
-     * @param type $dbRow Ligne
+     * @param array $dbRow Ligne
      *
      * @return void
      */
@@ -134,7 +134,7 @@ class Gabarit
     /**
      * Enregistrement des parents
      *
-     * @param type $parents Parents
+     * @param array $parents Parents
      *
      * @return void
      */
@@ -146,7 +146,7 @@ class Gabarit
     /**
      * Enregistrement de vue
      *
-     * @param type $view Vue
+     * @param bool $view Vue
      *
      * @return void
      */
@@ -178,7 +178,7 @@ class Gabarit
     /**
      * Renvoie le nom
      *
-     * @return type
+     * @return string
      */
     public function getName()
     {
@@ -188,7 +188,7 @@ class Gabarit
     /**
      * Renvoie le champ main
      *
-     * @return type
+     * @return bool
      */
     public function getMain()
     {
@@ -198,7 +198,7 @@ class Gabarit
     /**
      * Renvoie le champ creable
      *
-     * @return type
+     * @return bool
      */
     public function getCreable()
     {
@@ -208,7 +208,7 @@ class Gabarit
     /**
      * Renvoie le champ deletable
      *
-     * @return type
+     * @return bool
      */
     public function getDeletable()
     {
@@ -234,7 +234,7 @@ class Gabarit
     /**
      * Renvoie le champ sortable
      *
-     * @return type
+     * @return bool
      */
     public function getSortable()
     {
@@ -244,7 +244,7 @@ class Gabarit
     /**
      * Renvoie le champ make_hidden
      *
-     * @return type
+     * @return bool
      */
     public function getMakeHidden()
     {
@@ -254,7 +254,7 @@ class Gabarit
     /**
      * Renvoie le champ editable
      *
-     * @return type
+     * @return bool
      */
     public function getEditable()
     {
@@ -264,7 +264,7 @@ class Gabarit
     /**
      * Renvoie le champ editable_middle_office
      *
-     * @return type
+     * @return bool
      */
     public function getEditableMiddleOffice()
     {
@@ -274,7 +274,7 @@ class Gabarit
     /**
      * Renvoie le champ meta
      *
-     * @return type
+     * @return bool
      */
     public function getMeta()
     {
@@ -284,7 +284,7 @@ class Gabarit
     /**
      * Renvoie le champ extension
      *
-     * @return type
+     * @return string
      */
     public function getExtension()
     {
@@ -294,7 +294,7 @@ class Gabarit
     /**
      * Renvoie le champ view
      *
-     * @return type
+     * @return bool
      */
     public function getView()
     {
@@ -304,7 +304,7 @@ class Gabarit
     /**
      * Renvoie le champ 301_editable
      *
-     * @return type
+     * @return bool
      */
     public function get301Editable()
     {
@@ -314,7 +314,7 @@ class Gabarit
     /**
      * Renvoie le champ meta_titre
      *
-     * @return type
+     * @return bool
      */
     public function getMetaTitre()
     {
@@ -324,7 +324,7 @@ class Gabarit
     /**
      * Renvoie le champ label
      *
-     * @return type
+     * @return string
      */
     public function getLabel()
     {
@@ -334,7 +334,7 @@ class Gabarit
     /**
      * Renvoie le champ Table
      *
-     * @return type
+     * @return string
      */
     public function getTable()
     {
@@ -344,7 +344,7 @@ class Gabarit
     /**
      * renvoie api
      *
-     * @return type
+     * @return int
      */
     public function getApi()
     {
@@ -354,7 +354,7 @@ class Gabarit
     /**
      * Renvoie les champs
      *
-     * @return type
+     * @return array
      */
     public function getChamps()
     {
@@ -387,7 +387,7 @@ class Gabarit
     /**
      * Renvoie les jointures
      *
-     * @return type
+     * @return array
      */
     public function getJoins()
     {
@@ -397,7 +397,7 @@ class Gabarit
     /**
      * Renvoie les parents
      *
-     * @return type
+     * @return array
      */
     public function getParents()
     {
@@ -407,9 +407,9 @@ class Gabarit
     /**
      * Renvoie le gabarit parent
      *
-     * @param type $key Key
+     * @param string $key Key
      *
-     * @return type
+     * @return mixed
      */
     public function getGabaritParent($key = null)
     {

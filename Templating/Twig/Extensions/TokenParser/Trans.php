@@ -32,7 +32,7 @@ class Trans extends \Twig_TokenParser
         $lineno = $token->getLine();
 
         $this->parser->getStream()->expect(\Twig_Token::BLOCK_END_TYPE);
-        $body = $this->parser->subparse(array($this, 'decideForFork'), true);
+        $body = $this->parser->subparse([$this, 'decideForFork'], true);
         $this->parser->getStream()->expect(\Twig_Token::BLOCK_END_TYPE);
 
         return new TransNode($body, $lineno, $this->getTag());
@@ -47,7 +47,7 @@ class Trans extends \Twig_TokenParser
      */
     public function decideForFork(\Twig_Token $token)
     {
-        return $token->test(array('endtrans'));
+        return $token->test(['endtrans']);
     }
 
     /**

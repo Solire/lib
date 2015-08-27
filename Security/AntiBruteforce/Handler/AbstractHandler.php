@@ -14,14 +14,14 @@ abstract class AbstractHandler
     /**
      * The configuration
      *
-     * @var Conf|array
+     * @var Conf|array[]
      */
     protected $conf = null;
 
     /**
      * Construct
      *
-     * @param Conf|array $conf Antibruteforce configuration
+     * @param Conf|array[] $conf Antibruteforce configuration
      */
     public function __construct($conf)
     {

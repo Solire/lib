@@ -45,7 +45,6 @@ class Config
      *
      * @param string $iniFile Chemin vers le fichier de configuration
      *
-     * @return void
      * @uses \Solire\Lib\Path Contrôle du chemin du fichier
      */
     public function __construct($iniFile)
@@ -60,7 +59,7 @@ class Config
         if (isset($config['extends'])) {
             $extends = $config['extends'];
             if (!is_array($extends)) {
-                $extends = array($extends);
+                $extends = [$extends];
             }
 
             foreach ($extends as $path) {
@@ -100,8 +99,8 @@ class Config
     /**
      * Merge les tableaux en replaçants les clés identiques
      *
-     * @param array &$array1 Tableau à merge
-     * @param array &$array2 Tableau à merge
+     * @param array $array1 Tableau à merge
+     * @param array $array2 Tableau à merge
      *
      * @return array
      */
@@ -159,7 +158,7 @@ class Config
                  */
                 if (!is_array($value)) {
                     $type = 'string';
-                    $value = array($value);
+                    $value = [$value];
                 } else {
                     $type = 'array';
                 }

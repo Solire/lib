@@ -22,8 +22,9 @@ class FileManager extends manager
 {
 
     /**
+     * Nom de la table media
      *
-     * @var Nom de la table media
+     * @var string
      */
     protected $mediaTableName = 'media_fichier';
 
@@ -145,10 +146,10 @@ class FileManager extends manager
     /**
      * Renvoi un tableau de fichiers lié à une page.
      *
-     * @param string   $term       Chaîne cherchée
-     * @param int      $idGabPage  Identifiant de la page
-     * @param int      $idTemp     Identifiant temporaire (page en création)
-     * @param string[] $extensions Tableau d'extension permise
+     * @param string        $term       Chaîne cherchée
+     * @param int           $idGabPage  Identifiant de la page
+     * @param int           $idTemp     Identifiant temporaire (page en création)
+     * @param string[]|bool $extensions Tableau d'extension permise
      *
      * @return array
      */
@@ -252,6 +253,7 @@ class FileManager extends manager
         $fileName = $name . '.' . $ext;
 
         /* Look for the content type header */
+        $contentType = '';
         if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
             $contentType = $_SERVER['HTTP_CONTENT_TYPE'];
         }
@@ -508,23 +510,25 @@ class FileManager extends manager
     /**
      * Redimensionne, recadre et insert une image liée à une page.
      *
-     * @param string    $uploadDir   Dossier principal d'upload (exemple : 'projet/upload')
-     * @param string    $fileSource  Fichier a recadrer (exemple : '11/image.jpg', 'temp-12/picture.png')
-     * @param string    $ext         Extension du fichier
-     * @param string    $targetDir   Dossier où l'image recadrée sera enregistrée.
-     * @param string    $target      Nom à donner au fichier recadré
-     * @param int       $idGabPage   Identifiant de la page (si elle est en cours d'édition)
-     * @param int       $idTemp      Identifiant temporaire de la page (si elle est en cours de création)
-     * @param string    $vignetteDir Dossier ou enregistré la vignette de l'image recadrée
-     * @param string    $apercuDir   Dossier ou enregistré l'apercu de l'image recadrée
-     * @param int       $x           Abscisse du coin en haut à gauche
-     * @param int       $y           Ordonnée du coin en haut à gauche
-     * @param int       $w           Largeur du recadrage
-     * @param int       $h           Hauteur du recadrage
-     * @param false|int $targ_w      Largeur de l'image redimensionné ou false si pas de redimensionnement
-     * @param false|int $targ_h      Hauteur de l'image redimensionné ou false si pas de redimensionnement
+     * @param string   $uploadDir   Dossier principal d'upload (exemple : 'projet/upload')
+     * @param string   $fileSource  Fichier a recadrer (exemple : '11/image.jpg', 'temp-12/picture.png')
+     * @param string   $ext         Extension du fichier (Inutilisé)
+     * @param string   $targetDir   Dossier où l'image recadrée sera enregistrée.
+     * @param string   $target      Nom à donner au fichier recadré
+     * @param int      $idGabPage   Identifiant de la page (si elle est en cours d'édition)
+     * @param int      $idTemp      Identifiant temporaire de la page (si elle est en cours de création)
+     * @param string   $vignetteDir Dossier ou enregistré la vignette de l'image recadrée
+     * @param string   $apercuDir   Dossier ou enregistré l'apercu de l'image recadrée
+     * @param int      $x           Abscisse du coin en haut à gauche
+     * @param int      $y           Ordonnée du coin en haut à gauche
+     * @param int      $w           Largeur du recadrage
+     * @param int      $h           Hauteur du recadrage
+     * @param bool|int $targ_w      Largeur de l'image redimensionné ou false si pas de redimensionnement
+     * @param bool|int $targ_h      Hauteur de l'image redimensionné ou false si pas de redimensionnement
      *
      * @return array
+     *
+     * @todo Supprimer le paramètre extension qui ne semble plus être utilisé
      */
     public function crop(
         $uploadDir,
@@ -723,8 +727,7 @@ class FileManager extends manager
         $largeurSource = imagesx($source);
         $hauteurSource = imagesy($source);
 
-        if (
-            $largeurmax != '*' && $largeurSource > $largeurmax
+        if ($largeurmax != '*' && $largeurSource > $largeurmax
             || $hauteurmax != '*' && $hauteurSource > $hauteurmax
         ) {
             if ($largeurmax == '*') {

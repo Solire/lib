@@ -40,9 +40,9 @@ class I18n extends \Twig_Extension
      */
     public function getFilters()
     {
-        return array(
-            new \Twig_SimpleFilter('trans', array($this, 'transFilter')),
-        );
+        return [
+            new \Twig_SimpleFilter('trans', [$this, 'transFilter']),
+        ];
     }
 
     /**
@@ -52,7 +52,7 @@ class I18n extends \Twig_Extension
      */
     public function getTokenParsers()
     {
-        return array(new TransTokenParser());
+        return [new TransTokenParser()];
     }
 
     /**

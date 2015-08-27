@@ -9,6 +9,7 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\Autocomplete;
 
+use Solire\Lib\Model\Gabarit;
 use Solire\Lib\Model\Gabarit\Field\GabaritField;
 
 /**
@@ -22,22 +23,23 @@ class AutocompleteField extends GabaritField
 
     /**
      *
-     * @var type
+     * @var string
      */
     protected $valueLabel;
 
     /**
      *
-     * @var type
+     * @var Gabarit
      */
     protected $gabarit = null;
 
     /**
      * Préparation
      *
-     * @param \Solire\Lib\Model\gabarit $gabarit Gabarit à afficher
+     * @param Gabarit $gabarit Gabarit à afficher (utilisé dans le cas de SimpleFieldSet)
      *
      * @return void
+     *
      */
     public function start($gabarit = null)
     {
