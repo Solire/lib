@@ -10,6 +10,7 @@ namespace Solire\Lib\Model\Gabarit\FieldSet;
 
 use Solire\Lib\Format\DateTime;
 use Solire\Lib\FrontController;
+use Solire\Lib\Model\Gabarit;
 use Solire\Lib\Model\GabaritBloc;
 
 /**
@@ -47,11 +48,11 @@ abstract class GabaritFieldSet
      */
     public function __construct($bloc, $idGabPage, $versionId)
     {
-        $this->gabarit    = $bloc->getGabarit();
-        $this->values     = $bloc->getValues();
-        $this->champs     = $bloc->getGabarit()->getChamps();
-        $this->idGabPage  = $idGabPage;
-        $this->versionId  = $versionId;
+        $this->gabarit   = $bloc->getGabarit();
+        $this->values    = $bloc->getValues();
+        $this->champs    = $bloc->getGabarit()->getChamps();
+        $this->idGabPage = $idGabPage;
+        $this->versionId = $versionId;
     }
 
     /**
@@ -83,9 +84,9 @@ abstract class GabaritFieldSet
      */
     public function toString()
     {
-        $rc = new \ReflectionClass(get_class($this));
-        $fileName   = dirname($rc->getFileName()) . DIRECTORY_SEPARATOR
-                    . 'view/' . $this->view . '.phtml';
+        $reflectionClass = new \ReflectionClass(get_class($this));
+        $fileName        = dirname($reflectionClass->getFileName()) . DIRECTORY_SEPARATOR
+            . 'view/' . $this->view . '.phtml';
 
         return $this->output($fileName);
     }
@@ -106,17 +107,18 @@ abstract class GabaritFieldSet
         ob_start();
         include($file);
         $output = ob_get_clean();
+
         return $output;
     }
 
     /**
      * Construit l'élément de formulaire correspondant à un champ
      *
-     * @param array  $champ     Tableau d'info sur le champ
-     * @param string $value     Valeur du champ
-     * @param string $idpage    Identifiant à concaténer à l'attribut 'id' du champ
-     * @param int    $idGabPage Nom du dossier dans lequel sont les images.
-     * @param type   $gabarit   Gabarit
+     * @param array   $champ     Tableau d'info sur le champ
+     * @param string  $value     Valeur du champ
+     * @param string  $idpage    Identifiant à concaténer à l'attribut 'id' du champ
+     * @param int     $idGabPage Nom du dossier dans lequel sont les images.
+     * @param Gabarit $gabarit   Gabarit
      *
      * @return string
      */
@@ -133,11 +135,10 @@ abstract class GabaritFieldSet
             return $form;
         }
 
-        $label = $champ['label'];
+        $label   = $champ['label'];
         $classes = 'form-controle ' . 'form-' . $champ['oblig'] . ' '
-                 . 'form-' . strtolower($champ['typedonnee'])
-        ;
-        $id = 'champ' . $champ['id'] . '_' . $idpage . '_' . $this->versionId;
+            . 'form-' . strtolower($champ['typedonnee']);
+        $fieldId = 'champ' . $champ['id'] . '_' . $idpage . '_' . $this->versionId;
 
         if ($champ['typedonnee'] == 'DATE') {
             if ($value != '0000-00-00' && $value != '') {
@@ -149,19 +150,14 @@ abstract class GabaritFieldSet
 
         $type = strtolower($champ['type']);
 
-        $classNameType = 'Model\\Gabarit\\Field\\' . ucfirst($type) . '\\'
-                       . ucfirst($type) . 'Field';
-        $classNameType = FrontController::searchClass($classNameType);
+        $classNameType = $this->getClassNameType($type);
 
-        if ($classNameType === false) {
-            $classNameType  = '\Solire\Lib\Model\Gabarit\Field\\' . ucfirst($type) . '\\'
-                            . ucfirst($type) . 'Field';
-        }
+        /** @var Gabarit\Field\GabaritField $field */
         $field = new $classNameType(
             $champ,
             $label,
             $value,
-            $id,
+            $fieldId,
             $classes,
             $idGabPage,
             $this->versionId
@@ -209,39 +205,62 @@ abstract class GabaritFieldSet
     protected function buildChamps($value)
     {
         $champHTML = '';
-        $first = true;
+        $first     = true;
         foreach ($this->champs as $champ) {
             if (isset($value[$champ['name']])) {
-                $value_champ = $value[$champ['name']];
+                $fieldValue = $value[$champ['name']];
             } else {
-                $value_champ = '';
+                $fieldValue = '';
             }
 
-            $id_champ = '';
+            $fieldId = '';
             if (isset($value['id_version'])) {
-                $id_champ = $value['id_version'];
+                $fieldId = $value['id_version'];
             }
 
             if (isset($value['id'])) {
-                $id_champ .= $value['id'];
+                $fieldId .= $value['id'];
             } else {
-                $id_champ .= 0;
+                $fieldId .= 0;
             }
 
             $champArray = $this->buildChamp(
                 $champ,
-                $value_champ,
-                $id_champ,
+                $fieldValue,
+                $fieldId,
                 $this->idGabPage
             );
             $champHTML .= $champArray['html'];
 
             if ($first) {
-                $first = false;
+                $first            = false;
                 $this->valueLabel = $champArray['label'];
             }
         }
 
         $this->champsHTML = $champHTML;
+    }
+
+    /**
+     * Retourne le nom d'une classe d'un champ en fonction du type donné
+     *
+     * @param string $type Type de champ
+     *
+     * @return bool|string
+     */
+    protected function getClassNameType($type)
+    {
+        $classNameType = 'Model\\Gabarit\\Field\\' . ucfirst($type) . '\\'
+            . ucfirst($type) . 'Field';
+        $classNameType = FrontController::searchClass($classNameType);
+
+        if ($classNameType === false) {
+            $classNameType = '\Solire\Lib\Model\Gabarit\Field\\' . ucfirst($type) . '\\'
+                . ucfirst($type) . 'Field';
+
+            return $classNameType;
+        }
+
+        return $classNameType;
     }
 }

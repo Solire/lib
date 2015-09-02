@@ -8,8 +8,7 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\File;
 
-use \Solire\Lib\Model\FileManager;
-
+use Solire\Lib\Model\FileManager;
 use Solire\Lib\Model\Gabarit\Field\GabaritField;
 
 /**
@@ -29,29 +28,26 @@ class FileField extends GabaritField
     {
         parent::start();
         $this->isImage = false;
-        if (
-            (isset($this->params['CROP.WIDTH.MIN']) && intval($this->params['CROP.WIDTH.MIN']) > 0 ) ||
+        if ((isset($this->params['CROP.WIDTH.MIN']) && intval($this->params['CROP.WIDTH.MIN']) > 0) ||
             (isset($this->params['CROP.HEIGHT.MIN']) && intval($this->params['CROP.HEIGHT.MIN']) > 0)
         ) {
             $this->champ['aide'] .= '<div style="display:inline-block">';
-            if (
-                isset($this->params['CROP.WIDTH.MIN'])
+            if (isset($this->params['CROP.WIDTH.MIN'])
                 && intval($this->params['CROP.WIDTH.MIN']) > 0
             ) {
                 $this->champ['aide'] .= '<dl class="dl-horizontal expected-width">
                                     <dt style="width: 180px;">Largeur</dt>
                                     <dd style="margin-left: 190px;"><span id="">'
-                                     . $this->params['CROP.WIDTH.MIN'] . '</span>px</dd>
+                    . $this->params['CROP.WIDTH.MIN'] . '</span>px</dd>
                                 </dl>';
             }
-            if (
-                isset($this->params['CROP.HEIGHT.MIN'])
+            if (isset($this->params['CROP.HEIGHT.MIN'])
                 && intval($this->params['CROP.HEIGHT.MIN']) > 0
             ) {
                 $this->champ['aide'] .= '<dl class="dl-horizontal expected-height">
                                     <dt style="width: 180px;">Hauteur</dt>
                                     <dd style="margin-left: 190px;"><span id="">'
-                                    . $this->params['CROP.HEIGHT.MIN'] . '</span>px</dd>
+                    . $this->params['CROP.HEIGHT.MIN'] . '</span>px</dd>
                                 </dl>';
             }
 

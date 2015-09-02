@@ -29,8 +29,7 @@ class TextField extends GabaritField
         parent::start();
 
         // Prise en compte de la valeur par défaut paramétrée
-        if (
-            isset($this->params['VALUE.DEFAULT'])
+        if (isset($this->params['VALUE.DEFAULT'])
             && $this->params['VALUE.DEFAULT'] && $this->idGabPage == 0
         ) {
             $this->value = $this->params['VALUE.DEFAULT'];
