@@ -36,21 +36,20 @@ class Request
      */
     protected function getClientIps()
     {
-        $clientIp = null;
-        if (isset($_SERVER['HTTP_CLIENT_IP']) && $_SERVER['HTTP_CLIENT_IP'] != null) {
-            $clientIp = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != null) {
-            $clientIp = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED']) && $_SERVER['HTTP_X_FORWARDED'] != null) {
-            $clientIp = $_SERVER['HTTP_X_FORWARDED'];
-        } elseif (isset($_SERVER['HTTP_FORWARDED_FOR']) && $_SERVER['HTTP_FORWARDED_FOR'] != null) {
-            $clientIp = $_SERVER['HTTP_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['HTTP_FORWARDED']) && $_SERVER['HTTP_FORWARDED'] != null) {
-            $clientIp = $_SERVER['HTTP_FORWARDED'];
-        } elseif (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] != null) {
-            $clientIp = $_SERVER['REMOTE_ADDR'];
-        } else {
-            $clientIp = 'unknown';
+        $serverIpKeys = [
+            'HTTP_CLIENT_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_X_FORWARDED',
+            'HTTP_FORWARDED_FOR',
+            'HTTP_FORWARDED',
+            'REMOTE_ADDR',
+        ];
+
+        $clientIp = 'unknown';
+        foreach ($serverIpKeys as $serverIpKey) {
+            if (isset($_SERVER[$serverIpKey]) && $_SERVER[$serverIpKey] != null) {
+                $clientIp = $_SERVER[$serverIpKey];
+            }
         }
 
         return $clientIp;
