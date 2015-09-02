@@ -133,17 +133,17 @@ class Tools
     {
         mb_internal_encoding('UTF-8');
         mb_regex_encoding('UTF-8');
-        for ($Z = 0; $Z < count($keywords); $Z++) {
+        for ($z = 0; $z < count($keywords); $z++) {
             if (str_replace(' ', '', $keywords) != '') {
-                $keywords[$Z] = '#('
+                $keywords[$z] = '#('
                     . self::regexAccents(
-                        str_replace(['<¤>', '</¤>'], '', $keywords[$Z])
+                        str_replace(['<¤>', '</¤>'], '', $keywords[$z])
                     )
                     . ')#iu'
                 ;
             } else {
-                array_splice($keywords, $Z, 1);
-                $Z--;
+                array_splice($keywords, $z, 1);
+                $z--;
             }
         }
         if (is_array($keywords) && count($keywords) > 0) {
