@@ -2,38 +2,40 @@
     <label class="col-sm-2 control-label" for="<?php echo $this->id; ?>">
         <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
     </label>
-    <div class="col-sm-10 champ-image">
-<?php
-    $style = $src = $minSrc = $size = $href = '';
-    if ($this->value == '') {
-        $style = ' display:none;';
-    } else {
-        $ext = pathinfo($this->value, PATHINFO_EXTENSION);
-        $href   = $this->idGabPage . '/' . $this->value;
-        $path = 'upload/' . $href;
-        if (\Solire\Lib\Model\FileManager::isImage($path)) {
-            $minSrc = $this->idGabPage . '/mini/' . $this->value;
-            $sizes = getimagesize('upload/' . $href);
-            $size  = $sizes[0] . ' x ' . $sizes[1];
+
+    <div class="col-sm-10 field-file">
+        <?php
+        $style = $src = $minSrc = $size = $href = '';
+        if ($this->value == '') {
+            $style = ' display:none;';
         } else {
-            $size  = Slrfw\Format\Number::formatSize(filesize($path));
-            $minSrc = 'public/default/back/img/filetype/' . $ext . '.png';
+            $ext  = pathinfo($this->value, PATHINFO_EXTENSION);
+            $href = $this->idGabPage . '/' . $this->value;
+            $path = 'upload/' . $href;
+            if (\Solire\Lib\Model\FileManager::isImage($path)) {
+                $minSrc = $this->idGabPage . '/mini/' . $this->value;
+                $sizes  = getimagesize('upload/' . $href);
+                $size   = $sizes[0] . ' x ' . $sizes[1];
+            } else {
+                $size   = \Solire\Lib\Format\Number::formatSize(filesize($path));
+                $minSrc = 'public/default/back/img/filetype/' . $ext . '.png';
+            }
         }
-    }
-?>
-        <div class="row">
+        ?>
+        <div class="row field-file-info">
             <div class="col-sm-4">
-                <a class="exec-onclick-zoom" data-zoom-src="<?php echo $href; ?>" style="<?php echo $style; ?>" href="<?php echo $href; ?>">
-                    <img src="<?php echo $minSrc; ?>" class="img-thumbnail img-responsive champ-image-vignette">
+                <a class="field-file-link exec-onclick-zoom" data-zoom-src="<?php echo $href; ?>" style="<?php echo $style; ?>"
+                   href="<?php echo $href; ?>">
+                    <img src="<?php echo $minSrc; ?>" class="img-thumbnail img-responsive field-file-thumbnail">
                 </a>
             </div>
             <div class="col-sm-8">
                 <dl class="dl-horizontal">
                     <dt>Nom de fichier</dt>
-                    <dd class="champ-image-value"><span><?php echo $this->value; ?></span></dd>
+                    <dd class="field-file-value"><span><?php echo $this->value; ?></span></dd>
 
                     <dt>Taille</dt>
-                    <dd class="champ-image-size"><?php echo $size; ?></dd>
+                    <dd class="field-file-size"><?php echo $size; ?></dd>
                 </dl>
             </div>
         </div>
@@ -52,15 +54,16 @@
                 class="form-control <?php echo $this->classes; ?>"
                 value="<?php echo $this->value; ?>"
                 data-visuel-id="<?php echo $this->champ['id']; ?>">
-<?php if ($this->value) {
-?>
-                <option value="<?php echo $this->value; ?>" selected="selected"><?php echo $this->value; ?></option>
-<?php
-}
-?>
+                <?php if ($this->value) {
+                    ?>
+                    <option value="<?php echo $this->value; ?>" selected="selected"><?php echo $this->value; ?></option>
+                    <?php
+                }
+                ?>
             </select>
             <span class="input-group-btn">
-                <a title="Recadrer" <?php echo $this->isImage ? '' : 'style="display:none;"'?>  class="btn btn-sm btn-info  crop" href="#">
+                <a title="Recadrer" <?php echo $this->isImage ? '' : 'style="display:none;"' ?>
+                   class="btn btn-sm btn-info  crop" href="#">
                     <i class="fa fa-crop"></i>
                 </a>
                 <a href="#" class="btn btn-sm btn-primary" title="Importer un fichier">
@@ -69,5 +72,5 @@
             </span>
         </div>
     </div>
-    <input type="hidden" class="extensions" value="<?php  echo $this->params["EXTENSIONS.ALLOW"]; ?>" />
+    <input type="hidden" class="extensions" value="<?php echo $this->params["EXTENSIONS.ALLOW"]; ?>"/>
 </div>
