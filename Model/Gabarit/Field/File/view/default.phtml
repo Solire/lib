@@ -63,7 +63,8 @@
             </select>
             <span class="input-group-btn">
                 <a title="Recadrer" <?php echo $this->isImage ? '' : 'style="display:none;"' ?>
-                   class="btn btn-sm btn-info  crop" href="#">
+                   data-amd="modules/helper/cropDialog"
+                   class="btn btn-sm btn-info field-file-crop" href="#">
                     <i class="fa fa-crop"></i>
                 </a>
                 <a href="#" class="btn btn-sm btn-primary" title="Importer un fichier">
