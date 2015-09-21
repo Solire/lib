@@ -12,7 +12,6 @@ use Solire\Lib\Exception\Lib as Exception;
 use Solire\Lib\Templating\Templating;
 use Solire\Lib\Templating\Twig\Extensions\Extension\I18n;
 use Solire\Lib\Path;
-use Twig_Autoloader;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
@@ -39,8 +38,6 @@ class Twig extends Templating
         if ($templatingFilePath === false) {
             throw new Exception('Aucun fichier de vue', 500);
         }
-
-        Twig_Autoloader::register();
 
         /** @todo Améliorer ce petit hack pour ne pas spécifier "view/" dans les extends */
         /** @todo Et tester si le rep existe */
