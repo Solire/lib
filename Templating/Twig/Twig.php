@@ -60,10 +60,12 @@ class Twig extends Templating
             }
         }
 
-        $twig = new Twig_Environment($loader, ['autoescape' => false]);
+        $twig = new Twig_Environment($loader, ['autoescape' => false, 'debug' => true]);
         $twig->getExtension('core')->setDateFormat('d/m/Y');
 
         $twig->addExtension(new I18n());
+        $twig->addExtension(new \Twig_Extension_Debug());
+
 
         echo $twig->render($templatingFilePath, $variables);
     }
