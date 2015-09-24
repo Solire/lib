@@ -360,12 +360,12 @@ class GabaritPage extends GabaritBloc
      *
      * @param int $i I
      *
-     * @return gabaritPage
+     * @return GabaritPage
      */
-    public function getParent($i)
+    public function getParent($index)
     {
-        if (array_key_exists($i, $this->parents)) {
-            return $this->parents[$i];
+        if (array_key_exists($index, $this->parents)) {
+            return $this->parents[$index];
         }
 
         return false;
@@ -374,7 +374,7 @@ class GabaritPage extends GabaritBloc
     /**
      * Renvoie les parents
      *
-     * @return gabaritPage
+     * @return GabaritPage[]
      */
     public function getParents()
     {

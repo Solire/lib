@@ -1120,7 +1120,7 @@ class GabaritManager extends Manager
      * @param int|bool $id_parent  Identifiant de la page parente
      * @param bool     $visible    Si vrai uniquement les pages visible
      *
-     * @return GabaritPage tableau de page
+     * @return GabaritPage[] tableau de page
      */
     public function getSearch(
         $id_version,
