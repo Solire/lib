@@ -23,7 +23,13 @@
 	"solire/conf": "2.3.*",
     "monolog/monolog": "~1.16",
     "twig/twig": "~1.0",
-    "easybook/geshi": "1.0.8.12"
+    "easybook/geshi": "1.0.8.12",
+    "symfony/form": "2.7.*",
+    "symfony/validator": "2.7.*",
+    "symfony/config": "2.7.*",
+    "symfony/translation": "2.7.*",
+    "symfony/twig-bridge": "2.7.*",
+    "symfony/security-csrf": "2.7.*"
   },
   "autoload": {
     "psr-4": { "Solire\\Lib\\": "" }
