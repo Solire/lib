@@ -73,10 +73,14 @@ class PDOHandler extends AbstractProcessingHandler
      */
     private function initialize()
     {
-        $this->pdo->exec(
-            'CREATE TABLE IF NOT EXISTS monolog '
-            . '(channel VARCHAR(255), level INTEGER, message LONGTEXT, time INTEGER UNSIGNED, remoteip VARCHAR(255))'
-        );
+        $monologTable = $this->pdo->query('SHOW TABLES LIKE \'monolog\'')->fetchAll();
+        if (count($monologTable) == 0) {
+            $this->pdo->exec(
+                'CREATE TABLE IF NOT EXISTS monolog '
+                . '(channel VARCHAR(255), level INTEGER, message LONGTEXT, time INTEGER UNSIGNED, remoteip VARCHAR(255))'
+            );
+        }
+
         $this->statement = $this->pdo->prepare(
             'INSERT INTO monolog (channel, level, message, time, remoteip) '
             . 'VALUES (:channel, :level, :message, :time, :remoteip)'
