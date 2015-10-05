@@ -261,6 +261,10 @@ class FrontController
 
         $hook->exec('PostSetSourceDirectories');
 
+        /* Chargement de la configuration */
+        self::$mainConfig = Registry::get('mainconfig');
+        self::$envConfig  = Registry::get('envconfig');
+
         /* Base de données */
         try {
             $db = DB::factory(Registry::get('envconfig')->get('database'));
