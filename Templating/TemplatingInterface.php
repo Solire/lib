@@ -34,7 +34,7 @@ interface TemplatingInterface
      *
      * @return void
      */
-    public function render($templatingFilePath, $variables = []);
+    public function display($templatingFilePath, $variables = []);
 
     /**
      * Permet de définir le chemin du template de base à utiliser

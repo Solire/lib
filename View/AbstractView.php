@@ -306,7 +306,7 @@ abstract class AbstractView
         }
 
         // Lancement du rendu
-        $this->templatingRender->render(
+        $this->templatingRender->display(
             $templatingPath,
             $variables
         );

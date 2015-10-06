@@ -60,7 +60,7 @@ class Php extends Templating
      *
      * @return void
      */
-    public function render($templatingFilePath, $variables = [])
+    public function display($templatingFilePath, $variables = [])
     {
         $this->contentPath = $templatingFilePath;
 

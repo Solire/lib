@@ -63,8 +63,12 @@ class Twig extends Templating
         $twig->addExtension(new I18n());
         $twig->addExtension(new \Twig_Extension_Debug());
 
+        return $twig->render($templatingFilePath, $variables);
+    }
 
-        echo $twig->render($templatingFilePath, $variables);
+    public function display($templatingFilePath, $variables = [])
+    {
+        echo $this->render($templatingFilePath, $variables);
     }
 
     /**

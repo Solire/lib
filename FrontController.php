@@ -692,6 +692,7 @@ class FrontController
         $appLibDir = Registry::get('mainconfig')->get('appLibDir');
         $viewFileLocator = new ViewFileLocator(self::$sourceDirectories, $appLibDir);
         $viewFileLocator->setCurrentApplicationName(self::$appName);
+        Registry::set('viewFileLocator', $viewFileLocator);
 
         $this->view = new View($viewFileLocator);
 
