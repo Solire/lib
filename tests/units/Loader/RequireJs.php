@@ -241,6 +241,9 @@ class RequireJs extends Atoum
         $t = $this->testConstruct2();
         $this
             ->if(
+                $t->setModuleDir('back/js')
+            )
+            ->and(
                 $t->addModule('modules01')
             )
             ->string(

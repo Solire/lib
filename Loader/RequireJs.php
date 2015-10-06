@@ -13,6 +13,13 @@ use Solire\Lib\Exception\Lib as LibException;
 class RequireJs extends Loader
 {
     /**
+     * Dossier contenant les modules
+     *
+     * @var string
+     */
+    private $moduleDir;
+
+    /**
      * Ajout de librairie
      *
      * @param string $url     Chemin de la librairie
@@ -35,6 +42,18 @@ class RequireJs extends Loader
     }
 
     /**
+     * Définir le dossier contenant les modules
+     *
+     * @param string $dir Dossier contenant les modules
+     *
+     * @return void
+     */
+    public function setModuleDir($dir)
+    {
+        $this->moduleDir = $dir;
+    }
+
+    /**
      * Ajout d'un module
      *
      * @param string $path Chemin du module
@@ -43,7 +62,7 @@ class RequireJs extends Loader
      */
     public function addModule($path)
     {
-        $this->addLibrary('back/js/' . $path . '.js',
+        $this->addLibrary($this->moduleDir . '/' . $path . '.js',
             array('name' => $path)
         );
     }
