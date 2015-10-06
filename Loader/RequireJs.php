@@ -1,5 +1,8 @@
 <?php
+
 namespace Solire\Lib\Loader;
+
+use Solire\Lib\Exception\Lib as LibException;
 
 /**
  * Gestionnaire des scripts js pour requireJS
@@ -21,14 +24,14 @@ class RequireJs extends Loader
     {
         if (!isset($options['name'])
             || !is_string($options['name'])
-            || $url === ''
+            || empty($options['name'])
         ) {
             throw new LibException(
                 'L\'option "name" est obligatoire.'
             );
         }
 
-        $this->librairies[$url] = $options;
+        parent::addLibrary($url, $options);
     }
 
     /**
@@ -78,9 +81,7 @@ class RequireJs extends Loader
             $lib['src'] = $realUrl;
         }
 
-        if (isset($options['name'])) {
-            $lib['name'] = $options['name'];
-        }
+        $lib['name'] = $options['name'];
 
         return $lib;
     }
@@ -98,7 +99,8 @@ class RequireJs extends Loader
     public function outputAll($force = false)
     {
         $output = '';
-        $requireJsLibs = array();
+        $requireJsLibs = [];
+        $requireJsDeps = [];
         foreach ($this->librairies as $url => $options) {
             $requireJsLib = $this->output($url, $options, $force);
             $requireJsLibs[$requireJsLib['name']] = preg_replace(

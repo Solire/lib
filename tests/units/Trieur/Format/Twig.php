@@ -18,6 +18,8 @@ class Twig extends Atoum
 
     public function setUp()
     {
+        mkdir(TEST_TMP_DIR . DIRECTORY_SEPARATOR . 'view');
+
         $content = 'rawName : {{ row.nom }}'
                  . PHP_EOL . 'rawFirstName : {{ row.prenom }}'
                  . PHP_EOL . 'formatedName : {{ cell }}';
@@ -34,6 +36,8 @@ class Twig extends Atoum
     {
         unlink(TEST_TMP_DIR . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . self::FILENAME);
         unlink(TEST_TMP_DIR . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . self::FILENAME2);
+
+        rmdir(TEST_TMP_DIR . DIRECTORY_SEPARATOR . 'view');
     }
 
     public function testConstructor01()
