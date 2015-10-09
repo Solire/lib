@@ -271,11 +271,15 @@ class DateTime
      *
      * @param string $datetime    Date au format mysql
      * @param bool   $moiscomplet Affichage du nom du mois en entier
+     * @param bool   $forceJour   Affichage du jour même si c'est aujourd'hui
      *
      * @return string
      */
-    public static function toShortText($datetime, $moiscomplet = false)
-    {
+    public static function toShortText(
+        $datetime,
+        $moiscomplet = false,
+        $forceJour = false
+    ) {
         if ($moiscomplet) {
             $lesmois = array(
                 '',
@@ -320,7 +324,7 @@ class DateTime
          */
         $timePart = substr($datetime, 11, 5);
 
-        if ($datePart != date('Y-m-d')) {
+        if ($datePart != date('Y-m-d') || $forceJour) {
             /**
              * Si ce n'est pas aujourd'hui, on précise la date
              */
