@@ -1,4 +1,4 @@
-<div class="line form-group">
+<div class="line form-group form-group-file">
     <label class="col-sm-2 control-label" for="<?php echo $this->id; ?>">
         <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
     </label>
@@ -31,13 +31,13 @@
         }
         ?>
         <div class="row field-file-info">
-            <div class="col-sm-4">
+            <div class="col-sm-3">
                 <a class="field-file-link exec-onclick-zoom" data-zoom-src="<?php echo $href; ?>" style="<?php echo $style; ?>"
                    href="<?php echo $href; ?>">
                     <img src="<?php echo $minSrc; ?>" class="img-thumbnail img-responsive field-file-thumbnail">
                 </a>
             </div>
-            <div class="col-sm-8">
+            <div class="col-sm-9">
                 <dl class="dl-horizontal">
                     <dt>Nom de fichier</dt>
                     <dd class="field-file-value"><span><?php echo $this->value; ?></span></dd>
