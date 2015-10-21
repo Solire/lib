@@ -11,10 +11,18 @@
         } else {
             $ext  = pathinfo($this->value, PATHINFO_EXTENSION);
             $href = $this->idGabPage . '/' . $this->value;
-            $path = 'upload/' . $href;
+            if ($this->uploadConfig->get('prefixUrl')) {
+                $href = $this->uploadConfig->get('prefixUrl') . '/' . $href;
+            }
+
+            $path = $this->uploadConfig->get('path') . '/' . $this->idGabPage . '/' . $this->value;
+
             if (\Solire\Lib\Model\FileManager::isImage($path)) {
                 $minSrc = $this->idGabPage . '/mini/' . $this->value;
-                $sizes  = getimagesize('upload/' . $href);
+                if ($this->uploadConfig->get('prefixUrl')) {
+                    $minSrc = $this->uploadConfig->get('prefixUrl') . '/' . $minSrc;
+                }
+                $sizes  = getimagesize($path);
                 $size   = $sizes[0] . ' x ' . $sizes[1];
             } else {
                 $size   = \Solire\Lib\Format\Number::formatSize(filesize($path));

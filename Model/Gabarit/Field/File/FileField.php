@@ -10,6 +10,7 @@ namespace Solire\Lib\Model\Gabarit\Field\File;
 
 use Solire\Lib\Model\FileManager;
 use Solire\Lib\Model\Gabarit\Field\GabaritField;
+use Solire\Lib\Registry;
 
 /**
  * Champ File
@@ -26,6 +27,8 @@ class FileField extends GabaritField
      */
     public function start()
     {
+        $this->uploadConfig = Registry::get('mainconfig')->get('upload');
+
         parent::start();
         $this->isImage = false;
         if ((isset($this->params['CROP.WIDTH.MIN']) && intval($this->params['CROP.WIDTH.MIN']) > 0) ||
