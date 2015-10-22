@@ -27,8 +27,8 @@
     if (isset($this->version['exotique']) && $this->version['exotique'] > 0) {
 ?>
                                 <div<?php echo $this->view['noMetaTitre']; ?> class="line  form-group">
-                                    <label class="col-sm-2 control-label" for="titre_rew-<?php echo $this->view['metaLang']; ?>">Titre pour le rewriting <span class="required">*</span> </label>
-                                    <div class="col-sm-10">
+                                    <label class="col-sm-3 control-label" for="titre_rew-<?php echo $this->view['metaLang']; ?>">Titre pour le rewriting <span class="required">*</span> </label>
+                                    <div class="col-sm-9">
                                         <input type="text" name="titre_rew" id="titre_rew-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['titre_rew']) ? $this->meta['titre_rew'] : ''; ?>" class="<?php echo $this->gabarit->getMetaTitre() ? 'form-controle form-oblig form-mix' : ''; ?>" />
                                     </div>
                                 </div>
@@ -41,15 +41,15 @@
                                     <div style="display:none;">
                                         <div class="line form-line">
                                             <div class="line  form-group"<?php if ($this->view['metaId'] == 1) {echo ' style="display:none;"';} ?>>
-                                                <label class="col-sm-2 control-label" for="rewriting-<?php echo $this->view['metaLang']; ?>">Rewriting<?php echo isset($this->meta['rewriting']) && $this->meta['rewriting'] != "" ? ' <span class="required">*</span>' : ''; ?></label>
-                                                <div class="col-sm-10">
+                                                <label class="col-sm-3 control-label" for="rewriting-<?php echo $this->view['metaLang']; ?>">Rewriting<?php echo isset($this->meta['rewriting']) && $this->meta['rewriting'] != "" ? ' <span class="required">*</span>' : ''; ?></label>
+                                                <div class="col-sm-9">
                                                     <input type="text" name="rewriting" id="rewriting-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['rewriting']) ? $this->meta['rewriting'] : ''; ?>" class="form-control form-controle<?php echo isset($this->meta['rewriting']) && $this->meta['rewriting'] != "" ? ' form-oblig form-notnul' : ''; ?>" />
                                                 </div>
                                             </div>
 
                                             <div class="line  form-group form-other-line" style="display:none;">
-                                                <label class="form-other-flag col-sm-2 control-label"></label>
-                                                <div class="col-sm-10">
+                                                <label class="form-other-flag col-sm-3 control-label"></label>
+                                                <div class="col-sm-9">
                                                     <input type="text" disabled="disabled" class="form-control form-other-elmt" />
                                                 </div>
                                             </div>
@@ -57,15 +57,15 @@
 
                                         <div class="line form-line">
                                             <div class="line  form-group">
-                                                <label class="col-sm-2 control-label" for="bal_title-<?php echo $this->view['metaLang']; ?>">Title</label>
-                                                <div class="col-sm-10">
+                                                <label class="col-sm-3 control-label" for="bal_title-<?php echo $this->view['metaLang']; ?>">Title</label>
+                                                <div class="col-sm-9">
                                                     <input type="text" name="bal_title" id="bal_title-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['bal_title']) ? $this->meta['bal_title'] : ''; ?>" size="80" maxlength="80" class="form-control form-controle" />
                                                 </div>
                                             </div>
 
                                             <div class="line  form-group form-other-line" style="display:none;">
-                                                <label class="form-other-flag col-sm-2 control-label"></label>
-                                                <div class="col-sm-10">
+                                                <label class="form-other-flag col-sm-3 control-label"></label>
+                                                <div class="col-sm-9">
                                                     <input type="text" disabled="disabled" class="form-control form-other-elmt" />
                                                 </div>
                                             </div>
@@ -73,15 +73,15 @@
 
                                         <div class="line form-line">
                                             <div class="line  form-group">
-                                                <label class="col-sm-2 control-label" for="bal_descr-<?php echo $this->view['metaLang']; ?>">Description</label>
-                                                <div class="col-sm-10">
+                                                <label class="col-sm-3 control-label" for="bal_descr-<?php echo $this->view['metaLang']; ?>">Description</label>
+                                                <div class="col-sm-9">
                                                     <input type="text" name="bal_descr" id="bal_descr-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['bal_descr']) ? $this->meta['bal_descr'] : ''; ?>" size="80" maxlength="250" class="form-control form-controle" />
                                                 </div>
                                             </div>
 
                                             <div class="line  form-group form-other-line" style="display:none;">
-                                                <label class="form-other-flag col-sm-2 control-label"></label>
-                                                <div class="col-sm-10">
+                                                <label class="form-other-flag col-sm-3 control-label"></label>
+                                                <div class="col-sm-9">
                                                     <input type="text" disabled="disabled" class="form-control form-other-elmt" />
                                                 </div>
                                             </div>
@@ -89,23 +89,23 @@
 
                                         <div class="line form-line">
                                             <div class="line  form-group">
-                                                <label class="col-sm-2 control-label" for="bal_key-<?php echo $this->view['metaLang']; ?>">Keywords (<i>séparés par des ,</i>)</label>
-                                                <div class="col-sm-10">
+                                                <label class="col-sm-3 control-label" for="bal_key-<?php echo $this->view['metaLang']; ?>">Keywords (<i>séparés par des ,</i>)</label>
+                                                <div class="col-sm-9">
                                                     <input type="text" name="bal_key" id="bal_key-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['bal_key']) ? $this->meta['bal_key'] : ''; ?>" size="80" maxlength="250" class="form-control form-controle" />
                                                 </div>
                                             </div>
 
                                             <div class="line  form-group form-other-line" style="display:none;">
-                                                <label class="form-other-flag col-sm-2 control-label"></label>
-                                                <div class="col-sm-10">
+                                                <label class="form-other-flag col-sm-3 control-label"></label>
+                                                <div class="col-sm-9">
                                                     <input type="text" disabled="disabled" class="form_control form-other-elmt" />
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="line  form-group">
-                                            <label class="col-sm-2 control-label" for="author-<?php echo $this->view['metaLang']; ?>">Auteur Google +</label>
-                                            <div class="col-sm-10">
+                                            <label class="col-sm-3 control-label" for="author-<?php echo $this->view['metaLang']; ?>">Auteur Google +</label>
+                                            <div class="col-sm-9">
                                                 <select class="form-control" name="author" id="author-<?php echo $this->view['metaLang']; ?>">
                                                     <option value="0">-------</option>
 <?php
@@ -123,8 +123,8 @@
                                         </div>
 
                                         <div class="line  form-group">
-                                            <label class="col-sm-2 control-label" for="importance-<?php echo $this->view['metaLang']; ?>">Importance (<i>de 0,1 à 0,9</i>)</label>
-                                            <div class="col-sm-10">
+                                            <label class="col-sm-3 control-label" for="importance-<?php echo $this->view['metaLang']; ?>">Importance (<i>de 0,1 à 0,9</i>)</label>
+                                            <div class="col-sm-9">
                                                 <select class="form-control" name="importance" class="span1" id="importance-<?php echo $this->view['metaLang']; ?>">
 <?php
         for ($ii = 1 ; $ii < 10 ; $ii++) {
@@ -138,7 +138,7 @@
                                         </div>
 
                                         <div class="line  form-group">
-                                            <div class="col-sm-offset-2 col-sm-10">
+                                            <div class="col-sm-offset-3 col-sm-9">
                                                 <div class="checkbox">
                                                     <label>
                                                         <input type="checkbox" value="1" name="no_index" id="no_index-<?php echo $this->view['metaLang']; ?>"<?php echo isset($this->meta['no_index']) && $this->meta['no_index'] > 0 ? ' checked="checked"' : ''; ?>> No-index
@@ -149,8 +149,8 @@
                                         </div>
 
                                         <div class="line  form-group">
-                                            <label class="col-sm-2 control-label" for="canonical-<?php echo $this->view['metaLang']; ?>">Url canonical</label>
-                                            <div class="col-sm-10">
+                                            <label class="col-sm-3 control-label" for="canonical-<?php echo $this->view['metaLang']; ?>">Url canonical</label>
+                                            <div class="col-sm-9">
                                                 <input type="text" name="canonical" id="canonical-<?php echo $this->view['metaLang']; ?>" value="<?php echo isset($this->meta['canonical']) ? $this->meta['canonical'] : ''; ?>" class="autocomplete-link form-control"  />
                                             </div>
                                         </div>
@@ -163,8 +163,8 @@
         foreach ($this->view['redirections'] as $redirection) {
 ?>
                                                 <div class="line  form-group block-to-duplicate">
-                                                    <label class="col-sm-2 control-label" for="301-<?php echo $this->view['metaLang']; ?>">Url</label>
-                                                    <div class="col-sm-10">
+                                                    <label class="col-sm-3 control-label" for="301-<?php echo $this->view['metaLang']; ?>">Url</label>
+                                                    <div class="col-sm-9">
                                                         <div class="input-group">
                                                             <input type="text" name="301[]" id="301-<?php echo $this->view['metaLang']; ?>" value="<?php echo $redirection; ?>" class="form-control"  />
                                                             <span class="input-group-btn">
@@ -178,8 +178,8 @@
         }
 ?>
                                                 <div class="form-group">
-                                                    <label class="col-sm-2 control-label"></label>
-                                                    <div class="col-sm-10">
+                                                    <label class="col-sm-3 control-label"></label>
+                                                    <div class="col-sm-9">
                                                         <button type="button" class="btn btn-block btn-info 301-add exec-onclick-addblock" title="Ajout une URL">
                                                             <i class="fa fa-plus"></i> Ajouter un redirection permanente
                                                         </button>
