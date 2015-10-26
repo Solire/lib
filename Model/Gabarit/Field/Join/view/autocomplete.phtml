@@ -8,7 +8,9 @@
                 name="champ<?php echo $this->champ['id']; ?>[]"
                 id="<?php echo $this->id; ?>" value="<?php echo $this->value; ?>"
                 class="form-control <?php echo $this->classes; ?> autocomplete-join">
-<?php if ($this->value) {
+            <option value=""></option>
+
+            <?php if ($this->value) {
 ?>
             <option value="<?php echo $this->value; ?>" selected="selected"><?php echo $this->valueLabel; ?></option>
 <?php
