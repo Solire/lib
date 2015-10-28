@@ -91,11 +91,11 @@ class FrontController
     public $application = '';
 
     /**
-     * Dossier de app utilisé.
+     * Dossier de app utilisé. (source)
      *
      * @var string
      */
-    public $app = '';
+    public $source = '';
 
     /**
      * Nom de l'action utilisée
@@ -189,7 +189,7 @@ class FrontController
 
         /* Chargement du rep app par défaut */
         $count = count(self::$sourceDirectories);
-        $this->app = self::$sourceDirectories[$count - 1]['namespace'];
+        $this->source = self::$sourceDirectories[$count - 1];
         unset($count);
 
         /* Création de notre objet Request */
@@ -323,7 +323,7 @@ class FrontController
         if (!empty($app)) {
             $app = ucfirst($app);
         } else {
-            $app = $this->app;
+            $app = $this->source['namespace'];
         }
         $class = $app . '\\' . $this->application . '\\Controller\\';
         if (empty($controller)) {
@@ -404,7 +404,7 @@ class FrontController
 
                     $this->application = ucfirst($ctrl);
                     self::$appName = $this->application;
-                    $this->app = $this->testApp($ctrl);
+                    $this->source = $this->testApp($ctrl);
                     $application = true;
                     continue;
                 }
@@ -537,10 +537,10 @@ class FrontController
      */
     private function testApp($ctrl)
     {
-        foreach (self::$sourceDirectories as $app) {
-            $testPath = new Path($app['dir'] . Path::DS . $ctrl, Path::SILENT);
+        foreach (self::$sourceDirectories as $source) {
+            $testPath = new Path($source['dir'] . Path::DS . $ctrl, Path::SILENT);
             if ($testPath->get()) {
-                return $app['dir'];
+                return $source;
             }
         }
 
@@ -556,10 +556,10 @@ class FrontController
      */
     protected function classExists($ctrl)
     {
-        foreach (self::$sourceDirectories as $app) {
-            $class = $this->getClassName(ucfirst($ctrl), $app['namespace']);
+        foreach (self::$sourceDirectories as $source) {
+            $class = $this->getClassName(ucfirst($ctrl), $source['namespace']);
             if (class_exists($class)) {
-                $this->app = $app['namespace'];
+                $this->source = $source;
                 return true;
             }
         }
