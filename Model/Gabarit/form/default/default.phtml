@@ -245,9 +245,9 @@
                                         <?php
                                             if ($this->gabarit->getView()) {
                                         ?>
-                                        <a title="Prévisualiser" class="btn btn-sm btn-success formprev" href="#">
+                                        <button title="Prévisualiser" type="button" class="btn btn-sm btn-success" data-amd="modules/helper/formPrevisu" data-url="">
                                             <i class="fa fa-camera"></i> Prévisualiser
-                                        </a>
+                                        </button>
                                         <?php } ?>
                                         <a title="Quitter" class="btn btn-warning  btn-sm back-to-list" href="<?php echo $retour . ($this->view['metaId'] ? '?id_gab_page=' . $this->view['metaId'] : ''); ?>">
                                             <i class="fa fa-warning"></i> Quitter
