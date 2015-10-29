@@ -9,6 +9,7 @@
 namespace Solire\Lib\Templating\Twig;
 
 use Solire\Lib\Exception\Lib as Exception;
+use Solire\Lib\Registry;
 use Solire\Lib\Templating\Templating;
 use Solire\Lib\Templating\Twig\Extensions\Extension\I18n;
 use Solire\Lib\Path;
@@ -57,7 +58,14 @@ class Twig extends Templating
             }
         }
 
-        $twig = new Twig_Environment($loader, ['autoescape' => false, 'debug' => true]);
+        $cacheDir  = Registry::get('mainconfig')->get('cache', 'dir') . 'twig';
+        $twigDebug = Registry::get('envconfig')->get('twig', 'debug');
+
+        $twig = new Twig_Environment(
+            $loader,
+            ['autoescape' => false, 'cache' => $cacheDir, 'auto_reload' => true, 'debug' => $twigDebug]
+        );
+
         $twig->getExtension('core')->setDateFormat('d/m/Y');
 
         $twig->addExtension(new I18n());
