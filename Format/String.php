@@ -130,6 +130,7 @@ class String
      * une des constantes the String::RANDOM_*.
      * </p>
      * @return string
+     * @deprecated deprecated since version 6.0
      */
     public static function random($strLen, $type = self::RANDOM_ALL)
     {
