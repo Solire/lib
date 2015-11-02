@@ -36,7 +36,7 @@
     }
 ?>
                                 <fieldset<?php echo $this->view['noMeta']; ?> class="meta">
-                                    <legend>Optimisation du référencement</legend>
+                                    <legend><i class="fa fa-folder"></i> Optimisation du référencement</legend>
 
                                     <div style="display:none;">
                                         <div class="line form-line">
@@ -197,7 +197,7 @@
         foreach ($this->view['allchamps'] as $name_group => $champs) {
 ?>
                                 <fieldset>
-                                    <legend><?php echo $name_group; ?></legend>
+                                    <legend><i class="fa fa-folder"></i> <?php echo $name_group; ?></legend>
 
                                     <div<?php echo $this->view['metaId'] ? ' style="display:none;"' : ''; ?>>
 <?php

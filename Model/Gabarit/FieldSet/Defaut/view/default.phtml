@@ -1,5 +1,5 @@
         <fieldset data-amd="modules/page/block">
-            <legend><?php echo $this->gabarit->getLabel(); ?></legend>
+            <legend><i class="fa fa-folder"></i>  <?php echo $this->gabarit->getLabel(); ?></legend>
             <div style="display:none;">
                 <div class="expand-collapse pull-right">
                     <a href="#" class="expand disabled">Tout déplier</a> / <a href="#" class="collapse">Tout replier</a>
@@ -18,7 +18,7 @@
         $this->buildChamps($value);
 ?>
                     <fieldset class="block-to-sort block-to-duplicate">
-                        <legend><?php echo $this->valueLabel; ?></legend>
+                        <legend><i class="fa fa-folder fa-folder-open"></i> <?php echo $this->valueLabel; ?></legend>
 
                         <div>
                             <div class="line" style="display:none;">
@@ -36,7 +36,7 @@
                         <div style="float:left; margin-left:8px;">
                             <div class="btn-toolbar">
                                 <div class="btn-group btn-bloc-action">
-                                    <a href="#" class="btn btn-sm btn-info block-to-sort-handle <?php echo ( count($this->values) > 1 ? '' : 'to-remove' ) ?>" title="Déplacer" <?php echo ( count($this->values) > 1 ? '' : ' style="display: inline-bloc;"' ) ?>><i class="fa fa-retweet"></i></a>
+                                    <button href="#" class="btn btn-sm btn-info block-to-sort-handle" <?php echo ( count($this->values) > 1 ? '' : ' disabled="true"' ) ?> title="Déplacer" <?php echo ( count($this->values) > 1 ? '' : ' style="display: inline-bloc;"' ) ?>><i class="fa fa-retweet"></i></button>
                                     <a href="#" class="btn btn-sm exec-onclick-togglevisible<?php echo $visible ? ' btn-success' : ' btn-default'; ?>" title="Visible sur le site"><i class="fa <?php echo $visible ? 'fa-eye' : 'fa-eye-slash'; ?>"></i></a>
                                     <button type="button" class="btn btn-sm btn-warning exec-onclick-removeblock" title="Supprimer" <?php echo ( count($this->values) > 1 ? '' : ' disabled="true"' ) ?>><i class="fa fa-trash"></i></button>
                                 </div>
