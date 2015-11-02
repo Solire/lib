@@ -18,7 +18,7 @@
             $path = $this->uploadConfig->get('path') . '/' . $this->idGabPage . '/' . $this->value;
 
             if (\Solire\Lib\Model\FileManager::isImage($path)) {
-                $minSrc = $this->idGabPage . '/mini/' . $this->value;
+                $minSrc = $this->idGabPage . '/apercu/' . $this->value;
                 if ($this->uploadConfig->get('prefixUrl')) {
                     $minSrc = $this->uploadConfig->get('prefixUrl') . '/' . $minSrc;
                 }
@@ -31,13 +31,13 @@
         }
         ?>
         <div class="row field-file-info">
-            <div class="col-sm-3">
+            <div class="col-sm-4">
                 <a class="field-file-link exec-onclick-zoom" data-zoom-src="<?php echo $href; ?>" style="<?php echo $style; ?>"
                    href="<?php echo $href; ?>">
                     <img src="<?php echo $minSrc; ?>" class="img-thumbnail img-responsive field-file-thumbnail">
                 </a>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-8">
                 <dl class="dl-horizontal">
                     <dt>Nom de fichier</dt>
                     <dd class="field-file-value"><span><?php echo $this->value; ?></span></dd>
