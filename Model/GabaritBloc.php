@@ -9,6 +9,7 @@
 
 namespace Solire\Lib\Model;
 
+use JsonSerializable;
 use Solire\Lib\Format\DateTime;
 use Solire\Lib\FrontController;
 use Solire\Lib\Model\Gabarit\Field\GabaritField;
@@ -20,7 +21,7 @@ use Solire\Lib\Model\Gabarit\FieldSet\Defaut\DefautFieldSet;
  * @author  Thomas <thansen@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class GabaritBloc
+class GabaritBloc implements JsonSerializable
 {
 
     /**
@@ -310,5 +311,62 @@ class GabaritBloc
         $form .= $field;
 
         return $form;
+    }
+
+    /**
+     * Convertit l'objet en chaine.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Convertit l'instance de l'objet en JSON
+     *
+     * @param  int  $options Options de la fonction json_encode
+     * @return string
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
+     * Convertit l'objet en tableau serializable en JSON
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Convertit l'instance de l'objet en tableau
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $attributes = $this->attributesToArray();
+
+        return $attributes;
+    }
+
+    /**
+     * Convertit les attributs de l'objet en tableau
+     *
+     * @return array
+     */
+    public function attributesToArray()
+    {
+        $attributes = [
+            'values' => $this->values,
+        ];
+
+        return $attributes;
     }
 }

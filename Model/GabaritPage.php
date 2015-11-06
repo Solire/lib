@@ -493,4 +493,22 @@ class GabaritPage extends GabaritBloc
 
         return $form;
     }
+
+    /**
+     * Convertit les attributs de l'objet en tableau
+     *
+     * @return array
+     */
+    public function attributesToArray()
+    {
+        $attributes = parent::attributesToArray();
+        $attributes['meta']  = $this->meta;
+        $attributes['blocs'] = [];
+
+        foreach ($this->getBlocs() as $name => $bloc) {
+            $attributes['blocs'][$name] = $bloc->jsonSerialize();
+        }
+
+        return $attributes;
+    }
 }
