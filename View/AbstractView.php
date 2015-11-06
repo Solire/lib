@@ -329,7 +329,7 @@ abstract class AbstractView
      */
     public function render()
     {
-        $this->processRender($this->contentPath, true);
+        return $this->processRender($this->contentPath, true);
     }
 
     /**
