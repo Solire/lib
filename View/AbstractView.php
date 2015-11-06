@@ -242,7 +242,7 @@ abstract class AbstractView
      *
      * @throws Exception
      */
-    protected function render($path, $useMain = false)
+    protected function processRender($path, $useMain = false)
     {
         // Première extension (ex: '.html' de '.html.twig')
         $responseFormatExtension = '.' . $this->responseFormat;
@@ -306,7 +306,7 @@ abstract class AbstractView
         }
 
         // Lancement du rendu
-        $this->templatingRender->display(
+        return $this->templatingRender->render(
             $templatingPath,
             $variables
         );
@@ -319,7 +319,17 @@ abstract class AbstractView
      */
     public function display()
     {
-        $this->render($this->contentPath, true);
+        echo $this->processRender($this->contentPath, true);
+    }
+
+    /**
+     * Renvoie la vue en html
+     *
+     * @return void
+     */
+    public function render()
+    {
+        $this->processRender($this->contentPath, true);
     }
 
     /**
