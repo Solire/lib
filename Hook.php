@@ -142,6 +142,9 @@ class Hook
             unset($dir, $path);
         }
 
+        // Trie les hooks par nom de fichier
+        ksort($hooks);
+
         /** Lancement des hooks **/
         foreach ($hooks as $hook) {
             if (!class_exists($hook['className'])) {
