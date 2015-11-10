@@ -442,6 +442,9 @@ class FileManager extends manager
                     $largeurmax,
                     $hauteurmax
                 );
+                $jsonrpc['apercu_path'] = $uploadDir . Path::DS . $apercuDir . Path::DS
+                    . $fileNameNew;
+                $jsonrpc['apercu_url']  = $apercuDir . Path::DS . $fileNameNew;
             } else {
                 $width = 0;
                 $height = 0;
