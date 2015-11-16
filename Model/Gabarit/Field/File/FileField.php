@@ -34,23 +34,24 @@ class FileField extends GabaritField
         if ((isset($this->params['CROP.WIDTH.MIN']) && intval($this->params['CROP.WIDTH.MIN']) > 0) ||
             (isset($this->params['CROP.HEIGHT.MIN']) && intval($this->params['CROP.HEIGHT.MIN']) > 0)
         ) {
-            $this->champ['aide'] .= '<div style="display:inline-block">';
-            if (isset($this->params['CROP.WIDTH.MIN'])
+            $this->champ['aide'] .= '<div>';
+            if (
+                isset($this->params['CROP.WIDTH.MIN'])
                 && intval($this->params['CROP.WIDTH.MIN']) > 0
             ) {
                 $this->champ['aide'] .= '<dl class="dl-horizontal expected-width">
-                                    <dt style="width: 180px;">Largeur</dt>
-                                    <dd style="margin-left: 190px;"><span id="">'
-                    . $this->params['CROP.WIDTH.MIN'] . '</span>px</dd>
+                                    <dt>Largeur</dt>
+                                    <dd><span id="">'
+                                     . $this->params['CROP.WIDTH.MIN'] . '</span>px</dd>
                                 </dl>';
             }
             if (isset($this->params['CROP.HEIGHT.MIN'])
                 && intval($this->params['CROP.HEIGHT.MIN']) > 0
             ) {
                 $this->champ['aide'] .= '<dl class="dl-horizontal expected-height">
-                                    <dt style="width: 180px;">Hauteur</dt>
-                                    <dd style="margin-left: 190px;"><span id="">'
-                    . $this->params['CROP.HEIGHT.MIN'] . '</span>px</dd>
+                                    <dt>Hauteur</dt>
+                                    <dd><span id="">'
+                                    . $this->params['CROP.HEIGHT.MIN'] . '</span>px</dd>
                                 </dl>';
             }
 
