@@ -220,12 +220,10 @@ class Mail
                 $this->view->setMainPath('main');
             }
 
-            ob_start();
-            $this->view
+            $this->body = $this->view
                 ->setViewPath($this->codeName)
-                ->display()
+                ->render()
             ;
-            $this->body = ob_get_clean();
         }
 
         return $this->body;
