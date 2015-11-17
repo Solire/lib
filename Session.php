@@ -354,7 +354,7 @@ class Session
 
         if ($user) {
             $cle    = self::makePass(32);
-            $cleBdd = self::prepareMdp($cle);
+            $cleBdd = openssl_digest($cle, 'sha512');
 
             $query = $db->prepare($this->config['queryNewKey']);
             $query->bindValue(':key', $cleBdd, \PDO::PARAM_STR);
@@ -383,7 +383,7 @@ class Session
 
         $query = $db->prepare($this->config['queryKey']);
         $query->bindValue(':login', $login, \PDO::PARAM_STR);
-        $query->bindValue(':key', self::prepareMdp($cle), \PDO::PARAM_STR);
+        $query->bindValue(':key', openssl_digest($cle, 'sha512'), \PDO::PARAM_STR);
         $query->execute();
         $user = $query->fetch(\PDO::FETCH_ASSOC);
 
@@ -397,6 +397,33 @@ class Session
             $query->execute();
 
             return $mdp;
+        }
+
+        return false;
+    }
+
+    /**
+     * Vérifie la clé de sécurité
+     *
+     * @param string $cle   Clé de vérification
+     * @param string $login Identifiant de l'utilisateur
+     *
+     * @return boolean false si le couple clé / identifiant ne fonctionne pas
+     * sinon true
+     */
+    public function checkKey($cle, $login)
+    {
+        /** @var MyPDO $db */
+        $db = Registry::get('db');
+
+        $query = $db->prepare($this->config['queryKey']);
+        $query->bindValue(':login', $login, \PDO::PARAM_STR);
+        $query->bindValue(':key', openssl_digest($cle, 'sha512'), \PDO::PARAM_STR);
+        $query->execute();
+        $user = $query->fetch(\PDO::FETCH_ASSOC);
+
+        if ($user) {
+            return true;
         }
 
         return false;
