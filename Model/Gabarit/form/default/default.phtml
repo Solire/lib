@@ -194,44 +194,46 @@
                                 <input type="hidden" name="id_<?php echo $this->gabarit->getTable(); ?>" value="<?php echo isset($this->values['id']) ? $this->values['id'] : ''; ?>" />
 
 <?php
-        foreach ($this->view['allchamps'] as $name_group => $champs) {
-?>
-                                <fieldset>
-                                    <legend><i class="fa fa-folder"></i> <?php echo $name_group; ?></legend>
+    foreach ($this->view['fieldsets'] as $fieldset) {
+        if (is_array($fieldset)) {
+            $champs     = $fieldset['fields'];
+            $name_group = $fieldset['name'];
+            ?>
+                                            <fieldset>
+                                                <legend><i class="fa fa-folder"></i> <?php echo $name_group; ?></legend>
 
-                                    <div<?php echo $this->view['metaId'] ? ' style="display:none;"' : ''; ?>>
+                                                <div<?php echo $this->view['metaId'] ? ' style="display:none;"' : ''; ?>>
+                                                    <?php
+                                                    foreach ($champs as $champ) {
+                                                        if ($champ["type"] == "GMAP") {
+                                                            if (isset($this->values[$champ['name'] . "_lat"])) {
+                                                                $value = array(
+                                                                    "lat"  => $this->values[$champ['name'] . "_lat"],
+                                                                    "lng"  => $this->values[$champ['name'] . "_lng"],
+                                                                    "zoom" => $this->values[$champ['name'] . "_zoom"],
+                                                                );
+                                                            } else {
+                                                                $value = array(
+                                                                    "lat"  => "",
+                                                                    "lng"  => "",
+                                                                    "zoom" => "",
+                                                                );
+                                                            }
+                                                        } else {
+                                                            $value = isset($this->values[$champ['name']]) ? $this->values[$champ['name']] : '';
+                                                        }
+
+                                                        $id = isset($this->meta['id_version']) ? $this->meta['id_version'] : '';
+                                                        echo $this->buildChamp($champ, $value, $id, $this->view['metaId']);
+                                                    }
+                                                    ?>
+                                                </div>
+                                            </fieldset>
 <?php
-            foreach ($champs as $champ) {
-                if($champ["type"] == "GMAP") {
-                    if(isset($this->values[$champ['name'] . "_lat"])) {
-                        $value = [
-                            "lat"          =>  $this->values[$champ['name'] . "_lat"],
-                            "lng"         =>  $this->values[$champ['name'] . "_lng"],
-                            "zoom"     =>  $this->values[$champ['name'] . "_zoom"],
-                        ];
-                    } else {
-                        $value = [
-                            "lat"          =>  "",
-                            "lng"         =>  "",
-                            "zoom"     =>  "",
-                        ];
-                    }
-                } else {
-                    $value = isset($this->values[$champ['name']]) ? $this->values[$champ['name']] : '';
-                }
-
-                    $id = isset($this->meta['id_version']) ? $this->meta['id_version'] : '';
-                    echo $this->buildChamp($champ, $value, $id, $this->view['metaId']);
-            }
-?>
-                                    </div>
-                                </fieldset>
-<?php
+        } else {
+            echo $fieldset->buildForm($this->view['metaId'], $this->getMeta('id_version'));
         }
-
-        foreach ($this->blocs as $bloc) {
-            echo $bloc->buildForm($this->view['metaId'], $this->getMeta('id_version'));
-        }
+    }
 ?>
                                 </div>
                                 <div class="col-sm-2">

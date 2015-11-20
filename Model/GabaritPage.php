@@ -9,6 +9,7 @@
 namespace Solire\Lib\Model;
 
 use Solire\Lib\FrontController;
+use Solire\Lib\Registry;
 
 /**
  * Gabarit Page
@@ -428,6 +429,39 @@ class GabaritPage extends GabaritBloc
         $this->view['parentSelect'] = '';
         $this->view['allchamps'] = $this->gabarit->getChamps();
         $this->view['api'] = $this->gabarit->getApi();
+
+        /*
+         * Tri commun entre les blocs dyn et blocs statiques
+         * @todo revoir gabaritManager pour prendre en compte l'ordre et ne pas faire la requete dans le model lui-même
+         */
+        $groups = Registry::get('db')->query(
+            '(SELECT label, ordre, "group" as type FROM gab_champ_group'
+            . ' WHERE id_gabarit = ' . $this->getGabarit()->getId() . ')'
+            . ' UNION'
+            . '(SELECT name, ordre, "bloc" as type FROM gab_bloc'
+            . ' WHERE id_gabarit = ' . $this->getGabarit()->getId() . ')'
+            . ' ORDER BY ordre'
+        )->fetchAll(\PDO::FETCH_UNIQUE);
+
+        $groups = array_merge(['general' => ['ordre' => 0, 'type' => 'group']], $groups);
+
+        $allFieldsets = [];
+        foreach ($groups as $groupName => $group) {
+            if ($group['type'] == 'group') {
+                // Si aucun champ en vrac
+                if (!isset($this->gabarit->getChamps()[$groupName])) {
+                    continue;
+                }
+                $allFieldsets[] = [
+                    'name'   => $groupName,
+                    'fields' => $this->gabarit->getChamps()[$groupName]
+                ];
+            } else {
+                $allFieldsets[] = $this->getBlocs($groupName);
+            }
+        }
+
+        $this->view['fieldsets'] = $allFieldsets;
 
         ob_start();
         $customForm = FrontController::search('Model/Gabarit/form/default/default.phtml', false);
