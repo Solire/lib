@@ -268,6 +268,27 @@ class Pagination implements JsonSerializable
     }
 
     /**
+     * Renvoie la page précédente
+     *
+     * @return array|bool Renvoie false si aucune page precedente
+     */
+    public function getPrevPage()
+    {
+        $page = false;
+        /* Lien page precedente*/
+        if ($this->prevHtml && $this->currentPage > 1) {
+            $page = [
+                'text'    => $this->prevHtml,
+                'num'     => $this->currentPage -  1,
+                'current' => false,
+                'link'    => true
+            ];
+        }
+
+        return $page;
+    }
+
+    /**
      * Renvoie le tableau des résultats de la page courante
      *
      * @return array
