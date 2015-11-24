@@ -167,7 +167,7 @@ class FrontController
     /**
      * FileLocator
      *
-     * @var FileLocator
+     * @var ApplicationFileLocator
      */
     private $fileLocator = null;
 
@@ -463,21 +463,29 @@ class FrontController
     /**
      * Cherche un fichier dans les applications
      *
-     * @param string  $path    Chemin Chemin du dossier / fichier à chercher dans
+     * @param string         $path    Chemin Chemin du dossier / fichier à chercher dans
      * les applications
-     * @param boolean $current Utiliser le nom de l'application courante
+     * @param string|boolean $appName Soit le nom de l'application, soit true
+     * pour Utiliser le nom de l'application courante soit false pour ne pas
+     * chercher dans une application
      *
      * @return string|boolean
      */
-    final public static function search($path, $current = true)
+    final public static function search($path, $appName = true)
     {
         $front = self::getInstance();
 
         $type = ApplicationFileLocator::TYPE_ALL;
-        if ($current) {
+
+        if (!empty($appName)) {
+            if ($appName === true) {
+                $appName = null;
+            }
+
             $type = ApplicationFileLocator::TYPE_APPLICATION;
         }
-        return $front->fileLocator->locate($path, $type);
+
+        return $front->fileLocator->locate($path, $type, $appName);
     }
 
     /**

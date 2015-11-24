@@ -56,7 +56,7 @@ class Session
      * @config main [format] session Format du bloc session dans la config main
      * @uses Session->regen()
      */
-    public function __construct($sessionCode, $appName = null)
+    public function __construct($sessionCode, $appName = true)
     {
         $config = Registry::get('mainconfig');
         $format = $config->get('format', 'session');
@@ -67,14 +67,10 @@ class Session
 
         $sessionCode = sprintf($format, $sessionCode);
 
-        if (empty($appName)) {
-            $dir = $config->get('dirs', 'config') . $sessionCode;
-            $path = FrontController::search($dir);
-        } else {
-            $dir = $appName . Path::DS . $config->get('dirs', 'config') . $sessionCode;
-            $path = FrontController::search($dir, false);
-        }
+        $dir = $config->get('dirs', 'config') . $sessionCode;
+        $path = FrontController::search($dir, $appName);
         unset($dir, $format);
+
         if (empty($path)) {
             throw new Exception\Lib('Aucune configuration pour la session [' . $sessionCode . ']');
         }
