@@ -722,7 +722,9 @@ class GabaritManager extends Manager
 
                 $blocsValues = $page->getBlocs($name_bloc)->getValues();
                 foreach ($blocsValues as $keyValue => $value) {
-                    $page->getBlocs($name_bloc)->setValue($keyValue, $values[$value[$joinName]], $joinName);
+                    if (isset($values[$value[$joinName]])) {
+                        $page->getBlocs($name_bloc)->setValue($keyValue, $values[$value[$joinName]], $joinName);
+                    }
                 }
 
                 return;
