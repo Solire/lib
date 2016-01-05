@@ -52,7 +52,7 @@ class Orm
         $this->connection = DriverManager::getConnection([
             'pdo' => DB::get($connectionName),
         ]);
-        $this->config = Setup::createYAMLMetadataConfiguration($paths, false, $proxyDir);
+        $this->config = Setup::createYAMLMetadataConfiguration($entityDirs, false, $proxyDir);
         $this->entityManager = EntityManager::create($this->connection, $this->config);
     }
 
