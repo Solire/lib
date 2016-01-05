@@ -1,10 +1,4 @@
 <?php
-/**
- * Front controller
- *
- * @author  dev <dev@solire.fr>
- * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
- */
 
 namespace Solire\Lib;
 
@@ -27,6 +21,7 @@ use Solire\Lib\View\Filesystem\FileLocator as ViewFileLocator;
  */
 class FrontController
 {
+
     /**
      * Configuration principale du site
      *
@@ -125,8 +120,25 @@ class FrontController
      */
     private static $singleApi = false;
 
+    /**
+     * Dossiers
+     *
+     * @var array
+     */
     private $dirs = null;
+
+    /**
+     * Format des chemins
+     *
+     * @var array
+     */
     private $format = null;
+
+    /**
+     * Mode debug activé ?
+     *
+     * @var boolean
+     */
     private $debug = null;
 
     /**
@@ -710,11 +722,9 @@ class FrontController
             $this->view
                 ->setPathPrefix(Registry::get('mainconfig')->get('dirs', 'views'))
                 ->setTranslate($this->loadTranslate())
-
                 ->setJsLoader($this->loadJsLoader())
                 ->setCssLoader($this->loadCssLoader())
                 ->setImgLoader($this->loadImgLoader())
-
                 ->setMainPath('main')
                 ->setViewPath($defaultViewPath)
             ;
@@ -790,16 +800,16 @@ class FrontController
         /* Id api */
         $db = Registry::get('db');
         $query = 'SELECT id '
-               . 'FROM gab_api '
-               . 'WHERE name = ' . $db->quote($this->application);
+            . 'FROM gab_api '
+            . 'WHERE name = ' . $db->quote($this->application);
         $apiId = $db->query($query)->fetchColumn();
 
         if (empty($apiId)) {
             /* On essaie de récuperer l'api par le domaine */
             $serverUrl = str_replace('www.', '', $_SERVER['SERVER_NAME']);
             $query = 'SELECT id_api '
-                   . 'FROM version '
-                   . 'WHERE domaine = ' . $db->quote($serverUrl);
+                . 'FROM version '
+                . 'WHERE domaine = ' . $db->quote($serverUrl);
             $apiId = $db->query($query)->fetchColumn();
             if (empty($apiId)) {
                 $apiId = 1;
@@ -851,24 +861,24 @@ class FrontController
 
         /*
          * On vérifie en base si le nom de domaine courant correspond
-         *  à une langue
+         * à une langue
          */
         $serverUrl = str_replace('www.', '', $_SERVER['SERVER_NAME']);
 
         $query = 'SELECT * '
-               . 'FROM `version` '
-               . 'WHERE  id_api = ' . intval(ID_API) . ' AND `domaine` = "' . $serverUrl . '"';
+            . 'FROM `version` '
+            . 'WHERE  id_api = ' . intval(ID_API) . ' AND `domaine` = "' . $serverUrl . '"';
         $version = $db->query($query)->fetch(\PDO::FETCH_ASSOC);
 
         /*
          * Si aucune langue ne correspond
-         *  on prend la version FR
+         * on prend la version FR
          */
         if (!isset($version['id'])) {
             $query = 'SELECT * '
-                   . 'FROM `version` '
-                   . 'WHERE id_api = ' . intval(ID_API)
-                   . ' AND `suf` LIKE ' . $db->quote($sufVersion);
+                . 'FROM `version` '
+                . 'WHERE id_api = ' . intval(ID_API)
+                . ' AND `suf` LIKE ' . $db->quote($sufVersion);
             $version = $db->query($query)->fetch(\PDO::FETCH_ASSOC);
 
             /*
@@ -879,16 +889,15 @@ class FrontController
             if (!isset($version['id'])) {
                 $sufVersion = 'FR';
                 $query = 'SELECT * '
-                   . 'FROM `version` '
-                   . 'WHERE id_api = ' . intval(ID_API)
-                   . ' AND `suf` LIKE ' . $db->quote($sufVersion);
+                    . 'FROM `version` '
+                    . 'WHERE id_api = ' . intval(ID_API)
+                    . ' AND `suf` LIKE ' . $db->quote($sufVersion);
                 $version = $db->query($query)->fetch(\PDO::FETCH_ASSOC);
             }
 
             $serverUrl = Registry::get('envconfig')->get('base', 'url');
             Registry::set('url', $serverUrl);
             Registry::set('basehref', $serverUrl);
-
         } else {
             Registry::set('url', 'http://www.' . $serverUrl . '/');
             Registry::set('basehref', 'http://www.' . $serverUrl . '/');
@@ -920,8 +929,8 @@ class FrontController
         $public    = $sourceDirectory['public'];
 
         self::$sourceDirectories[] = [
-            'name'      => $name,
-            'dir'       => $dir,
+            'name' => $name,
+            'dir' => $dir,
             'namespace' => $namespace,
         ];
         self::$publicDirs[] = $public;
@@ -1011,4 +1020,5 @@ class FrontController
         $currentURL .= $_SERVER['REQUEST_URI'];
         return $currentURL;
     }
+
 }

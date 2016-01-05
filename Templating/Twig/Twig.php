@@ -1,10 +1,4 @@
 <?php
-/**
- * Classe de rendu des templates TWIG
- *
- * @author  Stéphane <smonnot@solire.fr>
- * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
- */
 
 namespace Solire\Lib\Templating\Twig;
 
@@ -24,6 +18,13 @@ use Twig_Environment;
  */
 class Twig extends Templating
 {
+    /**
+     * Charge les fichiers templates
+     *
+     * @var Twig_Loader_Filesystem
+     */
+    private $loader;
+
     /**
      * {@inheritdoc}
      *
@@ -51,10 +52,10 @@ class Twig extends Templating
             }
         }
 
-        $loader = new Twig_Loader_Filesystem($viewSrcDirs);
+        $this->loader = new Twig_Loader_Filesystem($viewSrcDirs);
         foreach ($viewSrcDirs as $namespace => &$pathDir) {
             if (file_exists($pathDir)) {
-                $loader->setPaths($pathDir, str_replace('\\', '', $namespace));
+                $this->loader->setPaths($pathDir, str_replace('\\', '', $namespace));
             }
         }
 
@@ -62,9 +63,19 @@ class Twig extends Templating
         $twigDebug = Registry::get('envconfig')->get('twig', 'debug');
 
         $twig = new Twig_Environment(
-            $loader,
-            ['autoescape' => false, 'cache' => $cacheDir, 'auto_reload' => true, 'debug' => $twigDebug]
+            $this->loader,
+            [
+                'autoescape' => false,
+                'cache' => $cacheDir,
+                'auto_reload' => true,
+                'debug' => $twigDebug,
+            ]
         );
+
+        $formTwig = Registry::get('mainconfig')->get('twig', 'form');
+        if ($formTwig) {
+            new FormBridge($twig, array_values((array) $formTwig));
+        }
 
         $twig->getExtension('core')->setDateFormat('d/m/Y');
 
@@ -74,6 +85,24 @@ class Twig extends Templating
         return $twig->render($templatingFilePath, $variables);
     }
 
+    /**
+     * Retourne le chargeur de template de twig
+     *
+     * @return Twig_Loader_Filesystem
+     */
+    public function getLoader()
+    {
+        return $this->loader;
+    }
+
+    /**
+     * Affiche la vue
+     *
+     * @param string $templatingFilePath Chemin d'une vue twig
+     * @param array  $variables          Variables à passer à twig
+     *
+     * @return void
+     */
     public function display($templatingFilePath, $variables = [])
     {
         echo $this->render($templatingFilePath, $variables);
