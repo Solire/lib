@@ -8,6 +8,8 @@
 
 namespace Solire\Lib\Model;
 
+use Solire\Lib\Format\Number;
+use Solire\Lib\Format\String;
 use Solire\Lib\Path;
 
 /**
@@ -20,8 +22,9 @@ class FileManager extends manager
 {
 
     /**
+     * Nom de la table media
      *
-     * @var Nom de la table media
+     * @var string
      */
     protected $mediaTableName = 'media_fichier';
 
@@ -29,32 +32,32 @@ class FileManager extends manager
      *
      * @var array
      */
-    public static $extensions = array(
-        'image' => array(
+    public static $extensions = [
+        'image' => [
             'jpg' => 'jpeg',
             'jpeg' => 'jpeg',
             'gif' => 'gif',
             'png' => 'png',
-        )
-    );
+        ]
+    ];
 
     /**
      *
      * @var array
      */
-    public static $vignette = array(
+    public static $vignette = [
         'max-width' => 200,
         'max-height' => 50,
-    );
+    ];
 
     /**
      *
      * @var array
      */
-    public static $apercu = array(
+    public static $apercu = [
         'max-width' => 200,
         'max-height' => 90,
-    );
+    ];
 
     /**
      * Renvoi l'extension de l'image (utilisé dans le nom des fonctions de
@@ -143,10 +146,10 @@ class FileManager extends manager
     /**
      * Renvoi un tableau de fichiers lié à une page.
      *
-     * @param string   $term       Chaîne cherchée
-     * @param int      $idGabPage  Identifiant de la page
-     * @param int      $idTemp     Identifiant temporaire (page en création)
-     * @param string[] $extensions Tableau d'extension permise
+     * @param string        $term       Chaîne cherchée
+     * @param int           $idGabPage  Identifiant de la page
+     * @param int           $idTemp     Identifiant temporaire (page en création)
+     * @param string[]|bool $extensions Tableau d'extension permise
      *
      * @return array
      */
@@ -177,7 +180,7 @@ class FileManager extends manager
         $files = $this->db->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
         if (is_array($extensions)) {
-            $files2 = array();
+            $files2 = [];
 
             foreach ($files as $file) {
                 $ext = pathinfo($file['rewriting'], PATHINFO_EXTENSION);
@@ -246,10 +249,11 @@ class FileManager extends manager
         }
 
         /* Clean the fileName for security reasons */
-        $name = \Solire\Lib\Format\String::urlSlug($name);
+        $name = String::urlSlug($name);
         $fileName = $name . '.' . $ext;
 
         /* Look for the content type header */
+        $contentType = '';
         if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
             $contentType = $_SERVER['HTTP_CONTENT_TYPE'];
         }
@@ -288,41 +292,41 @@ class FileManager extends manager
                             fwrite($out, $buff);
                         }
                     } else {
-                        return array(
+                        return [
                             'jsonrpc' => '2.0',
                             'status' => 'error',
-                            'error' => array(
+                            'error' => [
                                 'code' => 101,
                                 'message' => 'Failed to open input stream.'
-                            ),
+                            ],
                             'id' => 'id'
-                        );
+                        ];
                     }
 
                     fclose($in);
                     fclose($out);
                     @unlink($_FILES['file']['tmp_name']);
                 } else {
-                    return array(
+                    return [
                         'jsonrpc' => '2.0',
                         'status' => 'error',
-                        'error' => array(
+                        'error' => [
                             'code' => 102,
                             'message' => 'Failed to open output stream.'
-                        ),
+                        ],
                         'id' => 'id'
-                    );
+                    ];
                 }
             } else {
-                return array(
+                return [
                     'jsonrpc' => '2.0',
                     'status' => 'error',
-                    'error' => array(
+                    'error' => [
                         'code' => 103,
                         'message' => 'Failed to move uploaded file.',
-                    ),
+                    ],
                     'id' => 'id'
-                );
+                ];
             }
         } else {
             /** Open temp file */
@@ -343,38 +347,38 @@ class FileManager extends manager
                         fwrite($out, $buff);
                     }
                 } else {
-                    return array(
+                    return [
                         'jsonrpc' => '2.0',
                         'status' => 'error',
-                        'error' => array(
+                        'error' => [
                             'code' => 101,
                             'message' => 'Failed to open input stream.'
-                        ),
+                        ],
                         'id' => 'id'
-                    );
+                    ];
                 }
 
                 fclose($in);
                 fclose($out);
             } else {
-                return array(
+                return [
                     'jsonrpc' => '2.0',
                     'status' => 'error',
-                    'error' => array(
+                    'error' => [
                         'code' => 102,
                         'message' => 'Failed to open output stream.'
-                    ),
+                    ],
                     'id' => 'id'
-                );
+                ];
             }
         }
 
         /* Construct JSON-RPC response */
-        $jsonrpc = array(
+        $jsonrpc = [
             'jsonrpc' => '2.0',
             'status' => 'success',
             'result' => $fileName,
-        );
+        ];
 
         /* Dernière partie. */
         if ($chunk == $chunks - 1) {
@@ -438,10 +442,13 @@ class FileManager extends manager
                     $largeurmax,
                     $hauteurmax
                 );
+                $jsonrpc['apercu_path'] = $uploadDir . Path::DS . $apercuDir . Path::DS
+                    . $fileNameNew;
+                $jsonrpc['apercu_url']  = $apercuDir . Path::DS . $fileNameNew;
             } else {
                 $width = 0;
                 $height = 0;
-                $jsonrpc['taille'] = \Solire\Lib\Format\Number::formatSize($size);
+                $jsonrpc['taille'] = Number::formatSize($size);
             }
 
             /* Ajout d'informations utiles (ou pas) */
@@ -506,23 +513,25 @@ class FileManager extends manager
     /**
      * Redimensionne, recadre et insert une image liée à une page.
      *
-     * @param string    $uploadDir   Dossier principal d'upload (exemple : 'projet/upload')
-     * @param string    $fileSource  Fichier a recadrer (exemple : '11/image.jpg', 'temp-12/picture.png')
-     * @param string    $ext         Extension du fichier
-     * @param string    $targetDir   Dossier où l'image recadrée sera enregistrée.
-     * @param string    $target      Nom à donner au fichier recadré
-     * @param int       $idGabPage   Identifiant de la page (si elle est en cours d'édition)
-     * @param int       $idTemp      Identifiant temporaire de la page (si elle est en cours de création)
-     * @param string    $vignetteDir Dossier ou enregistré la vignette de l'image recadrée
-     * @param string    $apercuDir   Dossier ou enregistré l'apercu de l'image recadrée
-     * @param int       $x           Abscisse du coin en haut à gauche
-     * @param int       $y           Ordonnée du coin en haut à gauche
-     * @param int       $w           Largeur du recadrage
-     * @param int       $h           Hauteur du recadrage
-     * @param false|int $targ_w      Largeur de l'image redimensionné ou false si pas de redimensionnement
-     * @param false|int $targ_h      Hauteur de l'image redimensionné ou false si pas de redimensionnement
+     * @param string   $uploadDir   Dossier principal d'upload (exemple : 'projet/upload')
+     * @param string   $fileSource  Fichier a recadrer (exemple : '11/image.jpg', 'temp-12/picture.png')
+     * @param string   $ext         Extension du fichier (Inutilisé)
+     * @param string   $targetDir   Dossier où l'image recadrée sera enregistrée.
+     * @param string   $target      Nom à donner au fichier recadré
+     * @param int      $idGabPage   Identifiant de la page (si elle est en cours d'édition)
+     * @param int      $idTemp      Identifiant temporaire de la page (si elle est en cours de création)
+     * @param string   $vignetteDir Dossier ou enregistré la vignette de l'image recadrée
+     * @param string   $apercuDir   Dossier ou enregistré l'apercu de l'image recadrée
+     * @param int      $x           Abscisse du coin en haut à gauche
+     * @param int      $y           Ordonnée du coin en haut à gauche
+     * @param int      $w           Largeur du recadrage
+     * @param int      $h           Hauteur du recadrage
+     * @param bool|int $targ_w      Largeur de l'image redimensionné ou false si pas de redimensionnement
+     * @param bool|int $targ_h      Hauteur de l'image redimensionné ou false si pas de redimensionnement
      *
      * @return array
+     *
+     * @todo Supprimer le paramètre extension qui ne semble plus être utilisé
      */
     public function crop(
         $uploadDir,
@@ -608,7 +617,7 @@ class FileManager extends manager
         $width  = $sizes[0];
         $height = $sizes[1];
 
-        $json = array(
+        $json = [
             'taille' => $sizes[0] . ' x ' . $sizes[1],
             'filename' => $fileNameNew,
             'size' => $size,
@@ -616,7 +625,7 @@ class FileManager extends manager
             'height' => $height,
             'path' => $targetDir . Path::DS . $fileNameNew,
             'date' => date('d/m/Y H:i:s'),
-        );
+        ];
 
         /* On créé la vignette */
         $largeurmax = self::$vignette['max-width'];
@@ -721,8 +730,7 @@ class FileManager extends manager
         $largeurSource = imagesx($source);
         $hauteurSource = imagesy($source);
 
-        if (
-            $largeurmax != '*' && $largeurSource > $largeurmax
+        if ($largeurmax != '*' && $largeurSource > $largeurmax
             || $hauteurmax != '*' && $hauteurSource > $hauteurmax
         ) {
             if ($largeurmax == '*') {
@@ -737,7 +745,7 @@ class FileManager extends manager
                 $ratioH = $hauteurSource / $hauteurmax;
             }
 
-            $ratio = max(array($ratioH, $ratioL));
+            $ratio = max([$ratioH, $ratioL]);
 
             $largeurDestination = $largeurSource / $ratio;
             $hauteurDestination = $hauteurSource / $ratio;

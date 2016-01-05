@@ -8,13 +8,15 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\Autocomplete_multi;
 
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+
 /**
  * Champ AutocompleteMulti
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class AutocompleteMultiField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
+class AutocompleteMultiField extends GabaritField
 {
 
     protected $values;
@@ -40,7 +42,7 @@ class AutocompleteMultiField extends \Solire\Lib\Model\Gabarit\Field\GabaritFiel
 
             $this->valuesUnique = $this->db->query($sql)->fetchAll(\PDO::FETCH_UNIQUE | \PDO::FETCH_ASSOC);
             $valuesArray = explode(',', $this->value);
-            $this->values = array();
+            $this->values = [];
             foreach ($valuesArray as $v) {
                 $this->values[] = $this->valuesUnique[$v];
             }

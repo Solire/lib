@@ -8,13 +8,15 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\Text;
 
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+
 /**
  * Champ Text
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class TextField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
+class TextField extends GabaritField
 {
 
     /**
@@ -27,8 +29,7 @@ class TextField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
         parent::start();
 
         // Prise en compte de la valeur par défaut paramétrée
-        if (
-            isset($this->params['VALUE.DEFAULT'])
+        if (isset($this->params['VALUE.DEFAULT'])
             && $this->params['VALUE.DEFAULT'] && $this->idGabPage == 0
         ) {
             $this->value = $this->params['VALUE.DEFAULT'];

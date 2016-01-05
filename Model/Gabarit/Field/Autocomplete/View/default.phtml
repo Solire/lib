@@ -1,11 +1,18 @@
-<div class="line">
-    <label for="<?php echo $this->id; ?>">
-        <span><?php echo $this->label; ?><?php echo in_array('form-oblig', explode(" ", $this->classes)) ? ' <span class="required">*</span>' : '' ; ?></span>
+<div class="line form-group" data-toggle="popover" data-trigger="hover" title="Aide" data-html="true"  data-popover-content="#aide-champ<?php echo $this->champ['id']; ?>">
+    <label class="col-sm-3 control-label" for="<?php echo $this->id; ?>">
+        <span><?php echo $this->label; ?><?php echo in_array('form-oblig', explode(' ', $this->classes)) ? ' <span class="required">*</span>' : '' ; ?></span>
     </label>
-    <input type="text" name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" value="<?php echo $this->value; ?>" class="<?php echo $this->classes; ?> autocomplete-join" />
-    <input type="hidden" class="join-param join-table" value="<?php echo $this->params['TABLE.NAME']; ?>" />
-    <input type="hidden" class="join-param join-label_field" value="<?php echo $this->params['TABLE.FIELD.LABEL']; ?>" />
-    <input type="hidden" class="join-param join-query_filter" value="<?php echo $this->params['QUERY.FILTER']; ?>" />
-    <input type="hidden" class="join-param join-id_field" value="<?php echo $this->params['TABLE.FIELD.ID']; ?>" />
-    <input type="hidden" class="join-param join-type_gab_page" value="<?php echo $this->params['TYPE.GAB.PAGE']; ?>" />
+    <div class="col-sm-9">
+    <select style="width: 100%"
+            data-amd="modules/helper/autocomplete"
+            name="champ<?php echo $this->champ['id']; ?>[]"
+            id="<?php echo $this->id; ?>" value="<?php echo $this->value; ?>"
+            class="form-control <?php echo $this->classes; ?> autocomplete-join">
+    </select>
+        <input type="hidden" class="join-param join-table" value="<?php echo $this->params['TABLE.NAME']; ?>" />
+        <input type="hidden" class="join-param join-label_field" value="<?php echo $this->params['TABLE.FIELD.LABEL']; ?>" />
+        <input type="hidden" class="join-param join-query_filter" value="<?php echo $this->params['QUERY.FILTER']; ?>" />
+        <input type="hidden" class="join-param join-id_field" value="<?php echo $this->params['TABLE.FIELD.ID']; ?>" />
+        <input type="hidden" class="join-param join-type_gab_page" value="<?php echo $this->params['TYPE.GAB.PAGE']; ?>" />
+    </div>
 </div>

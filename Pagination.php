@@ -7,13 +7,15 @@
  */
 namespace Solire\Lib;
 
+use JsonSerializable;
+
 /**
  * Gestionnaire de pagination
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class Pagination
+class Pagination implements JsonSerializable
 {
     /**
      * Numéro de la page courante
@@ -78,7 +80,7 @@ class Pagination
     /**
      * Permet de limiter l'affichage des pages à N pages avant et après la page
      * courante (-1 pour la liste complete des pages)
-     * @var string
+     * @var int
      */
     protected $delta = 1;
 
@@ -120,7 +122,7 @@ class Pagination
         }
 
         $this->calculNbPages();
-        $currentPage = $this->setCurrentPage($currentPage);
+        $this->setCurrentPage($currentPage);
         $this->calculLimit();
         $this->executeQuery();
     }
@@ -175,28 +177,28 @@ class Pagination
      */
     public function getPaginationArray()
     {
-        $pages = array();
+        $pages = [];
 
         /* Lien page précédente */
         if ($this->prevHtml && $this->currentPage > 1) {
-            $pages[] = array(
+            $pages[] = [
                 'text'    => $this->prevHtml,
                 'num'     => $this->currentPage - 1,
                 'current' => false,
                 'link'    => true
-            );
+            ];
         }
 
         /* Lien des pages numérotées */
         for ($i = 1; $i <= $this->nbPages; $i++) {
             //Si il s'agit de la page actuelle
             if ($i == $this->currentPage) {
-                $pages[] = array(
+                $pages[] = [
                     'text'    => $i,
                     'num'     => $i,
                     'current' => true,
                     'link'    => false
-                );
+                ];
             } else {
                 /* Si première page
                  *  ou dernière page
@@ -210,38 +212,80 @@ class Pagination
                     || $i > $this->currentPage
                     && ($i - $this->delta) <= $this->currentPage
                 ) {
-                    $pages[] = array(
+                    $pages[] = [
                         'text'    => $i,
                         'num'     => $i,
                         'current' => false,
                         'link'    => true
-                    );
+                    ];
                 } elseif ($i < $this->currentPage
                     && ($i + $this->delta + 1) == $this->currentPage
                     || $i > $this->currentPage
                     && ($i - $this->delta - 1) == $this->currentPage
                 ) {
-                    $pages[] = array(
+                    $pages[] = [
                         'text'    => $this->deltaHtml,
                         'num'     => $this->deltaHtml,
                         'current' => false,
                         'link'    => false
-                    );
+                    ];
                 }
             }
         }
 
         /* Lien page suivante*/
         if ($this->nextHtml && $this->currentPage < $this->nbPages) {
-            $pages[] = array(
+            $pages[] = [
                 'text'    => $this->nextHtml,
                 'num'     => $this->currentPage + 1,
                 'current' => false,
                 'link'    => true
-            );
+            ];
         }
 
         return $pages;
+    }
+
+    /**
+     * Renvoie la page suivante
+     *
+     * @return array|bool Renvoie false si aucune page suivante
+     */
+    public function getNextPage()
+    {
+        $page = false;
+        /* Lien page suivante*/
+        if ($this->nextHtml && $this->currentPage < $this->nbPages) {
+            $page = [
+                'text'    => $this->nextHtml,
+                'num'     => $this->currentPage + 1,
+                'current' => false,
+                'link'    => true
+            ];
+        }
+
+        return $page;
+    }
+
+    /**
+     * Renvoie la page précédente
+     *
+     * @return array|bool Renvoie false si aucune page precedente
+     */
+    public function getPrevPage()
+    {
+        $page = false;
+        /* Lien page precedente*/
+        if ($this->prevHtml && $this->currentPage > 1) {
+            $page = [
+                'text'    => $this->prevHtml,
+                'num'     => $this->currentPage -  1,
+                'current' => false,
+                'link'    => true
+            ];
+        }
+
+        return $page;
     }
 
     /**
@@ -309,13 +353,12 @@ class Pagination
     }
 
     /**
-     * Renvoie la clause LIMIT de la requete à executer
+     * Renvoie la clause LIMIT de la requête à exécuter
      *
      * @return string
      */
     private function getLimit()
     {
-        $limit = '';
         if (is_null($this->limit) || $this->limit == '' || $this->limit[1] == 0) {
             $limit = '';
         } else {
@@ -342,5 +385,74 @@ class Pagination
         } else {
             $this->nbPages = ceil($this->countResults / $this->nbElemsByPage);
         }
+    }
+
+    /**
+     * Convertit l'objet en chaine.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Convertit l'instance de l'objet en JSON
+     *
+     * @param  int  $options Options de la fonction json_encode
+     * @return string
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
+     * Convertit l'objet en tableau serializable en JSON
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Convertit l'instance de l'objet en tableau
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $attributes = $this->attributesToArray();
+
+        return $attributes;
+    }
+
+    /**
+     * Convertit les attributs de l'objet en tableau
+     *
+     * @return array
+     */
+    public function attributesToArray()
+    {
+        $attributes = [];
+        foreach ($this as $key => $value) {
+            if (is_array($value)) {
+                $subAttributes = [];
+                foreach ($value as $v) {
+                    if ($v instanceof JsonSerializable) {
+                        $subAttributes[] = $v->jsonSerialize();
+                    }
+                }
+                $attributes[$key] = $subAttributes;
+            } else {
+                $attributes[$key] = $value;
+            }
+        }
+        echo '<pre>' . print_r($attributes, true) . '</pre>';
+        exit();
+        return $attributes;
     }
 }

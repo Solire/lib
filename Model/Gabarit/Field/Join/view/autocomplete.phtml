@@ -1,7 +1,21 @@
-<div class="line">
-    <label for="<?php echo $this->id; ?>">
-        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
+<div class="line form-group" data-toggle="popover" data-trigger="hover" title="Aide" data-html="true"  data-popover-content="#aide-champ<?php echo $this->champ['id']; ?>">
+    <label class="col-sm-3 control-label" for="<?php echo $this->id; ?>">
+        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
     </label>
-    <input type="text"  id="<?php echo $this->id; ?>" value="<?php echo $this->valueLabel; ?>" class="<?php echo $this->classes; ?> autocomplete-join" placeholder="<?php echo $this->placeholder; ?>" />
-    <input type="hidden" value="<?php echo $this->value; ?>" name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="join" />
+    <div class="col-sm-9">
+        <select style="width: 100%"
+                data-amd="modules/helper/autocompleteJoin"
+                name="champ<?php echo $this->champ['id']; ?>[]"
+                id="<?php echo $this->id; ?>" value="<?php echo $this->value; ?>"
+                class="form-control <?php echo $this->classes; ?> autocomplete-join">
+            <option value=""></option>
+
+            <?php if ($this->value) {
+?>
+            <option value="<?php echo $this->value; ?>" selected="selected"><?php echo $this->valueLabel; ?></option>
+<?php
+}
+?>
+        </select>
+    </div>
 </div>

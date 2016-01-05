@@ -19,7 +19,7 @@ trait ExceptionTrait
     protected $targetInput = '';
 
     /**
-     * Enregistre le nom de l'input qui contien une erreur
+     * Enregistre le nom de l'input qui contient une erreur
      *
      * @param string|array $inputName Nom de l'input fautif
      *
@@ -33,9 +33,9 @@ trait ExceptionTrait
     }
 
     /**
-     * Renvois le nom du champ du formulaire qui pose problème
+     * Renvoie le nom du champ du formulaire qui pose problème
      *
-     * @return type
+     * @return string|array
      */
     public function getTargetInputName()
     {

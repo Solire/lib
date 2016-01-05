@@ -22,7 +22,7 @@ interface PluginInterface
      * @param array $data Données du formulaire
      *
      * @return void
-     * @throws Exception Pour marquer une erreur dans le formulaire
+     * @throws \Exception Pour marquer une erreur dans le formulaire
      */
     public static function form(array $data);
 }

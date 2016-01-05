@@ -8,6 +8,17 @@
 
 namespace Solire\Lib;
 
+use Solire\Conf\Loader;
+use Solire\Lib\Exception\HttpError;
+use Solire\Lib\Filesystem\FileLocator;
+use Solire\Lib\Http\Request;
+use Solire\Lib\Loader\Css;
+use Solire\Lib\Loader\Javascript;
+use Solire\Lib\Loader\Img;
+use Solire\Lib\View\View;
+use Solire\Lib\Application\Filesystem\FileLocator as ApplicationFileLocator;
+use Solire\Lib\View\Filesystem\FileLocator as ViewFileLocator;
+
 /**
  * Front controller
  *
@@ -39,7 +50,7 @@ class FrontController
     public static $appName;
 
     /**
-     * Préfix url pour l'application (exemple "catalogue")
+     * Préfixe url pour l'application (exemple "catalogue")
      *
      * @var string
      */
@@ -56,7 +67,7 @@ class FrontController
      *
      * @var array
      */
-    protected static $appDirs = [];
+    protected static $sourceDirectories = [];
 
     /**
      * Liste des répertoires app à utiliser
@@ -80,11 +91,11 @@ class FrontController
     public $application = '';
 
     /**
-     * Dossier de app utilisé.
+     * Dossier de app utilisé. (source)
      *
      * @var string
      */
-    public $app = '';
+    public $source = '';
 
     /**
      * Nom de l'action utilisée
@@ -98,7 +109,7 @@ class FrontController
      *
      * @var array
      */
-    protected $rewriting = array();
+    protected $rewriting = [];
 
     /**
      *
@@ -135,43 +146,67 @@ class FrontController
     /**
      * Loader des librairies javascript
      *
-     * @var Loader\Js
+     * @var Javascript
      */
     private $loaderJs = false;
 
     /**
      * Loader des librairies css
      *
-     * @var Loader\Css
+     * @var Css
      */
     private $loaderCss = false;
 
     /**
      * Loader des librairies img
      *
-     * @var Loader\Img
+     * @var Img
      */
     private $loaderImg = false;
+
+    /**
+     * FileLocator
+     *
+     * @var ApplicationFileLocator
+     */
+    private $fileLocator = null;
+
+    /**
+     * Représentation de la requête HTTP courante
+     *
+     * @var Request
+     */
+    private $request = null;
 
     /**
      * Instantiation du frontController
      */
     private function __construct()
     {
-        $this->dirs = self::$mainConfig->get('dirs');
-        $this->format = self::$mainConfig->get('format');
-        $this->debug = self::$mainConfig->get('debug');
+        $this->dirs = Registry::get('mainconfig')->get('dirs');
+        $this->format = Registry::get('mainconfig')->get('format');
+        $this->debug = Registry::get('mainconfig')->get('debug');
 
         /* Chargement du rep app par défaut */
-        $count = count(self::$appDirs);
-        $this->app = self::$appDirs[$count - 1]['namespace'];
+        $count = count(self::$sourceDirectories);
+        $this->source = self::$sourceDirectories[$count - 1];
         unset($count);
+
+        /* Création de notre objet Request */
+        $this->request = new Request();
+
+        /* Création du FileLocator pour la recherche dans les applications */
+        $this->fileLocator = new ApplicationFileLocator(self::$sourceDirectories);
+
+        // On fournit au Registre le filelocator et la request
+        Registry::set('request', $this->request);
+        Registry::set('fileLocator', $this->fileLocator);
     }
 
     /**
      * Renvois une instance du FrontController
      *
-     * @return FrontController
+     * @return self
      */
     public static function getInstance()
     {
@@ -186,37 +221,60 @@ class FrontController
      *
      * @return array
      */
-    public static function getAppDirs()
+    public static function getSourceDirectories()
     {
-        return self::$appDirs;
+        return self::$sourceDirectories;
     }
 
     /**
      * Initialise les données nécessaires pour FrontController
      *
+     * @throws Exception\Lib
      * @return void
      */
     public static function init()
     {
+        /* Création du FileLocator pour les fichiers de configuration main et env */
+        $configFileLocator = new FileLocator(['./']);
+
         /* Chargement de la configuration */
-        self::$mainConfig = new Config('config/main.ini');
-        self::$envConfig = new Config('config/local.ini');
+        $mainConfigFilePath = $configFileLocator->locate('config/main.yml');
+        $envConfigFilePath  = $configFileLocator->locate('config/local.yml');
+
+        $mainConfig = Loader::load($mainConfigFilePath);
+        $envConfig  = Loader::load($envConfigFilePath);
 
         /* Fichiers de configuration */
-        Registry::set('mainconfig', self::$mainConfig);
-        Registry::set('envconfig', self::$envConfig);
+        Registry::set('mainconfig', $mainConfig);
+        Registry::set('envconfig', $envConfig);
 
+        /* On paramètre les applications à utiliser */
+        if (count($mainConfig['applications']) == 0) {
+            throw new Exception\Lib('Aucune application n\'a été configurée.');
+        }
+
+        self::setSourceDirectories($mainConfig['applications']);
+
+        // Hook post paramètrages des applications
+        $hook = new Hook();
+        $hook->setSubdirName('Lib');
+
+        $hook->exec('PostSetSourceDirectories');
+
+        /* Chargement de la configuration */
+        self::$mainConfig = Registry::get('mainconfig');
+        self::$envConfig  = Registry::get('envconfig');
 
         /* Base de données */
         try {
-            $db = DB::factory(self::$envConfig->get('database'));
+            $db = DB::factory(Registry::get('envconfig')->get('database'));
         } catch (\PDOException $exc) {
             throw new Exception\Lib($exc->getMessage());
         }
         Registry::set('db', $db);
 
-        Registry::set('project-name', self::$mainConfig->get('project', 'name'));
-        $emails = self::$envConfig->get('email');
+        Registry::set('project-name', Registry::get('mainconfig')->get('project', 'name'));
+        $emails = Registry::get('envconfig')->get('email');
 
         /* Ajout d'un prefix au mail */
         if (isset($emails['prefix']) && $emails['prefix'] != '') {
@@ -230,11 +288,13 @@ class FrontController
     }
 
     /**
-     * Ajoute une partie de rewrinting
+     * Ajoute une partie de rewriting
      *
      * @param string $rewriting Parte de rewriting à ajouter
      *
      * @return void
+     *
+     * @throws HttpError
      * @uses Solire\Lib\Controller->acceptRew Contrôle si le
      * rewriting est accepté
      */
@@ -243,7 +303,7 @@ class FrontController
         $className = $this->getClassName();
         $class = new $className();
         if ($class->acceptRew !== true) {
-            $exc = new \Solire\Lib\Exception\HttpError('Erreur HTTP');
+            $exc = new HttpError('Erreur HTTP');
             $exc->http(404, null);
             throw $exc;
         }
@@ -263,7 +323,7 @@ class FrontController
         if (!empty($app)) {
             $app = ucfirst($app);
         } else {
-            $app = $this->app;
+            $app = $this->source['namespace'];
         }
         $class = $app . '\\' . $this->application . '\\Controller\\';
         if (empty($controller)) {
@@ -283,15 +343,16 @@ class FrontController
     public function parseUrl()
     {
         /* Nom de l'application par défaut */
-        $this->application = self::$mainConfig->get('project', 'defaultApp');
+        $this->application = Registry::get('mainconfig')->get('project', 'defaultApp');
         self::$appName = $this->application;
+        $this->fileLocator->setCurrentApplicationName(self::$appName);
 
         self::loadAppConfig();
 
         /* On met la valeur par défaut pour pouvoir tester l'app par défaut */
         $this->controller = $this->getDefault('controller');
 
-        $this->rewriting = array();
+        $this->rewriting = [];
 
         $controller = false;
         /* Contrôle du controller */
@@ -314,8 +375,8 @@ class FrontController
                 }
 
                 /*
-                 * Si le contrôller n'est pas en minuscule
-                 *  on concidère que c'est un rewriting
+                 * Si le contrôleur n'est pas en minuscule
+                 *  on considère que c'est un rewriting
                  */
                 if ($ctrl != strtolower($ctrl)) {
                     $this->addRewriting($ctrl);
@@ -325,7 +386,6 @@ class FrontController
 
                 /* On test l'existence du dossier app répondant au nom $ctrl */
                 if ($this->testApp($ctrl) !== false) {
-
                     /* Si un application est déjà définie */
                     if ($application === true) {
                         $this->addRewriting($ctrl);
@@ -344,14 +404,13 @@ class FrontController
 
                     $this->application = ucfirst($ctrl);
                     self::$appName = $this->application;
-                    $this->app = $this->testApp($ctrl);
+                    $this->source = $this->testApp($ctrl);
                     $application = true;
                     continue;
                 }
 
                 /* Test existence d'un controller */
                 if ($this->classExists($ctrl)) {
-
                     if ($controller === true) {
                         $this->addRewriting($ctrl);
                         $rewritingMod = true;
@@ -368,6 +427,7 @@ class FrontController
 
             /* Si l'application à changé on charge sa configuration */
             if ($application === true) {
+                $this->fileLocator->setCurrentApplicationName(self::$appName);
                 self::loadAppConfig();
             }
         }
@@ -403,55 +463,29 @@ class FrontController
     /**
      * Cherche un fichier dans les applications
      *
-     * @param string  $path    Chemin Chemin du dossier / fichier à chercher dans
+     * @param string         $path    Chemin Chemin du dossier / fichier à chercher dans
      * les applications
-     * @param boolean $current Utiliser le nom de l'application courante
+     * @param string|boolean $appName Soit le nom de l'application, soit true
+     * pour Utiliser le nom de l'application courante soit false pour ne pas
+     * chercher dans une application
      *
      * @return string|boolean
      */
-    final public static function search($path, $current = true)
+    final public static function search($path, $appName = true)
     {
-        $appLibDir = self::$mainConfig->get('appLibDir');
+        $front = self::getInstance();
 
-        /*
-         * @todo voir boulot de steph pour eolia
-         */
-        if ($current === true) {
-            $appDirs = [
-                Path::DS . self::$appName,
-                Path::DS . strtolower(self::$appName),
-            ];
-        } else {
-            $appDirs = [
-                '',
-            ];
-        }
+        $type = ApplicationFileLocator::TYPE_ALL;
 
-        foreach (self::$appDirs as $app) {
-            $fooPaths = \array_map(function ($appDir) use ($path, $app, $appLibDir) {
-                $dir = $app['dir'] . $appDir;
-
-                /*
-                 * Permet de faire correspondre des répertoires d'application
-                 */
-                if (!empty($appLibDir)
-                    && isset($appLibDir[$dir])
-                ) {
-                    $dir = $appLibDir[$dir];
-                }
-
-                return $dir . Path::DS . $path;
-            }, $appDirs);
-
-            foreach ($fooPaths as $fooPath) {
-                $testPath = new Path($fooPath, Path::SILENT);
-                if ($testPath->get() !== false) {
-                    return $testPath->get();
-                }
+        if (!empty($appName)) {
+            if ($appName === true) {
+                $appName = null;
             }
+
+            $type = ApplicationFileLocator::TYPE_APPLICATION;
         }
 
-        return false;
+        return $front->fileLocator->locate($path, $type, $appName);
     }
 
     /**
@@ -464,7 +498,7 @@ class FrontController
      */
     final public static function searchClass($className)
     {
-        foreach (self::$appDirs as $app) {
+        foreach (self::$sourceDirectories as $app) {
             $testClass = $app['namespace'] . '\\' . $className;
 
             if (class_exists($testClass)) {
@@ -511,10 +545,10 @@ class FrontController
      */
     private function testApp($ctrl)
     {
-        foreach (self::$appDirs as $app) {
-            $testPath = new Path($app['dir'] . Path::DS . $ctrl, Path::SILENT);
+        foreach (self::$sourceDirectories as $source) {
+            $testPath = new Path($source['dir'] . Path::DS . $ctrl, Path::SILENT);
             if ($testPath->get()) {
-                return $app['dir'];
+                return $source;
             }
         }
 
@@ -530,10 +564,10 @@ class FrontController
      */
     protected function classExists($ctrl)
     {
-        foreach (self::$appDirs as $app) {
-            $class = $this->getClassName(ucfirst($ctrl), $app['namespace']);
+        foreach (self::$sourceDirectories as $source) {
+            $class = $this->getClassName(ucfirst($ctrl), $source['namespace']);
             if (class_exists($class)) {
-                $this->app = $app['namespace'];
+                $this->source = $source;
                 return true;
             }
         }
@@ -545,8 +579,10 @@ class FrontController
      *
      * @param string $controller Nom du controller à lancer
      * @param string $action     Nom de l'action à lancer
-     *
-     * @return boolean
+     * @return bool
+     * @throws Exception\Lib
+     * @throws HttpError
+     * @throws \Exception
      */
     public static function run($controller = null, $action = null)
     {
@@ -572,7 +608,7 @@ class FrontController
         unset($controller, $action);
 
         /*
-         * Pour eviter les conflits lors de l'envois d'une 404 on ne charge les
+         * Pour éviter les conflits lors de l'envois d'une 404 on ne charge les
          * informations relative à l'api
          */
         if (self::$singleApi === false) {
@@ -611,6 +647,7 @@ class FrontController
         /*
          * On créé le controller
          */
+        /* @var Controller $instance */
         $instance = new $class();
 
         $instance
@@ -641,6 +678,7 @@ class FrontController
 
         $this->translate = new TranslateMysql(ID_VERSION, ID_API, Registry::get('db'));
         $this->translate->addTranslation();
+        Registry::set('translator', $this->translate);
 
         return $this->translate;
     }
@@ -649,6 +687,8 @@ class FrontController
      * Chargement de la vue
      *
      * @return View
+     *
+     * @throws Exception\Lib
      */
     public function loadView()
     {
@@ -656,15 +696,19 @@ class FrontController
             return $this->view;
         }
 
-        $this->view = new View();
+        /* Création du FileLocator pour le chargement des templates */
+        $appLibDir = Registry::get('mainconfig')->get('appLibDir');
+        $viewFileLocator = new ViewFileLocator(self::$sourceDirectories, $appLibDir);
+        $viewFileLocator->setCurrentApplicationName(self::$appName);
+        Registry::set('viewFileLocator', $viewFileLocator);
+
+        $this->view = new View($viewFileLocator);
 
         $defaultViewPath = strtolower($this->controller) . Path::DS . $this->action;
-        $mainViewPath = sprintf($this->getFormat('view-file'), 'main');
 
         try {
             $this->view
-                ->setPathFormat($this->getFormat('view-file'))
-                ->setPathPrefix(self::$mainConfig->get('dirs', 'views'))
+                ->setPathPrefix(Registry::get('mainconfig')->get('dirs', 'views'))
                 ->setTranslate($this->loadTranslate())
 
                 ->setJsLoader($this->loadJsLoader())
@@ -686,7 +730,7 @@ class FrontController
     /**
      * Chargement des librairies Javascript
      *
-     * @return Loader\Javascript
+     * @return Javascript
      */
     public function loadJsLoader()
     {
@@ -694,7 +738,7 @@ class FrontController
             return $this->loaderJs;
         }
 
-        $this->loaderJs = new Loader\Javascript(self::$publicDirs);
+        $this->loaderJs = new Javascript(self::$publicDirs);
 
         return $this->loaderJs;
     }
@@ -702,7 +746,7 @@ class FrontController
     /**
      * Chargement des librairies Css
      *
-     * @return Loader\Css
+     * @return Css
      */
     public function loadCssLoader()
     {
@@ -710,7 +754,7 @@ class FrontController
             return $this->loaderCss;
         }
 
-        $this->loaderCss = new Loader\Css(self::$publicDirs);
+        $this->loaderCss = new Css(self::$publicDirs);
 
         return $this->loaderCss;
     }
@@ -718,7 +762,7 @@ class FrontController
     /**
      * Chargement des librairies Img
      *
-     * @return Loader\Img
+     * @return Img
      */
     public function loadImgLoader()
     {
@@ -726,7 +770,7 @@ class FrontController
             return $this->loaderImg;
         }
 
-        $this->loaderImg = new Loader\Img(self::$publicDirs);
+        $this->loaderImg = new Img(self::$publicDirs);
 
         return $this->loaderImg;
     }
@@ -751,7 +795,7 @@ class FrontController
         $apiId = $db->query($query)->fetchColumn();
 
         if (empty($apiId)) {
-            /* On essaie de recuperer l'api par le domaine */
+            /* On essaie de récuperer l'api par le domaine */
             $serverUrl = str_replace('www.', '', $_SERVER['SERVER_NAME']);
             $query = 'SELECT id_api '
                    . 'FROM version '
@@ -806,7 +850,7 @@ class FrontController
         }
 
         /*
-         * On verifie en base si le nom de domaine courant correspond
+         * On vérifie en base si le nom de domaine courant correspond
          *  à une langue
          */
         $serverUrl = str_replace('www.', '', $_SERVER['SERVER_NAME']);
@@ -841,7 +885,7 @@ class FrontController
                 $version = $db->query($query)->fetch(\PDO::FETCH_ASSOC);
             }
 
-            $serverUrl = self::$envConfig->get('base', 'url');
+            $serverUrl = Registry::get('envconfig')->get('base', 'url');
             Registry::set('url', $serverUrl);
             Registry::set('basehref', $serverUrl);
 
@@ -862,31 +906,40 @@ class FrontController
     }
 
     /**
-     * Enregistre un nouveau répertoire d'app
+     * Enregistre un nouveau répertoire de sources
      *
-     * @param string|array $app Configuration de l'app
+     * @param array $sourceDirectory Configuration du répertoire de sources
      *
      * @return void
      */
-    public static function setApp($app)
+    public static function addSourceDirectory($sourceDirectory)
     {
-        if (is_array($app)) {
-            $name = $app['name'];
-            $namespace = $app['namespace'];
-            $dir = $app['dir'];
-            $public = $app['public'];
-        } else {
-            $name = ucfirst(strtolower($app));
-            $namespace = $name;
-            $dir = strtolower($app);
-            $public = $dir;
-        }
-        self::$appDirs[] = array(
-            'name' => $name,
-            'dir' => $dir,
+        $name      = $sourceDirectory['name'];
+        $namespace = $sourceDirectory['namespace'];
+        $dir       = $sourceDirectory['dir'];
+        $public    = $sourceDirectory['public'];
+
+        self::$sourceDirectories[] = [
+            'name'      => $name,
+            'dir'       => $dir,
             'namespace' => $namespace,
-        );
+        ];
         self::$publicDirs[] = $public;
+    }
+
+    /**
+     * Définie les répertoires de sources
+     *
+     * @param array $sourceDirectories Configuration des répertoire de sources
+     *
+     * @return void
+     */
+    public static function setSourceDirectories($sourceDirectories)
+    {
+        self::$sourceDirectories = [];
+        foreach ($sourceDirectories as $sourceDirectory) {
+            self::addSourceDirectory($sourceDirectory);
+        }
     }
 
     /**

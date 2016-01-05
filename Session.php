@@ -52,12 +52,11 @@ class Session
      * configuration de la sessions, laisser vide pour prendre l'application
      * courante
      *
-     * @return boolean
      * @throws Exception\Lib
      * @config main [format] session Format du bloc session dans la config main
      * @uses Session->regen()
      */
-    public function __construct($sessionCode, $appName = null)
+    public function __construct($sessionCode, $appName = true)
     {
         $config = Registry::get('mainconfig');
         $format = $config->get('format', 'session');
@@ -68,14 +67,10 @@ class Session
 
         $sessionCode = sprintf($format, $sessionCode);
 
-        if (empty($appName)) {
-            $dir = $config->get('dirs', 'config') . $sessionCode;
-            $path = FrontController::search($dir);
-        } else {
-            $dir = $appName . Path::DS . $config->get('dirs', 'config') . $sessionCode;
-            $path = FrontController::search($dir, false);
-        }
+        $dir = $config->get('dirs', 'config') . $sessionCode;
+        $path = FrontController::search($dir, $appName);
         unset($dir, $format);
+
         if (empty($path)) {
             throw new Exception\Lib('Aucune configuration pour la session [' . $sessionCode . ']');
         }
@@ -89,6 +84,7 @@ class Session
             $foo = explode('_', $_COOKIE[$this->cookieName]);
 
             if (count($foo) == 2) {
+                /** @var MyPDO $db */
                 $db = Registry::get('db');
                 $query = $db->prepare($this->config['query']);
                 $query->bindValue(':id', $foo[1], \PDO::PARAM_INT);
@@ -102,7 +98,7 @@ class Session
                     $this->user = $this->presentVars($user);
                     $this->oldData = $user;
                     $this->regen();
-                    return $this;
+                    return;
                 }
             }
         }
@@ -208,7 +204,7 @@ class Session
      */
     final private function presentVars(array $array)
     {
-        $result = array();
+        $result = [];
         foreach ($array as $key => $value) {
             $key = strtolower($key);
             if (strpos($key, '_') === false) {
@@ -253,6 +249,7 @@ class Session
             throw new Exception\Lib('Format du Courriel / Mot de passe incorrect');
         }
 
+        /** @var MyPDO $db */
         $db = Registry::get('db');
         $query = $db->prepare($this->config['queryLogin']);
         $query->bindValue(':login', $login, \PDO::PARAM_STR);
@@ -343,6 +340,7 @@ class Session
      */
     public function genKey($login)
     {
+        /** @var MyPDO $db */
         $db = Registry::get('db');
 
         $query = $db->prepare($this->config['queryLogin']);
@@ -352,7 +350,7 @@ class Session
 
         if ($user) {
             $cle    = self::makePass(32);
-            $cleBdd = self::prepareMdp($cle);
+            $cleBdd = openssl_digest($cle, 'sha512');
 
             $query = $db->prepare($this->config['queryNewKey']);
             $query->bindValue(':key', $cleBdd, \PDO::PARAM_STR);
@@ -376,11 +374,12 @@ class Session
      */
     public function newPassword($cle, $login)
     {
+        /** @var MyPDO $db */
         $db = Registry::get('db');
 
         $query = $db->prepare($this->config['queryKey']);
         $query->bindValue(':login', $login, \PDO::PARAM_STR);
-        $query->bindValue(':key', self::prepareMdp($cle), \PDO::PARAM_STR);
+        $query->bindValue(':key', openssl_digest($cle, 'sha512'), \PDO::PARAM_STR);
         $query->execute();
         $user = $query->fetch(\PDO::FETCH_ASSOC);
 
@@ -394,6 +393,33 @@ class Session
             $query->execute();
 
             return $mdp;
+        }
+
+        return false;
+    }
+
+    /**
+     * Vérifie la clé de sécurité
+     *
+     * @param string $cle   Clé de vérification
+     * @param string $login Identifiant de l'utilisateur
+     *
+     * @return boolean false si le couple clé / identifiant ne fonctionne pas
+     * sinon true
+     */
+    public function checkKey($cle, $login)
+    {
+        /** @var MyPDO $db */
+        $db = Registry::get('db');
+
+        $query = $db->prepare($this->config['queryKey']);
+        $query->bindValue(':login', $login, \PDO::PARAM_STR);
+        $query->bindValue(':key', openssl_digest($cle, 'sha512'), \PDO::PARAM_STR);
+        $query->execute();
+        $user = $query->fetch(\PDO::FETCH_ASSOC);
+
+        if ($user) {
+            return true;
         }
 
         return false;

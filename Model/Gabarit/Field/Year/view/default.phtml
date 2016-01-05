@@ -1,8 +1,8 @@
-<div class="line">
+<div class="line" data-toggle="popover" data-trigger="hover" title="Aide" data-html="true"  data-popover-content="#aide-champ<?php echo $this->champ['id']; ?>">
     <label for="<?php echo $this->id; ?>">
-        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
+        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
     </label>
-    <select name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="<?php echo $this->classes; ?>" />
+    <select name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="<?php echo $this->classes; ?>">
 <?php
     for ($i = 1970; $i <= 2030; $i++) {
         /** L'année est-elle l'année courante ? */

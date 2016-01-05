@@ -1,22 +1,23 @@
-<div class="line form-line">
-    <div class="line">
-        <label for="<?php echo $this->id; ?>">
-            <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
+
+<div data-amd="modules/helper/wysiwyg" class="line form-line" data-toggle="popover" data-trigger="hover" title="Aide" data-html="true"  data-popover-content="#aide-champ<?php echo $this->champ['id']; ?>">
+    <div class="line form-group">
+        <label class="col-sm-3 control-label" for="<?php echo $this->id; ?>">
+            <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
         </label>
-
-        <div class="btn-group switch-editor">
-            <a href="#" class="btn btn-small btn-default">mode html</a>
-            <a href="#" class="btn btn-small btn-info">mode texte</a>
+        <div class="col-sm-9">
+            <div class="btn-group switch-editor">
+                <a href="#" class="btn btn-sm btn-default">mode html</a>
+                <a href="#" class="btn btn-sm btn-info">mode texte</a>
+            </div>
         </div>
-
-        <div style="clear:both;"></div>
-
-        <textarea name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="<?php echo $this->classes; ?> tiny" rows="5" cols="20" style="width:100%; height:325px;"><?php echo $this->value; ?></textarea>
+        <div class="col-sm-offset-3  col-sm-9">
+            <textarea name="champ<?php echo $this->champ['id']; ?>[]" id="<?php echo $this->id; ?>" class="<?php echo $this->classes; ?> tiny form-control" rows="5" cols="20" style="width:100%; height:325px;"><?php echo $this->value; ?></textarea>
+        </div>
     </div>
 
     <div class="line form-other-line" style="display:none;">
         <label class="form-other-flag"></label>
-        <span style="display:inline-block; width: 500px; height: 290px; border-left:1px solid #CCC; border-right:1px solid #CCC; border-top:1px solid #CCC; border-bottom:1px solid #CCC;">
+        <span style="display:inline-block; width: 500px; height: 290px; border: 1px solid #CCC;">
             <iframe style="width:100%; height:100%" class="form-other-elmt"></iframe>
         </span>
     </div>

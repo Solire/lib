@@ -8,6 +8,7 @@
 
 namespace Solire\Lib\Formulaire;
 
+use Solire\Lib\Config;
 use \Solire\Lib\FrontController;
 use \Solire\Lib\Formulaire;
 
@@ -27,7 +28,7 @@ trait InstanceTrait
      *
      * @param string $name Nom du fichier de configuration du formulaire
      *
-     * @return \Solire\Lib\Formulaire
+     * @return Formulaire
      */
     protected function chargeForm($name)
     {
@@ -43,13 +44,13 @@ trait InstanceTrait
      *
      * @param string $name Nom du fichier de configuration du formulaire
      *
-     * @return \Solire\Lib\Config
+     * @return Config
      */
     protected function chargeFormConfig($name)
     {
         $name = 'config/form/' . $name;
         $path = FrontController::search($name, false);
-        $conf = new \Solire\Lib\Config($path);
+        $conf = new Config($path);
 
         return $conf;
     }

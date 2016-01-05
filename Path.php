@@ -109,10 +109,10 @@ class Path
     /**
      * Renvoi le chemin absolu, si le fichier est un lien symbolique et
      *
-     * @param string $path          le chemin du fichier
-     * @param bool   $followSymLink si le fichier est un lien si le paramètre
-     * est à faux renvoi le chemin absolu du lien sinon renvoi le chemin absolu
-     * de la cible du lien
+     * @param string $path    Le chemin du fichier
+     * @param bool   $symLink Si le fichier est un lien si le paramètre
+     *                        est à faux renvoi le chemin absolu du lien sinon renvoi le chemin absolu
+     *                        de la cible du lien
      *
      * @return string
      * @see \realpath()

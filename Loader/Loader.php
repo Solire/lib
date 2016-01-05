@@ -82,8 +82,10 @@ abstract class Loader
      * @param array  $options Options de la librairie
      *
      * @return void
+     *
+     * @throws LibException
      */
-    final public function addLibrary($url, array $options = [])
+    public function addLibrary($url, array $options = [])
     {
         if (!is_string($url)
             || $url === ''
@@ -135,7 +137,7 @@ abstract class Loader
      *
      * @param string $url     Url de la librairie
      * @param array  $options Options de la librairie
-     * @param array  $force   Si la librairie n'est pas trouvé, qu'on veut l'url
+     * @param bool   $force   Si la librairie n'est pas trouvé, qu'on veut l'url
      * donné sans traitement on met ce paramètre à vrai sinon la méthode
      * errorNotFound() sera utilisé
      *
@@ -173,7 +175,7 @@ abstract class Loader
      *
      * @return string
      */
-    final public function outputAll($force = false)
+    public function outputAll($force = false)
     {
         $output = '';
         foreach ($this->librairies as $url => $options) {

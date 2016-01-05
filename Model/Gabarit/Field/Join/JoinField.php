@@ -9,13 +9,16 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\Join;
 
+use Solire\Lib\Model\Gabarit;
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+
 /**
  * Champ Join
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class JoinField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
+class JoinField extends GabaritField
 {
 
     /**
@@ -33,14 +36,14 @@ class JoinField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
 
     /**
      *
-     * @var type
+     * @var Gabarit
      */
     protected $gabarit = null;
 
     /**
      * Création du champ
      *
-     * @param \Solire\Lib\Model\gabarit $gabarit Gabarit à afficher
+     * @param Gabarit $gabarit Gabarit à afficher (utilisé dans le cas de SimpleFieldSet)
      *
      * @return void
      */
@@ -134,7 +137,7 @@ class JoinField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
      */
     private function simple()
     {
-        $values = array();
+        $values = [];
         foreach ($this->value as $value) {
             if (isset($value[$this->champ['name']])) {
                 $values[] = $value[$this->champ['name']];

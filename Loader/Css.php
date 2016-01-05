@@ -15,7 +15,7 @@ class Css extends Loader
      * @param string $url     Url de la librairie
      * @param string $realUrl Vraie url de la librairie
      * @param array  $options Options de la librairie, ici attribut html de la
-     * baslie img
+     * balise link
      *
      * @return string
      */

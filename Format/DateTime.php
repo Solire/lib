@@ -1,12 +1,8 @@
 <?php
-/**
- * Formatage des dates et heures
- *
- * @author  smonnot <smonnot@solire.fr>
- * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
- */
 
 namespace Solire\Lib\Format;
+
+use Solire\Lib\Exception\lib as LibException;
 
 /**
  * Formatage des dates et heures
@@ -16,63 +12,6 @@ namespace Solire\Lib\Format;
  */
 class DateTime
 {
-    /**
-     *  Renvoi un temps relatif entre maintenant et la date en paramètre
-     *
-     * @param string|int $timestampOrDate Date à afficher
-     * @param bool       $modeDate        ?
-     *
-     * @return string
-     */
-    public static function relativeTime1($timestampOrDate, $modeDate = false)
-    {
-        $periods = array(
-            'seconde',
-            'minute',
-            'heure',
-            'jour',
-            'semaine',
-            'mois',
-            'année',
-        );
-        $lengths = array(
-            '60',
-            '60',
-            '24',
-            '7',
-            '4.35',
-            '12',
-        );
-        $difference = time() - $timestampOrDate;
-        if ($difference >= 0) {
-            /**
-             * C'est dans le passé
-             */
-            $ending = 'il y a';
-        } else {
-            /**
-             * C'est dans le futur
-             */
-            $difference = -$difference;
-            $ending = 'dans';
-        }
-
-        /**
-         * On recherche la plus grande période seconde, minute etc.
-         */
-        $j = 0;
-        while (isset($lengths[$j]) && $difference >= $lengths[$j]) {
-            $difference /= $lengths[$j];
-            $j++;
-        }
-        $difference = round($difference);
-        if ($difference != 1 && $periods[$j] != 'mois') {
-            $periods[$j] .= 's';
-        }
-        $text = $ending . ' ' . $difference . ' ' . $periods[$j];
-        return $text;
-    }
-
     /**
      *  Renvoi un temps relatif entre maintenant et la date en paramètre
      *
@@ -87,27 +26,27 @@ class DateTime
         /**
          * Tableau des noms des périodes
          */
-        $periods = array(
+        $periods = [
             'année',
             'mois',
             'jour',
             'heure',
             'minute',
             'seconde',
-        );
+        ];
 
         /**
          * Tableau des attributs de la classe DateInterval
          * http://www.php.net/manual/fr/class.dateinterval.php
          */
-        $periodsMember = array(
+        $periodsMember = [
             'y',
             'm',
             'd',
             'h',
             'i',
             's',
-        );
+        ];
 
         $max = count($periodsMember);
         if ($modeDate) {
@@ -205,7 +144,7 @@ class DateTime
             $timestamp = strtotime($date);
             $nbJour = date('w', $timestamp);
 
-            $jours = array(
+            $jours = [
                 'dimanche',
                 'lundi',
                 'mardi',
@@ -213,13 +152,13 @@ class DateTime
                 'jeudi',
                 'vendredi',
                 'samedi',
-            );
+            ];
 
             $ladate .= $jours[$nbJour];
         }
 
         if ($moiscomplet) {
-            $lesmois = array(
+            $lesmois = [
                 '',
                 'janvier',
                 'février',
@@ -233,9 +172,9 @@ class DateTime
                 'octobre',
                 'novembre',
                 'décembre'
-            );
+            ];
         } else {
-            $lesmois = array(
+            $lesmois = [
                 '',
                 'janv.',
                 'fév.',
@@ -249,7 +188,7 @@ class DateTime
                 'oct.',
                 'nov.',
                 'déc.'
-            );
+            ];
         }
 
         $dateTab = explode('-', substr($date, 0, 10));
@@ -281,7 +220,7 @@ class DateTime
         $forceJour = false
     ) {
         if ($moiscomplet) {
-            $lesmois = array(
+            $lesmois = [
                 '',
                 'janvier',
                 'février',
@@ -295,9 +234,9 @@ class DateTime
                 'octobre',
                 'novembre',
                 'décembre'
-            );
+            ];
         } else {
-            $lesmois = array(
+            $lesmois = [
                 '',
                 'janv.',
                 'fév.',
@@ -311,7 +250,7 @@ class DateTime
                 'oct.',
                 'nov.',
                 'déc.'
-            );
+            ];
         }
 
         /**
@@ -384,7 +323,7 @@ class DateTime
         if (strlen($dateFr) != $sizeExpected) {
             $format  = 'Wrong french date format %s';
             $message = sprintf($format, $dateFr);
-            throw new \Solire\Lib\Exception\lib($message);
+            throw new LibException($message);
         }
 
         $dateArray = explode($delimiter, $dateFr);

@@ -7,6 +7,8 @@
  */
 namespace Solire\Lib\Model\Gabarit\Field;
 
+use Solire\Lib\Registry;
+
 /**
  * Champ d'un gabarit
  *
@@ -119,7 +121,7 @@ abstract class GabaritField
         if ($db) {
             $this->db = $db;
         } else {
-            $this->db = \Solire\Lib\Registry::get('db');
+            $this->db = Registry::get('db');
         }
 
         $this->idGabPage = $idGabPage;
@@ -178,8 +180,8 @@ abstract class GabaritField
         $output = ob_get_clean();
 
         if ($this->champ['aide'] != '') {
-            $output    .= '<div class="aide" id="aide-champ' . $this->champ['id']
-                        . '" style="display: none">' . $this->champ['aide']
+            $output    .= '<div class="aide hidden" id="aide-champ' . $this->champ['id']
+                        . '" >' . $this->champ['aide']
                         . '</div>';
         }
 

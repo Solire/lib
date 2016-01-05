@@ -9,13 +9,19 @@
 
 namespace Solire\Lib\Model;
 
+use JsonSerializable;
+use Solire\Lib\Format\DateTime;
+use Solire\Lib\FrontController;
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+use Solire\Lib\Model\Gabarit\FieldSet\Defaut\DefautFieldSet;
+
 /**
  * Bloc
  *
  * @author  Thomas <thansen@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class GabaritBloc
+class GabaritBloc implements JsonSerializable
 {
 
     /**
@@ -35,7 +41,7 @@ class GabaritBloc
      *
      * @var array
      */
-    protected $values = array();
+    protected $values = [];
 
     /**
      * Constructeur
@@ -84,9 +90,9 @@ class GabaritBloc
     /**
      * Enregistre une valeur
      *
-     * @param type $i     I
-     * @param type $value Value
-     * @param type $key   Key
+     * @param int                       $i     Indice auquel insérer la valeur
+     * @param array|boolean|GabaritPage $value Valeur à enregistrer
+     * @param string                    $key   Clé de la valeur
      *
      * @return boolean
      */
@@ -119,7 +125,7 @@ class GabaritBloc
     /**
      * Renvoie le gabarit
      *
-     * @return gabarit
+     * @return Gabarit
      */
     public function getGabarit()
     {
@@ -241,13 +247,15 @@ class GabaritBloc
         }
 
         $className = 'Model\\Gabarit\\FieldSet\\' . ucfirst($type) . '\\' . ucfirst($type);
-        $className = \Solire\Lib\FrontController::searchClass($className);
+        $className = FrontController::searchClass($className);
 
 
         if ($className === false) {
-            $className = '\\Solire\\Lib\\Model\\Gabarit\\FieldSet\\' . ucfirst($type) . '\\' . ucfirst($type) . 'FieldSet';
+            $className = '\\Solire\\Lib\\Model\\Gabarit\\FieldSet\\'
+                . ucfirst($type) . '\\' . ucfirst($type) . 'FieldSet';
         }
 
+        /** @var DefautFieldSet $fieldset */
         $fieldset = new $className($this, $idGabPage, $versionId);
         $fieldset->start();
         $form .= $fieldset->toString();
@@ -280,7 +288,7 @@ class GabaritBloc
 
         if ($champ['typedonnee'] == 'DATE') {
             if ($value != '0000-00-00' && $value != '') {
-                $value = \Solire\Lib\Format\DateTime::sqlTo($value);
+                $value = DateTime::sqlTo($value);
             } else {
                 $value = '';
             }
@@ -290,17 +298,75 @@ class GabaritBloc
 
         $classNameType = 'Model\\Gabarit\\Field\\' . ucfirst($type) . '\\'
         . ucfirst($type) . 'Field';
-        $classNameType = \Solire\Lib\FrontController::searchClass($classNameType);
+        $classNameType = FrontController::searchClass($classNameType);
 
         if ($classNameType === false) {
             $classNameType = '\\Solire\\Lib\\Model\\Gabarit\\Field\\' . ucfirst($type) . '\\'
             . ucfirst($type) . 'Field';
         }
 
+        /** @var GabaritField $field */
         $field = new $classNameType($champ, $label, $value, $id, $classes, $idGabPage, $idVersion);
         $field->start();
         $form .= $field;
 
         return $form;
+    }
+
+    /**
+     * Convertit l'objet en chaine.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Convertit l'instance de l'objet en JSON
+     *
+     * @param  int  $options Options de la fonction json_encode
+     * @return string
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
+     * Convertit l'objet en tableau serializable en JSON
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Convertit l'instance de l'objet en tableau
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $attributes = $this->attributesToArray();
+
+        return $attributes;
+    }
+
+    /**
+     * Convertit les attributs de l'objet en tableau
+     *
+     * @return array
+     */
+    public function attributesToArray()
+    {
+        $attributes = [
+            'values' => $this->values,
+        ];
+
+        return $attributes;
     }
 }

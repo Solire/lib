@@ -57,8 +57,6 @@ class Number
      */
     public static function formatSize($size)
     {
-        $strTmp = '';
-
         if (preg_match('`^[0-9]{1,}$`', $size)) {
             if ($size >= 1000000) {
                 /**

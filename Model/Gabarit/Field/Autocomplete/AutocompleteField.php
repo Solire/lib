@@ -9,33 +9,37 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\Autocomplete;
 
+use Solire\Lib\Model\Gabarit;
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+
 /**
  * Champ en autocompletion
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class AutocompleteField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
+class AutocompleteField extends GabaritField
 {
 
     /**
      *
-     * @var type
+     * @var string
      */
     protected $valueLabel;
 
     /**
      *
-     * @var type
+     * @var Gabarit
      */
     protected $gabarit = null;
 
     /**
      * Préparation
      *
-     * @param \Solire\Lib\Model\gabarit $gabarit Gabarit à afficher
+     * @param Gabarit $gabarit Gabarit à afficher (utilisé dans le cas de SimpleFieldSet)
      *
      * @return void
+     *
      */
     public function start($gabarit = null)
     {
@@ -117,7 +121,7 @@ class AutocompleteField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
      */
     private function simple()
     {
-        $values = array();
+        $values = [];
         foreach ($this->value as $value) {
             if (isset($value[$this->champ['name']])) {
                 $values[] = $value[$this->champ['name']];

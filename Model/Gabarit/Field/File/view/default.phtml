@@ -1,57 +1,91 @@
-<div class="line">
-    <label for="<?php echo $this->id; ?>">
-        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(" ", $this->classes)) ? '<span class="required">*</span> ' : '' ; ?></span>
+<div class="line form-group form-group-file" data-toggle="popover" data-trigger="hover" title="Aide" data-html="true"  data-popover-content="#aide-champ<?php echo $this->champ['id']; ?>">
+    <label class="col-sm-3 control-label" for="<?php echo $this->id; ?>">
+        <span><?php echo $this->label; ?> <?php echo in_array('form-oblig', explode(' ', $this->classes)) ? '<span class="required">*</span> ' : ''; ?></span>
     </label>
 
-    <div class="champ-image" style="float:left;">
-<?php
-    $style = $src = $minSrc = $size = $href = '';
-    if ($this->value == '') {
-        $style = ' display:none;';
-    } else {
-        $ext = pathinfo($this->value, PATHINFO_EXTENSION);
-        $href   = $this->idGabPage . '/' . $this->value;
-        $path = 'upload/' . $href;
-        if (\Solire\Lib\Model\FileManager::isImage($path)) {
-            $minSrc = $this->idGabPage . '/mini/' . $this->value;
-            $sizes = getimagesize('upload/' . $href);
-            $size  = $sizes[0] . ' x ' . $sizes[1];
+    <div class="col-sm-9 field-file <?php echo $this->value == '' ? 'hidden' : ''; ?>">
+        <?php
+        $style = $src = $minSrc = $size = $href = '';
+        if ($this->value == '') {
+            $style = ' display:none;';
         } else {
-            $size  = \Solire\Lib\Format\Number::formatSize(filesize($path));
-            $minSrc = 'public/default/back/img/filetype/' . $ext . '.png';
+            $ext  = pathinfo($this->value, PATHINFO_EXTENSION);
+            $href = $this->idGabPage . '/' . $this->value;
+            if ($this->uploadConfig->get('prefixUrl')) {
+                $href = $this->uploadConfig->get('prefixUrl') . '/' . $href;
+            }
+
+            $path = $this->uploadConfig->get('path') . '/' . $this->idGabPage . '/' . $this->value;
+
+            if (\Solire\Lib\Model\FileManager::isImage($path)) {
+                $minSrc = $this->idGabPage . '/apercu/' . $this->value;
+                if ($this->uploadConfig->get('prefixUrl')) {
+                    $minSrc = $this->uploadConfig->get('prefixUrl') . '/' . $minSrc;
+                }
+                $sizes  = getimagesize($path);
+                $size   = $sizes[0] . ' x ' . $sizes[1];
+            } else {
+                $size   = \Solire\Lib\Format\Number::formatSize(filesize($path));
+                $minSrc = 'public/default/back/img/filetype/' . $ext . '.png';
+            }
         }
-    }
-?>
-        <a class="previsu" style="cursor:pointer;<?php echo $style; ?>" href="<?php echo $href; ?>">
-            <div class="fl" style="margin-left:0px;">
-                <img style="max-height:80px;width:auto;height:auto;max-width: 80px;" src="<?php echo $minSrc; ?>" class="img-polaroid champ-image-vignette">
+        ?>
+        <div class="row field-file-info">
+            <div class="col-sm-4">
+                <a class="field-file-link exec-onclick-zoom" data-zoom-src="<?php echo $href; ?>" style="<?php echo $style; ?>"
+                   href="<?php echo $href; ?>">
+                    <img src="<?php echo $minSrc; ?>" class="img-thumbnail img-responsive field-file-thumbnail">
+                </a>
             </div>
-            <div class="fl" style="margin-left:0px;width:315px">
+            <div class="col-sm-8">
                 <dl class="dl-horizontal">
                     <dt>Nom de fichier</dt>
-                    <dd class="champ-image-value"><span><?php echo $this->value; ?></span></dd>
+                    <dd class="field-file-value"><span><?php echo $this->value; ?></span></dd>
 
                     <dt>Taille</dt>
-                    <dd class="champ-image-size"><?php echo $size; ?></dd>
+                    <dd class="field-file-size"><?php echo $size; ?></dd>
+
+                    <dt><label for="<?php echo $this->id; ?>_alt" class="control-label">Texte alternatif</label></dt>
+                    <dd>
+                        <input type="text" id="<?php echo $this->id; ?>_alt" class="form-control input-sm field-file-alt">
+                    </dd>
                 </dl>
             </div>
-        </a>
-
-        <div class="input-append" style="clear:both;">
-            <input
-                data-min-width="<?php  echo $this->params["CROP.WIDTH.MIN"]; ?>"
-                data-min-height="<?php  echo $this->params["CROP.HEIGHT.MIN"]; ?>"
-                type="text"
-                name="champ<?php echo $this->champ['id']; ?>[]"
-                id="<?php echo $this->id; ?>" class="<?php echo $this->classes; ?>"
-                value="<?php echo $this->value; ?>"
-                data-visuel-id="<?php echo $this->champ['id']; ?>"
-            />
-            <!--<a title="Prévisualisation" <?php echo $this->value != '' ? '' : 'style="display:none;"'?> href="<?php echo ($this->value ? $this->idGabPage . DIRECTORY_SEPARATOR . $this->value : '') ?>" target="_blank" class="btn previsu"><i class="icon-camera"></i></a>-->
-            <a title="Recadrer" <?php echo $this->isImage ? '' : 'style="display:none;"'?>  class="btn  crop" href="#"><i class="icon-fullscreen"></i></a>
         </div>
     </div>
-
-    <input type="hidden" class="extensions" value="<?php  echo $this->params["EXTENSIONS.ALLOW"]; ?>" />
+    <div class="select2-wrapper col-sm-9<?php echo $this->value != '' ? ' col-sm-offset-3' : ''; ?>">
+        <div class="input-group select2-bootstrap-append">
+            <select
+                style="width: 100%"
+                data-amd="modules/helper/autocompleteFile"
+                data-min-width="<?php echo $this->params["CROP.WIDTH.MIN"]; ?>"
+                data-min-height="<?php echo $this->params["CROP.HEIGHT.MIN"]; ?>"
+                data-extensions="<?php echo $this->params["EXTENSIONS.ALLOW"]; ?>"
+                type="text"
+                name="champ<?php echo $this->champ['id']; ?>[]"
+                id="<?php echo $this->id; ?>"
+                class="<?php echo $this->classes; ?> form-control"
+                value="<?php echo $this->value; ?>"
+                data-visuel-id="<?php echo $this->champ['id']; ?>">
+                <option value=""></option>
+                <?php if ($this->value) {
+                    ?>
+                    <option value="<?php echo $this->value; ?>" selected="selected"><?php echo $this->value; ?></option>
+                    <?php
+                }
+                ?>
+            </select>
+            <span class="input-group-btn">
+                <a title="Recadrer" <?php echo $this->isImage ? '' : 'style="display:none;"' ?>
+                   data-amd="modules/helper/cropDialog"
+                   class="btn btn-info field-file-crop" href="#">
+                    <i class="fa fa-crop"></i>
+                </a>
+                <a href="#" data-style="expand-left" data-amd="modules/page/simpleupload" class="btn btn-primary ladda-button" title="Importer un fichier">
+                    <span class="ladda-label"><i class="fa fa-folder-open"></i></span>
+                </a>
+            </span>
+        </div>
+    </div>
+    <input type="hidden" class="extensions" value="<?php echo $this->params["EXTENSIONS.ALLOW"]; ?>"/>
 </div>
-<div class="clearfix"></div>

@@ -38,8 +38,6 @@ class Tools
      */
     public static function formatTaille($valeur)
     {
-        $strTmp = '';
-
         if (preg_match('#^[0-9]{1,}$#', $valeur)) {
             if ($valeur >= 1000000) {
                 // Taille supérieur à  1 MegaOctet
@@ -124,34 +122,33 @@ class Tools
     }
 
     /**
-     * Documentation à faire
+     * Met en exergue des mots clés dans une chaîne
      *
-     * @param type   $chaine   Chaîne
+     * @param string $chaine   Chaîne
      * @param string $keywords Mots clés
      *
-     * @return type
-     * @todo Documenter
+     * @return string
      */
     public static function highlightedSearch($chaine, $keywords)
     {
         mb_internal_encoding('UTF-8');
         mb_regex_encoding('UTF-8');
-        for ($Z = 0; $Z < count($keywords); $Z++) {
+        for ($z = 0; $z < count($keywords); $z++) {
             if (str_replace(' ', '', $keywords) != '') {
-                $keywords[$Z] = '#('
+                $keywords[$z] = '#('
                     . self::regexAccents(
-                        str_replace(array('<¤>', '</¤>'), '', $keywords[$Z])
+                        str_replace(['<¤>', '</¤>'], '', $keywords[$z])
                     )
                     . ')#iu'
                 ;
             } else {
-                array_splice($keywords, $Z, 1);
-                $Z--;
+                array_splice($keywords, $z, 1);
+                $z--;
             }
         }
         if (is_array($keywords) && count($keywords) > 0) {
             $chaine = preg_replace($keywords, '<¤>$1</¤>', $chaine);
-            $chaine = str_replace(array('<¤>', '</¤>'), array('<strong>', '</strong>'), $chaine);
+            $chaine = str_replace(['<¤>', '</¤>'], ['<strong>', '</strong>'], $chaine);
         }
         return $chaine;
     }

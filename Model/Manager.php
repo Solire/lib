@@ -9,6 +9,7 @@
 namespace Solire\Lib\Model;
 
 use Solire\Lib\Registry;
+use Solire\Lib\MyPDO;
 
 /**
  * Manager
@@ -21,16 +22,16 @@ class Manager
 
     /**
      *
-     * @var Solire\Lib\MyPDO
+     * @var MyPDO
      */
     protected $db;
 
     /**
      * Initialisation du manager
      *
-     * @param Solire\Lib\MyPDO $db Accès à la bdd
+     * @param MyPDO $db Accès à la bdd
      */
-    public function __construct(Solire\Lib\MyPDO $db = null)
+    public function __construct(MyPDO $db = null)
     {
         if ($db) {
             $this->db = $db;

@@ -8,6 +8,8 @@
 
 namespace Solire\Lib;
 
+use Solire\Lib\Exception\Lib as LibException;
+
 /**
  * Gestionnaire des hooks
  *
@@ -22,14 +24,14 @@ class Hook
      *
      * @var array
      */
-    private $data = array();
+    private $data = [];
 
     /**
      * Répertoires dans lesquels se trouve les hooks
      *
-     * @var type
+     * @var array
      */
-    private $dirs = array();
+    private $dirs = [];
 
     /**
      * Sous dossier dans lequel est rangé les hooks
@@ -51,7 +53,7 @@ class Hook
      */
     public function __construct()
     {
-        $this->dirs = array_reverse(FrontController::getAppDirs(), true);
+        $this->dirs = array_reverse(FrontController::getSourceDirectories(), true);
     }
 
     /**
@@ -108,9 +110,9 @@ class Hook
 
         /** Chargement des hooks dispo **/
         $baseDir .= $this->codeName;
-        $hooks = array();
+        $hooks = [];
         foreach ($this->dirs as $dirInfo) {
-            $dir = $dirInfo['dir'] . Path::DS . 'hook' . Path::DS . $baseDir;
+            $dir = $dirInfo['dir'] . Path::DS . 'Hook' . Path::DS . $baseDir;
             $path = new Path($dir, Path::SILENT);
             if ($path->get() === false) {
                 continue;
@@ -130,7 +132,7 @@ class Hook
                 $funcName .= ucfirst($this->codeName)
                           . '\\' . pathinfo($file, PATHINFO_FILENAME);
 
-                $foo = array();
+                $foo = [];
                 $foo['className'] = $funcName;
                 $foo['path'] = $path->get() . Path::DS . $file;
                 $hooks[$file] = $foo;
@@ -154,9 +156,10 @@ class Hook
             if (empty($interfaces)
                 || !in_array('Solire\Lib\HookInterface', $interfaces)
             ) {
-                throw new \Solire\Lib\Exception\Lib('Hook au mauvais format');
+                throw new LibException('Hook au mauvais format');
             }
 
+            /** @var HookInterface $foo */
             $foo = new $hook['className'];
             $foo->run($this);
 

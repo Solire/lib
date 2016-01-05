@@ -27,7 +27,7 @@ class String
      *
      * @var array
      */
-    static protected $charMap = array(
+    static protected $charMap = [
         // Latin
         'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A',
         'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
@@ -115,16 +115,22 @@ class String
         'Š' => 'S', 'Ū' => 'u', 'Ž' => 'Z',
         'ā' => 'a', 'č' => 'c', 'ē' => 'e', 'ģ' => 'g',
         'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
-        'š' => 's', 'ū' => 'u', 'ž' => 'z'
-    );
+        'š' => 's', 'ū' => 'u', 'ž' => 'z',
+        // Japanese
+        'Ā' => 'A', 'Ū' => 'U', 'Ē' => 'E', 'Ō' => 'O',
+        'ā' => 'a', 'ū' => 'u', 'ē' => 'e', 'ō' => 'o'
+    ];
 
     /**
-     * Renvoi une chaine de n ($strLen) caracteres aleatoirement.
+     * Renvoie une chaîne de n ($strLen) caractères aléatoirement.
      *
-     * @param int    $strLen Longueur de la chaîne
-     * @param string $type   "all" / "numeric" / "alphalower" / "alphaupper"
-     *
+     * @param int $strLen Longueur de la chaîne
+     * @param int $type   [optional] <p>
+     * Type de caractères utilisés dans la chaîne générée. Doit être
+     * une des constantes the String::RANDOM_*.
+     * </p>
      * @return string
+     * @deprecated deprecated since version 6.0
      */
     public static function random($strLen, $type = self::RANDOM_ALL)
     {
@@ -244,5 +250,33 @@ class String
         $str = mb_strtolower($str, 'UTF-8');
 
         return $str;
+    }
+
+    /**
+     * Coupe une chaîne de caractères à N caractères
+     *
+     * @param string $string    Chaine à couper
+     * @param string $length    Longueur maximum
+     *
+     * @return string
+     */
+    public static function cut($string, $length, $ellipsis = true)
+    {
+        mb_internal_encoding('UTF-8');
+        if ($length && mb_strlen($string) > $length) {
+            $str = $string;
+            $str = mb_substr($str, 0, $length);
+            $pos = mb_strrpos($str, ' ');
+
+            $str = mb_substr($str, 0, $pos);
+
+            if ($ellipsis) {
+                $str .= '&hellip;';
+            }
+
+            return $str;
+        }
+
+        return $string;
     }
 }

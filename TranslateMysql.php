@@ -29,7 +29,7 @@ class TranslateMysql
      *
      * @var array
      */
-    protected $translate = array();
+    protected $translate = [];
 
     /**
      * Identifiant de la version
@@ -50,7 +50,7 @@ class TranslateMysql
      *
      * @var int[]
      */
-    protected $versions = array();
+    protected $versions = [];
 
     /**
      * Connection à la bdd
@@ -96,7 +96,7 @@ class TranslateMysql
      * Traduit un message
      *
      * @param string $string Message à traduire
-     * @param string $aide   Aide suplémentaire
+     * @param string $aide   Aide supplémentaire
      *
      * @return string message traduit
      */

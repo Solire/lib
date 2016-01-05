@@ -8,7 +8,9 @@
 
 namespace Solire\Lib\Model\Gabarit\Field\File;
 
-use \Solire\Lib\Model\FileManager;
+use Solire\Lib\Model\FileManager;
+use Solire\Lib\Model\Gabarit\Field\GabaritField;
+use Solire\Lib\Registry;
 
 /**
  * Champ File
@@ -16,7 +18,7 @@ use \Solire\Lib\Model\FileManager;
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class FileField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
+class FileField extends GabaritField
 {
     /**
      * Création du champ
@@ -25,30 +27,30 @@ class FileField extends \Solire\Lib\Model\Gabarit\Field\GabaritField
      */
     public function start()
     {
+        $this->uploadConfig = Registry::get('mainconfig')->get('upload');
+
         parent::start();
         $this->isImage = false;
-        if (
-            (isset($this->params['CROP.WIDTH.MIN']) && intval($this->params['CROP.WIDTH.MIN']) > 0 ) ||
+        if ((isset($this->params['CROP.WIDTH.MIN']) && intval($this->params['CROP.WIDTH.MIN']) > 0) ||
             (isset($this->params['CROP.HEIGHT.MIN']) && intval($this->params['CROP.HEIGHT.MIN']) > 0)
         ) {
-            $this->champ['aide'] .= '<div style="display:inline-block">';
+            $this->champ['aide'] .= '<div>';
             if (
                 isset($this->params['CROP.WIDTH.MIN'])
                 && intval($this->params['CROP.WIDTH.MIN']) > 0
             ) {
                 $this->champ['aide'] .= '<dl class="dl-horizontal expected-width">
-                                    <dt style="width: 180px;">Largeur</dt>
-                                    <dd style="margin-left: 190px;"><span id="">'
+                                    <dt>Largeur</dt>
+                                    <dd><span id="">'
                                      . $this->params['CROP.WIDTH.MIN'] . '</span>px</dd>
                                 </dl>';
             }
-            if (
-                isset($this->params['CROP.HEIGHT.MIN'])
+            if (isset($this->params['CROP.HEIGHT.MIN'])
                 && intval($this->params['CROP.HEIGHT.MIN']) > 0
             ) {
                 $this->champ['aide'] .= '<dl class="dl-horizontal expected-height">
-                                    <dt style="width: 180px;">Hauteur</dt>
-                                    <dd style="margin-left: 190px;"><span id="">'
+                                    <dt>Hauteur</dt>
+                                    <dd><span id="">'
                                     . $this->params['CROP.HEIGHT.MIN'] . '</span>px</dd>
                                 </dl>';
             }
