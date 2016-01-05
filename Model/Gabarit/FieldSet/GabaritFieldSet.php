@@ -230,6 +230,11 @@ abstract class GabaritFieldSet
                 $fieldId,
                 $this->idGabPage
             );
+
+            if (!is_array($champArray)) {
+                continue;
+            }
+
             $champHTML .= $champArray['html'];
 
             if ($first) {

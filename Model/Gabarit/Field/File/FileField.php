@@ -62,5 +62,12 @@ class FileField extends GabaritField
         if (array_key_exists($ext, FileManager::$extensions['image'])) {
             $this->isImage = true;
         }
+
+        // On met la valeur à vide si le fichier n'existe pas
+        $href   = $this->idGabPage . '/' . $this->value;
+        $path = 'upload/' . $href;
+        if (!file_exists($path)) {
+            $this->value = null;
+        }
     }
 }
