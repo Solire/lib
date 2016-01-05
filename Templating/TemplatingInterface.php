@@ -34,6 +34,16 @@ interface TemplatingInterface
      *
      * @return void
      */
+    public function display($templatingFilePath, $variables = []);
+
+    /**
+     * Traitement du template et retourne le html généré
+     *
+     * @param string $templatingFilePath Chemin du template
+     * @param array  $variables          Variables à inclure dans le scope du template
+     *
+     * @return void
+     */
     public function render($templatingFilePath, $variables = []);
 
     /**

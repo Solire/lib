@@ -1,4 +1,4 @@
-<div class="line">
+<div class="line" data-toggle="popover" data-trigger="hover" title="Aide" data-html="true"  data-popover-content="#aide-champ<?php echo $this->champ['id']; ?>">
 <?php
     foreach ($this->allValues as $value) {
         $groups[strtolower($value["label"][0])][] = $value;

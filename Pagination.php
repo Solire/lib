@@ -7,13 +7,15 @@
  */
 namespace Solire\Lib;
 
+use JsonSerializable;
+
 /**
  * Gestionnaire de pagination
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
-class Pagination
+class Pagination implements JsonSerializable
 {
     /**
      * Numéro de la page courante
@@ -245,6 +247,48 @@ class Pagination
     }
 
     /**
+     * Renvoie la page suivante
+     *
+     * @return array|bool Renvoie false si aucune page suivante
+     */
+    public function getNextPage()
+    {
+        $page = false;
+        /* Lien page suivante*/
+        if ($this->nextHtml && $this->currentPage < $this->nbPages) {
+            $page = [
+                'text'    => $this->nextHtml,
+                'num'     => $this->currentPage + 1,
+                'current' => false,
+                'link'    => true
+            ];
+        }
+
+        return $page;
+    }
+
+    /**
+     * Renvoie la page précédente
+     *
+     * @return array|bool Renvoie false si aucune page precedente
+     */
+    public function getPrevPage()
+    {
+        $page = false;
+        /* Lien page precedente*/
+        if ($this->prevHtml && $this->currentPage > 1) {
+            $page = [
+                'text'    => $this->prevHtml,
+                'num'     => $this->currentPage -  1,
+                'current' => false,
+                'link'    => true
+            ];
+        }
+
+        return $page;
+    }
+
+    /**
      * Renvoie le tableau des résultats de la page courante
      *
      * @return array
@@ -341,5 +385,74 @@ class Pagination
         } else {
             $this->nbPages = ceil($this->countResults / $this->nbElemsByPage);
         }
+    }
+
+    /**
+     * Convertit l'objet en chaine.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Convertit l'instance de l'objet en JSON
+     *
+     * @param  int  $options Options de la fonction json_encode
+     * @return string
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
+     * Convertit l'objet en tableau serializable en JSON
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Convertit l'instance de l'objet en tableau
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $attributes = $this->attributesToArray();
+
+        return $attributes;
+    }
+
+    /**
+     * Convertit les attributs de l'objet en tableau
+     *
+     * @return array
+     */
+    public function attributesToArray()
+    {
+        $attributes = [];
+        foreach ($this as $key => $value) {
+            if (is_array($value)) {
+                $subAttributes = [];
+                foreach ($value as $v) {
+                    if ($v instanceof JsonSerializable) {
+                        $subAttributes[] = $v->jsonSerialize();
+                    }
+                }
+                $attributes[$key] = $subAttributes;
+            } else {
+                $attributes[$key] = $value;
+            }
+        }
+        echo '<pre>' . print_r($attributes, true) . '</pre>';
+        exit();
+        return $attributes;
     }
 }

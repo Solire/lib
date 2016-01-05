@@ -1,10 +1,4 @@
 <?php
-/**
- * Test class for path.
- *
- * @author  Adrien <aimbert@solire.fr>
- * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
- */
 
 namespace Solire\Lib\tests\unit\Loader;
 
@@ -106,6 +100,7 @@ class Img extends Atoum
                 new TestClass([]);
             })
                 ->isInstanceOf('\Solire\Lib\Exception\Lib')
+                ->hasMessage('Le loader ne doit pas être instancié avec une liste de dossier vide')
         ;
 
        $this

@@ -722,7 +722,9 @@ class GabaritManager extends Manager
 
                 $blocsValues = $page->getBlocs($name_bloc)->getValues();
                 foreach ($blocsValues as $keyValue => $value) {
-                    $page->getBlocs($name_bloc)->setValue($keyValue, $values[$value[$joinName]], $joinName);
+                    if (isset($values[$value[$joinName]])) {
+                        $page->getBlocs($name_bloc)->setValue($keyValue, $values[$value[$joinName]], $joinName);
+                    }
                 }
 
                 return;
@@ -1120,7 +1122,7 @@ class GabaritManager extends Manager
      * @param int|bool $id_parent  Identifiant de la page parente
      * @param bool     $visible    Si vrai uniquement les pages visible
      *
-     * @return GabaritPage tableau de page
+     * @return GabaritPage[] tableau de page
      */
     public function getSearch(
         $id_version,

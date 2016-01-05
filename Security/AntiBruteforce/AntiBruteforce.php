@@ -44,7 +44,6 @@ class AntiBruteforce
      * @param null|string  $ip   L'ip à tester, si null, l'ip du client
      *
      * @throws InvalidIpException
-     * @internal param MyPDO $connection La connexion à la base de données
      */
     public function __construct($conf, $ip = null)
     {

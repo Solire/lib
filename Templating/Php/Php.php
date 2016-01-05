@@ -70,6 +70,33 @@ class Php extends Templating
             }
         }
 
+        ob_start();
+            if ($this->mainPath !== false) {
+                include $this->mainPath;
+            } else {
+                $this->content();
+            }
+        return ob_get_clean();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param string $templatingFilePath Chemin du template
+     * @param array  $variables          Variables à inclure dans le scope du template
+     *
+     * @return void
+     */
+    public function display($templatingFilePath, $variables = [])
+    {
+        $this->contentPath = $templatingFilePath;
+
+        foreach ($variables as $variableName => $variable) {
+            if (!property_exists($this, $variableName)) {
+                $this->$variableName = $variable;
+            }
+        }
+
         if ($this->mainPath !== false) {
             include $this->mainPath;
         } else {

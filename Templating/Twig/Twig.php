@@ -9,10 +9,10 @@
 namespace Solire\Lib\Templating\Twig;
 
 use Solire\Lib\Exception\Lib as Exception;
+use Solire\Lib\Registry;
 use Solire\Lib\Templating\Templating;
 use Solire\Lib\Templating\Twig\Extensions\Extension\I18n;
 use Solire\Lib\Path;
-use Twig_Autoloader;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
@@ -40,8 +40,6 @@ class Twig extends Templating
             throw new Exception('Aucun fichier de vue', 500);
         }
 
-        Twig_Autoloader::register();
-
         /** @todo Améliorer ce petit hack pour ne pas spécifier "view/" dans les extends */
         /** @todo Et tester si le rep existe */
         $srcDirs = $this->fileLocator->getDirs();
@@ -60,11 +58,25 @@ class Twig extends Templating
             }
         }
 
-        $twig = new Twig_Environment($loader, ['autoescape' => false]);
+        $cacheDir  = Registry::get('mainconfig')->get('cache', 'dir') . 'twig';
+        $twigDebug = Registry::get('envconfig')->get('twig', 'debug');
+
+        $twig = new Twig_Environment(
+            $loader,
+            ['autoescape' => false, 'cache' => $cacheDir, 'auto_reload' => true, 'debug' => $twigDebug]
+        );
+
+        $twig->getExtension('core')->setDateFormat('d/m/Y');
 
         $twig->addExtension(new I18n());
+        $twig->addExtension(new \Twig_Extension_Debug());
 
-        echo $twig->render($templatingFilePath, $variables);
+        return $twig->render($templatingFilePath, $variables);
+    }
+
+    public function display($templatingFilePath, $variables = [])
+    {
+        echo $this->render($templatingFilePath, $variables);
     }
 
     /**

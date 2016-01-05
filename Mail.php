@@ -102,7 +102,7 @@ class Mail
     public function __construct($name)
     {
         $this->codeName = $name;
-        $this->view = new View();
+        $this->view = new View(Registry::get('viewFileLocator'));
 
         $configLoc = Registry::get('envconfig');
         $default = $configLoc->get('mail');
@@ -217,15 +217,13 @@ class Mail
                  * On cherche le fichier main
                  */
 
-                $this->view->setMainPath('main.phtml');
+                $this->view->setMainPath('main');
             }
 
-            ob_start();
-            $this->view
-                ->setViewPath($this->codeName . '.phtml')
-                ->display()
+            $this->body = $this->view
+                ->setViewPath($this->codeName)
+                ->render()
             ;
-            $this->body = ob_get_clean();
         }
 
         return $this->body;

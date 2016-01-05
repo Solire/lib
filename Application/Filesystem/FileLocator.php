@@ -29,7 +29,7 @@ class FileLocator extends AbstractFileLocator
      *
      * @var array
      */
-    protected $currentApplicationDirs = [];
+    protected $applicationDirs = [];
 
     /**
      * Liste des applications
@@ -66,7 +66,7 @@ class FileLocator extends AbstractFileLocator
     public function setCurrentApplicationName($currentApplicationName)
     {
         $this->currentApplicationName = $currentApplicationName;
-        $this->buildCurrentApplicationDirs();
+        $this->buildApplicationDirs($this->currentApplicationName);
 
         return $this;
     }
@@ -74,23 +74,30 @@ class FileLocator extends AbstractFileLocator
     /**
      * Retourne la liste complète des répertoires
      *
-     * @param int $type Permet de retourner seulement les répertoires de sources ou de l'application
+     * @param int    $type            Permet de retourner seulement les répertoires de sources ou de l'application
      * courante
+     * @param string $applicationName Nom de l'application
      *
      * @return array
      */
-    public function getDirs($type = self::TYPE_ALL)
+    public function getDirs($type = self::TYPE_ALL, $applicationName = null)
     {
+        if ($applicationName === null) {
+            $applicationName = $this->currentApplicationName;
+        }
+
+        $appDirs = $this->getApplicationDirs($applicationName);
+
         $dirs = [];
         switch ($type) {
             case self::TYPE_ALL:
-                $dirs = $this->currentApplicationDirs + $this->sourceDirectoriesDirs;
+                $dirs = $appDirs + $this->sourceDirectoriesDirs;
                 break;
             case self::TYPE_SOURCE_DIRECTORY:
                 $dirs = $this->sourceDirectoriesDirs;
                 break;
             case self::TYPE_APPLICATION:
-                $dirs = $this->currentApplicationDirs;
+                $dirs = $appDirs;
                 break;
 
         }
@@ -101,14 +108,15 @@ class FileLocator extends AbstractFileLocator
     /**
      * Cherche un fichier
      *
-     * @param string $path Chemin du dossier / fichier à chercher
-     * @param int    $type Permet de choisir les répertoires de recherche (sources / application)
+     * @param string $path            Chemin du dossier / fichier à chercher
+     * @param int    $type            Permet de choisir les répertoires de recherche (sources / application)
+     * @param string $applicationName Nom de l'application
      *
      * @return string|boolean
      */
-    public function locate($path, $type = self::TYPE_APPLICATION)
+    public function locate($path, $type = self::TYPE_APPLICATION, $applicationName = null)
     {
-        $dirs = $this->getDirs($type);
+        $dirs = $this->getDirs($type, $applicationName);
         foreach ($dirs as $dir) {
             $testPath = new Path($dir . Path::DS . $path, Path::SILENT);
             if ($testPath->get() !== false) {
@@ -120,27 +128,47 @@ class FileLocator extends AbstractFileLocator
     }
 
     /**
-     * Construit la liste des répertoires pour l'application courante
+     * Retourne la liste des répertoires pour une applocation
      *
-     * @return void
+     * @param string $applicationName Nom de l'application
+     *
+     * @return array
      */
-    protected function buildCurrentApplicationDirs()
+    protected function getApplicationDirs($applicationName)
     {
-        $this->currentApplicationDirs = [];
+        if (!isset($this->applicationDirs[$applicationName])) {
+            $this->buildApplicationDirs($applicationName);
+        }
+
+        return $this->applicationDirs[$applicationName];
+    }
+
+    /**
+     * Construit la liste des répertoires pour une applocation
+     *
+     * @param string $applicationName Nom de l'application
+     *
+     * @return array
+     */
+    protected function buildApplicationDirs($applicationName)
+    {
+        $applicationDirs = [];
 
         $appDirs = [
-            Path::DS . $this->currentApplicationName,
-            Path::DS . strtolower($this->currentApplicationName),
+            Path::DS . $applicationName,
+            Path::DS . strtolower($applicationName),
         ];
 
         foreach ($this->sourceDirectories as $sourceDirectory) {
             foreach ($appDirs as $appDir) {
                 $namespace = $sourceDirectory['namespace'] . '\\' . ucfirst(str_replace('/', '', $appDir));
                 if (file_exists($sourceDirectory['dir'] . $appDir)) {
-                    $this->currentApplicationDirs[$namespace] = $sourceDirectory['dir'] . $appDir;
+                    $applicationDirs[$namespace] = $sourceDirectory['dir'] . $appDir;
                 }
             }
         }
+
+        $this->applicationDirs[$applicationName] = $applicationDirs;
     }
 
     /**
