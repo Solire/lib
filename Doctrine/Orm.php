@@ -56,11 +56,21 @@ class Orm
         $this->entityManager = EntityManager::create($this->connection, $this->config);
     }
 
+    /**
+     * Retourne le Manager d'entité
+     *
+     * @return EntityManager
+     */
     public function getEM()
     {
         return $this->entityManager;
     }
 
+    /**
+     * Retourne la Connection doctrine à la bdd
+     *
+     * @return Connection
+     */
     public function getConnection()
     {
         return $this->connection;
