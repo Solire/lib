@@ -524,20 +524,21 @@ class FrontController
     /**
      * Charge la configuration relative à l'application
      *
-     * @param string $test ?
+     * @param string $appName Le nom de l'application, ne pas renseigner si
+     * c'est l'application courante
      *
      * @return \Solire\Lib\Config|null
      */
-    final public static function loadAppConfig($test = null)
+    final public static function loadAppConfig($appName = null)
     {
-        if (empty($test)) {
+        if (empty($appName)) {
             $confPath = self::search('conf.ini');
         } else {
-            $confPath = self::search($test . Path::DS . 'conf.ini', false);
+            $confPath = self::search($appName . Path::DS . 'conf.ini', false);
         }
         if (!empty($confPath)) {
             $appConfig = new Config($confPath);
-            if (empty($test)) {
+            if (empty($appName)) {
                 Registry::set('appconfig', $appConfig);
             }
 
