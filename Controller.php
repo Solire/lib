@@ -146,6 +146,7 @@ class Controller
         $this->view->javascript = $this->javascript;
         $this->view->ajax       = $this->ajax;
         $this->view->seo        = $this->seo;
+        $this->view->currentUrl = FrontController::getCurrentUrl();
     }
 
     /**
