@@ -65,7 +65,8 @@ class FileField extends GabaritField
 
         // On met la valeur à vide si le fichier n'existe pas
         $href   = $this->idGabPage . '/' . $this->value;
-        $path = 'upload/' . $href;
+
+        $path = $this->uploadConfig['path'] . DIRECTORY_SEPARATOR . $href;
         if (!file_exists($path)) {
             $this->value = null;
         }
