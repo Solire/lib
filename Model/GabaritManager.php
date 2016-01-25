@@ -1958,13 +1958,13 @@ class GabaritManager extends Manager
 
             if ($updating) {
                 $queryOrdre = 'UPDATE `' . $table . '` SET'
-                       . ' `ordre` = ' . $ordre;
+                    . ' `ordre` = ' . $ordre . ',';
                 $query = 'UPDATE `' . $table . '` SET'
-                       . ' `visible` = ' . $visible . ',';
+                    . ' `visible` = ' . $visible . ',';
             } else {
                 $query = 'INSERT INTO `' . $table . '` SET'
-                       . ' `id_gab_page` = ' . $id_gab_page . ','
-                       . ' `ordre` = ' . $ordre . ',';
+                    . ' `id_gab_page` = ' . $id_gab_page . ','
+                    . ' `ordre` = ' . $ordre . ',';
             }
         } else {
             $query = 'UPDATE `' . $table . '` SET ';
@@ -1982,12 +1982,14 @@ class GabaritManager extends Manager
 
             $value = trim($value);
 
-            if ($champ['type'] != 'WYSIWYG' && $champ['type'] != 'TEXTAREA'
+            if ($champ['type'] != 'WYSIWYG'
+                && $champ['type'] != 'TEXTAREA'
             ) {
                 $value = str_replace('"', '&quot;', $value);
             }
 
-            if ($champ['typedonnee'] == 'FILE' && $value != ''
+            if ($champ['typedonnee'] == 'FILE'
+                && $value != ''
             ) {
                 $filesUsed[] = $value;
             }
@@ -2002,18 +2004,29 @@ class GabaritManager extends Manager
                     $lat = array_shift($donnees['champ' . $champ['id'] . '_lat']);
                     $lng = array_shift($donnees['champ' . $champ['id'] . '_lng']);
                     $zoom = array_shift($donnees['champ' . $champ['id'] . '_zoom']);
-                    $query .= '`' . $champ['name'] . '_lat` = '
-                            . $this->db->quote($lat) . ',';
-                    $query .= '`' . $champ['name'] . '_lng` = '
-                            . $this->db->quote($lng) . ',';
-                    $query .= '`' . $champ['name'] . '_zoom` = '
-                            . $this->db->quote($zoom) . ',';
+
+                    $queryPart = '`' . $champ['name'] . '_lat` = '
+                        . $this->db->quote($lat) . ','
+                        . '`' . $champ['name'] . '_lng` = '
+                        . $this->db->quote($lng) . ','
+                        . '`' . $champ['name'] . '_zoom` = '
+                        . $this->db->quote($zoom) . ',';
                     break;
 
                 default:
-                    $query .= '`' . $champ['name'] . '` = '
-                            . $this->db->quote($value) . ',';
+                    $queryPart = '`' . $champ['name'] . '` = '
+                        . $this->db->quote($value) . ',';
                     break;
+            }
+
+            if ($updating) {
+                if ($champ['trad']) {
+                    $query .= $queryPart;
+                } else {
+                    $queryOrdre .= $queryPart;
+                }
+            } else {
+                $query .= $queryPart;
             }
         }
 
@@ -2022,12 +2035,12 @@ class GabaritManager extends Manager
 
         if ($updating) {
             $queryTmp = substr($query, 0, -1)
-                      . ' WHERE `id_version` = ' . $id_version
-                      . ' AND `id` = ' . $id_bloc;
+                    . ' WHERE `id_version` = ' . $id_version
+                    . ' AND `id` = ' . $id_bloc;
             $tmpModif = $this->db->exec($queryTmp);
 
-            $queryTmp = $queryOrdre
-                      . ' WHERE `id` = ' . $id_bloc;
+            $queryTmp = substr($queryOrdre, 0, -1)
+                    . ' WHERE `id` = ' . $id_bloc;
             $tmpModif += $this->db->exec($queryTmp);
 
             if (!$modif && $tmpModif > 0) {
