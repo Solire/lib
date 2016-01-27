@@ -21,28 +21,28 @@ class Session
      *
      * @var array
      */
-    private $user;
+    protected $user;
 
     /**
      * Nom du cookie
      *
      * @var string
      */
-    private $cookieName;
+    protected $cookieName;
 
     /**
      * Etat de la connexion
      *
      * @var bool
      */
-    private $connected = false;
+    protected $connected = false;
 
     /**
      * Configuration de la session
      *
      * @var array
      */
-    private $config;
+    protected $config;
 
     /**
      * Initialise une session de type $sessionCode
@@ -76,6 +76,7 @@ class Session
         }
 
         $conf = new Config($path);
+
         $this->config = $conf->get('core');
         $this->cookieName = $this->config['cookie'];
         unset($conf);
@@ -137,7 +138,7 @@ class Session
      *
      * @return string
      */
-    private function makeToken()
+    protected function makeToken()
     {
         $foo = func_get_args();
         $token = implode(', ', $foo);
@@ -151,7 +152,7 @@ class Session
      *
      * @return void
      */
-    private function regen()
+    protected function regen()
     {
         if (isset($_COOKIE[$this->cookieName]) && !empty($_COOKIE[$this->cookieName])) {
             $life = time() + $this->config['duration'];
