@@ -8,8 +8,8 @@
 
 namespace Solire\Lib;
 
+use PDO;
 use Solire\Lib\Exception\HttpError;
-use \PDO;
 use Solire\Lib\View\View;
 
 /**
@@ -84,7 +84,7 @@ class Controller
     /**
      * Informations de rewriting
      *
-     * @var \stdClass
+     * @var array
      */
     protected $rew;
 
