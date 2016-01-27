@@ -563,6 +563,11 @@ class FrontController
             if ($testPath->get()) {
                 return $source;
             }
+
+            $testPath = new Path($source['dir'] . Path::DS . ucfirst($ctrl), Path::SILENT);
+            if ($testPath->get()) {
+                return $source;
+            }
         }
 
         return false;
