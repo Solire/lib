@@ -20,7 +20,7 @@
     "php": ">=5.5.0",
     "ensepar/html2pdf": "1.0.1",
     "zendframework/zend-mail": "2.2.5",
-    "solire/conf": "2.3.*",
+    "solire/conf": "^2.4",
     "monolog/monolog": "~1.16",
     "twig/twig": "~1.0",
     "easybook/geshi": "1.0.8.12",
