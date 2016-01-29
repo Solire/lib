@@ -200,7 +200,7 @@
             $name_group = $fieldset['name'];
             ?>
                                             <fieldset>
-                                                <legend><i class="fa fa-folder"></i> <?php echo $name_group; ?></legend>
+                                                <legend><i class="fa fa-folder <?php echo $this->view['metaId'] ? '' : 'fa-folder-open'; ?>"></i> <?php echo $name_group; ?></legend>
 
                                                 <div<?php echo $this->view['metaId'] ? ' style="display:none;"' : ''; ?>>
                                                     <?php
