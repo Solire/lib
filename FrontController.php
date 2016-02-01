@@ -909,9 +909,6 @@ class FrontController
             Registry::set('basehref', 'http://www.' . $serverUrl . '/');
         }
 
-
-        Registry::set('analytics', $version['analytics']);
-
         if (!defined('ID_VERSION')) {
             define('ID_VERSION', $version['id']);
             define('SUF_VERSION', $version['suf']);
