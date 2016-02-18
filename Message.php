@@ -1,6 +1,6 @@
 <?php
 /**
- * Affichage de message
+ * Affichage de message.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib;
 
 /**
- * Affichage de message
+ * Affichage de message.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -17,21 +17,21 @@ namespace Solire\Lib;
 class Message
 {
     /**
-     * Message pour l'utilisateur
+     * Message pour l'utilisateur.
      *
      * @var string
      */
     public $message;
 
     /**
-     * Etat par défaut
+     * Etat par défaut.
      *
      * @var string
      */
     public $etat = 'success';
 
     /**
-     * Temps avant la redirection html
+     * Temps avant la redirection html.
      *
      * @var int
      */
@@ -40,22 +40,21 @@ class Message
     public $url;
 
     /**
-     * Valeurs possible pour l'etat
+     * Valeurs possible pour l'etat.
      *
      * @var array
      */
     private $etats = ['alert', 'error', 'success'];
 
     /**
-     * Basehref du site
+     * Basehref du site.
      *
      * @var string
      */
     public $baseHref = '';
 
-
     /**
-     * Prépare un message
+     * Prépare un message.
      *
      * @param string $message Phrase à afficher
      *
@@ -68,7 +67,7 @@ class Message
     }
 
     /**
-     * Modifie l'etat du message
+     * Modifie l'etat du message.
      *
      * @param string $etat Etat à appliquer au message
      *
@@ -81,9 +80,8 @@ class Message
         }
     }
 
-
     /**
-     * Ajoute une redirection automatique
+     * Ajoute une redirection automatique.
      *
      * @param string $url  Url vers laquelle rediriger l'utilisateur
      * @param string $auto Durée en seconde de la redirection
@@ -105,7 +103,7 @@ class Message
     }
 
     /**
-     * Affiche le message
+     * Affiche le message.
      *
      * @return void
      */
@@ -123,7 +121,7 @@ class Message
     }
 
     /**
-     * Affiche le message sous la forme d'un json pour sa gestion en ajax
+     * Affiche le message sous la forme d'un json pour sa gestion en ajax.
      *
      * @return void
      */
@@ -142,7 +140,7 @@ class Message
     }
 
     /**
-     * Renvois le chemin vers la vue relative à l'erreur
+     * Renvois le chemin vers la vue relative à l'erreur.
      *
      * @return mixed Chemin vers le fichier ou false
      */
@@ -157,7 +155,7 @@ class Message
             }
         }
 
-        /** utilisation du message.phtml présent dans Solire\Lib **/
+        /* utilisation du message.phtml présent dans Solire\Lib **/
         $path = pathinfo(__FILE__, PATHINFO_DIRNAME) . Path::DS . 'error/message.phtml';
         $path = new Path($path, Path::SILENT);
         if ($path->get()) {
@@ -168,9 +166,10 @@ class Message
     }
 
     /**
-     * Affiche le message en html
+     * Affiche le message en html.
      *
      * @return void
+     *
      * @throws Exception\Lib
      */
     private function displayHtml()

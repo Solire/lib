@@ -1,6 +1,6 @@
 <?php
 /**
- * Classe de contrôle des chemins de fichiers
+ * Classe de contrôle des chemins de fichiers.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -8,10 +8,10 @@
 
 namespace Solire\Lib;
 
-use \Solire\Lib\Exception\Lib as Exception;
+use Solire\Lib\Exception\Lib as Exception;
 
 /**
- * Classe de contrôle des chemins de fichiers
+ * Classe de contrôle des chemins de fichiers.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -22,7 +22,7 @@ class Path
     const PS = PATH_SEPARATOR;
 
     /**
-     * Chemin absolu vers le fichier
+     * Chemin absolu vers le fichier.
      *
      * @var string
      */
@@ -30,17 +30,18 @@ class Path
 
     /**
      * Mode silencieux
-     * À mettre dans $option du construct pour annuler les envois d'exception
+     * À mettre dans $option du construct pour annuler les envois d'exception.
      */
     const SILENT = 18;
 
     /**
-     * Test le chemin relatif $filePath
+     * Test le chemin relatif $filePath.
      *
      * @param string $filePath Chemin relatif à tester
      * @param mixed  $option   Constante à mettre pour changer le comportement (voir SILENT)
      *
      * @throws Exception Fichier introuvable.
+     *
      * @uses Path::test()
      * @uses Path::$_slientMode
      */
@@ -56,7 +57,7 @@ class Path
     }
 
     /**
-     * Donne le chemin absolue vers le fichier
+     * Donne le chemin absolue vers le fichier.
      *
      * @return string
      * @ignore
@@ -67,7 +68,7 @@ class Path
     }
 
     /**
-     * Renvois le chemin du fichier ou du dossier
+     * Renvois le chemin du fichier ou du dossier.
      *
      * @return string
      */
@@ -81,11 +82,11 @@ class Path
     }
 
     /**
-     * Permet d'ajouter des dossiers dans lesquelles chercher les fichiers
+     * Permet d'ajouter des dossiers dans lesquelles chercher les fichiers.
      *
      * @param string $path Dossier à ajouter
      *
-     * @return boolean True si l'opération c'est bien déroulée.
+     * @return bool True si l'opération c'est bien déroulée.
      * @static
      */
     public static function addPath($path)
@@ -107,7 +108,7 @@ class Path
     }
 
     /**
-     * Renvoi le chemin absolu, si le fichier est un lien symbolique et
+     * Renvoi le chemin absolu, si le fichier est un lien symbolique et.
      *
      * @param string $path    Le chemin du fichier
      * @param bool   $symLink Si le fichier est un lien si le paramètre
@@ -115,6 +116,7 @@ class Path
      *                        de la cible du lien
      *
      * @return string
+     *
      * @see \realpath()
      */
     public static function realPath($path, $symLink = false)
@@ -126,6 +128,7 @@ class Path
              * auquel on concatène le dossier final
              */
             $parent = pathinfo($path, PATHINFO_DIRNAME);
+
             return realpath($parent) . self::DS
                  . pathinfo($path, PATHINFO_BASENAME);
         }
@@ -134,7 +137,7 @@ class Path
     }
 
     /**
-     * Test le chemin
+     * Test le chemin.
      *
      * @param string $filePath Chemin vers le fichier
      *

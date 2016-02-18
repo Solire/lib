@@ -3,15 +3,15 @@
 namespace Solire\Lib\Templating\Twig;
 
 use Solire\Lib\Exception\Lib as Exception;
-use Solire\Lib\Registry;
+use Solire\Lib\Path;
 use Solire\Lib\Templating\Templating;
 use Solire\Lib\Templating\Twig\Extensions\Extension\I18n;
-use Solire\Lib\Path;
-use Twig_Loader_Filesystem;
 use Twig_Environment;
+use Twig_Extension_Debug;
+use Twig_Loader_Filesystem;
 
 /**
- * Classe de rendu des templates TWIG
+ * Classe de rendu des templates TWIG.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -19,11 +19,68 @@ use Twig_Environment;
 class Twig extends Templating
 {
     /**
-     * Charge les fichiers templates
+     * Charge les fichiers templates.
      *
      * @var Twig_Loader_Filesystem
      */
     private $loader;
+
+    /**
+     * Dossier de cache pour twig.
+     *
+     * @var string
+     */
+    private $cacheDir = false;
+
+    /**
+     * Mode debug de twig.
+     *
+     * @var bool
+     */
+    private $debug = false;
+
+    /**
+     * Template de symfony form à utiliser.
+     *
+     * @var string
+     */
+    private $formTemplate = false;
+
+    /**
+     * Définit le dossier de cache pour twig.
+     *
+     * @param string $cacheDir Dossier de cache pour twig
+     *
+     * @return void
+     */
+    public function setCacheDir($cacheDir)
+    {
+        $this->cacheDir = $cacheDir;
+    }
+
+    /**
+     * Définit le mode debug de twig.
+     *
+     * @param bool $debug Mode debug de twig
+     *
+     * @return void
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+    }
+
+    /**
+     * Définit le template de symfony form à utiliser.
+     *
+     * @param string $formTemplate Mode debug de twig
+     *
+     * @return void
+     */
+    public function setFormTemplate($formTemplate)
+    {
+        $this->formTemplate = $formTemplate;
+    }
 
     /**
      * {@inheritdoc}
@@ -41,8 +98,8 @@ class Twig extends Templating
             throw new Exception('Aucun fichier de vue', 500);
         }
 
-        /** @todo Améliorer ce petit hack pour ne pas spécifier "view/" dans les extends */
-        /** @todo Et tester si le rep existe */
+        /* @todo Améliorer ce petit hack pour ne pas spécifier "view/" dans les extends */
+        /* @todo Et tester si le rep existe */
         $srcDirs = $this->fileLocator->getDirs();
         $viewSrcDirs = [];
         foreach ($srcDirs as $namespace => $dir) {
@@ -59,34 +116,30 @@ class Twig extends Templating
             }
         }
 
-        $cacheDir  = Registry::get('mainconfig')->get('cache', 'dir') . 'twig';
-        $twigDebug = Registry::get('envconfig')->get('twig', 'debug');
-
         $twig = new Twig_Environment(
             $this->loader,
             [
                 'autoescape' => false,
-                'cache' => $cacheDir,
+                'cache' => $this->cacheDir,
                 'auto_reload' => true,
-                'debug' => $twigDebug,
+                'debug' => $this->debug,
             ]
         );
 
-        $formTwig = Registry::get('mainconfig')->get('twig', 'form');
-        if ($formTwig) {
-            new FormBridge($twig, array_values((array) $formTwig));
+        if ($this->formTemplate) {
+            new FormBridge($twig, array_values((array) $this->formTemplate));
         }
 
         $twig->getExtension('core')->setDateFormat('d/m/Y');
 
         $twig->addExtension(new I18n());
-        $twig->addExtension(new \Twig_Extension_Debug());
+        $twig->addExtension(new Twig_Extension_Debug());
 
         return $twig->render($templatingFilePath, $variables);
     }
 
     /**
-     * Retourne le chargeur de template de twig
+     * Retourne le chargeur de template de twig.
      *
      * @return Twig_Loader_Filesystem
      */
@@ -96,7 +149,7 @@ class Twig extends Templating
     }
 
     /**
-     * Affiche la vue
+     * Affiche la vue.
      *
      * @param string $templatingFilePath Chemin d'une vue twig
      * @param array  $variables          Variables à passer à twig
@@ -109,7 +162,7 @@ class Twig extends Templating
     }
 
     /**
-     * N'a aucun effet sur twig
+     * N'a aucun effet sur twig.
      *
      * {@inheritdoc}
      *

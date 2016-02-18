@@ -1,6 +1,6 @@
 <?php
 /**
- * Gestionnaire de rapport d'erreur Marvin
+ * Gestionnaire de rapport d'erreur Marvin.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -11,7 +11,7 @@ namespace Solire\Lib;
 use Solire\Conf\Loader;
 
 /**
- * Marvin est une methode de rapport d'erreur
+ * Marvin est une methode de rapport d'erreur.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -19,19 +19,19 @@ use Solire\Conf\Loader;
 class Marvin
 {
     /**
-     * Contrôle de l'affichage
+     * Contrôle de l'affichage.
      *
-     * @var boolean
+     * @var bool
      */
     public static $display = true;
 
     /**
-     * Chemin de configuration du fichier de configuration
+     * Chemin de configuration du fichier de configuration.
      */
     const CONFIG_PATH = 'config/marvin.yml';
 
     /**
-     * Génère un rapport d'alerte
+     * Génère un rapport d'alerte.
      *
      * @param string     $title Titre du rapport
      * @param \Exception $error Exception à exploiter
@@ -106,7 +106,6 @@ class Marvin
             }
         }
 
-
         $traces = $this->exc->getTrace();
         foreach ($traces as $trace) {
             foreach ($trace['args'] as $key => $arg) {
@@ -123,7 +122,7 @@ class Marvin
     }
 
     /**
-     * Renvois la chaine contenant le var_dump() de la variable
+     * Renvois la chaine contenant le var_dump() de la variable.
      *
      * @param mixed $var Variable à afficher
      *
@@ -139,12 +138,13 @@ class Marvin
     }
 
     /**
-     * Renvois une chaine contenant les lignes du fichiers formatées pour l'affichage
+     * Renvois une chaine contenant les lignes du fichiers formatées pour l'affichage.
      *
      * @param string $fileName Chemin vers le fichier
      * @param int    $line     Ligne à lire
      *
      * @return string
+     *
      * @uses \GeSHi
      */
     protected function readLines($fileName, $line)
@@ -162,11 +162,12 @@ class Marvin
         $geshi->start_line_numbers_at($line - 6);
         $geshi->set_highlight_lines_extra_style('background: #497E7E;');
         $geshi->highlight_lines_extra(6);
+
         return $geshi->parse_code();
     }
 
     /**
-     * Envois le rapport
+     * Envois le rapport.
      *
      * @return void
      */
@@ -180,7 +181,7 @@ class Marvin
     }
 
     /**
-     * Affiche le rapport
+     * Affiche le rapport.
      *
      * @return void
      */

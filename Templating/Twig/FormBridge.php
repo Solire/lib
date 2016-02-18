@@ -10,7 +10,7 @@ use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Twig_Environment;
 
 /**
- * Description of Form
+ * Description of Form.
  *
  * @author thansen
  */

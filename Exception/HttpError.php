@@ -1,6 +1,6 @@
 <?php
 /**
- * Erreur HTTP
+ * Erreur HTTP.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib\Exception;
 
 /**
- * Erreur HTTP
+ * Erreur HTTP.
  *
  * Les HttpErrorExceptions entraineront un blocage de la page et la modification du
  * header http pour afficher son code d'erreur
@@ -20,19 +20,21 @@ namespace Solire\Lib\Exception;
 class HttpError extends \Exception
 {
     /**
-     * Code HTTP
+     * Code HTTP.
+     *
      * @var int
      */
     protected $code = 500;
 
     /**
-     * Url de redirection
+     * Url de redirection.
+     *
      * @var string
      */
     protected $url = null;
 
     /**
-     * Ajoute un code HTTP à l'erreur
+     * Ajoute un code HTTP à l'erreur.
      *
      * @param int    $code Code HTTP de l'erreur
      * @param string $url  Url vers laquelle rediriger l'utilisateur
@@ -46,10 +48,10 @@ class HttpError extends \Exception
     }
 
     /**
-     * Renvois les informations relatives à l'erreur http
+     * Renvois les informations relatives à l'erreur http.
      *
      * @return string|array peut être le code http ou un tableau contenant le
-     * code http et l'url vers laquelle rediriger l'utilisateur
+     *                      code http et l'url vers laquelle rediriger l'utilisateur
      */
     public function getHttp()
     {

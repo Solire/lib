@@ -1,6 +1,6 @@
 <?php
 /**
- * Gestionnaire des erreurs
+ * Gestionnaire des erreurs.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib;
 
 /**
- * Gestionnaire des erreurs
+ * Gestionnaire des erreurs.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -17,18 +17,20 @@ namespace Solire\Lib;
 final class Error
 {
     /**
-     * Code HTTP de l'erreur
+     * Code HTTP de l'erreur.
      *
      * @var int
      */
-    static protected $code;
+    protected static $code;
 
     /**
-     * Liste des entêtes http utilisés
+     * Liste des entêtes http utilisés.
+     *
      * @todo Déporter les descriptions des erreurs http possible dans un tutorial
+     *
      * @var array
      */
-    static private $headers = [
+    private static $headers = [
         301 => '301 Moved Permanently',
         // Une authentification est nécessaire pour accéder à la ressource
         401 => '401 Unauthorized',
@@ -45,9 +47,10 @@ final class Error
     ];
 
     /**
-     * Fonctionnement par défaut, fait passer la page en erreur 500
+     * Fonctionnement par défaut, fait passer la page en erreur 500.
      *
      * @return void
+     *
      * @uses Error::http()
      */
     public static function run()
@@ -56,11 +59,12 @@ final class Error
     }
 
     /**
-     * Affiche une erreur HTTP
+     * Affiche une erreur HTTP.
      *
      * @param int|array $code Code HTTP de l'erreur
      *
      * @return void
+     *
      * @uses Error::setHeader()
      */
     public static function http($code)
@@ -83,9 +87,8 @@ final class Error
         }
     }
 
-
     /**
-     * Renvois le chemin vers la vue relative à l'erreur
+     * Renvois le chemin vers la vue relative à l'erreur.
      *
      * @param string $code Code de l'erreur
      *
@@ -106,11 +109,12 @@ final class Error
     }
 
     /**
-     * Affiche le message d'erreur demandé pour l'utilisateur
+     * Affiche le message d'erreur demandé pour l'utilisateur.
      *
      * @param Exception\User $exc Exception utilisateur
      *
      * @return void
+     *
      * @uses Message
      */
     public static function message(Exception\User $exc)
@@ -130,11 +134,12 @@ final class Error
     }
 
     /**
-     * Envois un rapport Marvin et affiche une erreur 500
+     * Envois un rapport Marvin et affiche une erreur 500.
      *
      * @param Exception\Marvin $exc Exception à marquer d'un rapport
      *
      * @return void
+     *
      * @uses Marvin
      * @uses Exception\Marvin::getTitle()
      */
@@ -146,14 +151,13 @@ final class Error
         self::run();
     }
 
-
-
     /**
-     * Affiche le header correspondant à l'erreur
+     * Affiche le header correspondant à l'erreur.
      *
      * @param string $url Ajoute une redirection au header
      *
      * @return void
+     *
      * @uses Error::$headers
      */
     private static function setHeader($url = null)
@@ -165,7 +169,7 @@ final class Error
     }
 
     /**
-     * Ajoute une redirection dans le header
+     * Ajoute une redirection dans le header.
      *
      * @param string $url Url vers laquelle on redirige l'utilisateur
      *

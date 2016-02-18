@@ -2,101 +2,101 @@
 
 namespace Solire\Lib\View;
 
+use Solire\Lib\Exception\Lib as Exception;
 use Solire\Lib\Loader;
 use Solire\Lib\Path;
+use Solire\Lib\Registry;
 use Solire\Lib\Templating\TemplatingInterface;
 use Solire\Lib\TranslateMysql;
 use Solire\Lib\View\Filesystem\FileLocator;
-use Solire\Lib\Exception\Lib as Exception;
 
 /**
- * Classe abstraite des vues
+ * Classe abstraite des vues.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 abstract class AbstractView
 {
-
     /**
-     * Moteur de rendu
+     * Moteur de rendu.
      *
      * @var TemplatingInterface
      */
     public $templatingRender;
 
     /**
-     * Loader des librairies javascript
+     * Loader des librairies javascript.
      *
      * @var Loader\Javascript
      */
     public $javascript;
 
     /**
-     * Loader des librairies css
+     * Loader des librairies css.
      *
      * @var Loader\Css
      */
     public $css;
 
     /**
-     * Loader des images
+     * Loader des images.
      *
      * @var Loader\Img
      */
     public $img;
 
     /**
-     * Définit si la vue incluse automatiquement après execution de l'action
+     * Définit si la vue incluse automatiquement après execution de l'action.
      *
      * @var bool
      */
     protected $enable = true;
 
     /**
-     * Objet de traduction
+     * Objet de traduction.
      *
      * @var TranslateMysql
      */
     protected $translate = false;
 
     /**
-     * Chemin vers la vue pour le contenu
+     * Chemin vers la vue pour le contenu.
      *
-     * @var boolean|Path
+     * @var bool|Path
      */
     protected $contentPath = false;
 
     /**
-     * Préfixe du chemin pour trouver les fichiers des vues
+     * Préfixe du chemin pour trouver les fichiers des vues.
      *
      * @var string
      */
     protected $prefixPath = '';
 
     /**
-     * Format des données renvoyées (xml/html/json/...)
+     * Format des données renvoyées (xml/html/json/...).
      *
      * @var string
      */
     protected $responseFormat = 'html';
 
     /**
-     * FileLocator
+     * FileLocator.
      *
      * @var FileLocator Résolveur de chemin de fichier
      */
     protected $fileLocator;
 
     /**
-     * Chemin vers la vue "main"
+     * Chemin vers la vue "main".
      *
-     * @var boolean|Path
+     * @var bool|Path
      */
     private $mainPath = false;
 
     /**
-     * Chargement d'une nouvelle vue
+     * Chargement d'une nouvelle vue.
      *
      * @param FileLocator $fileLocator Résolveur de chemin de fichier
      */
@@ -106,7 +106,7 @@ abstract class AbstractView
     }
 
     /**
-     * Chargement de la classe de traduction
+     * Chargement de la classe de traduction.
      *
      * @param TranslateMysql $translate Classe de traduction
      *
@@ -120,7 +120,7 @@ abstract class AbstractView
     }
 
     /**
-     * Défini le loader de librairies javascript
+     * Défini le loader de librairies javascript.
      *
      * @param Loader\Javascript $javascript Loader de librairies javascript
      *
@@ -134,7 +134,7 @@ abstract class AbstractView
     }
 
     /**
-     * Renvoi le loader de librairies javascript
+     * Renvoi le loader de librairies javascript.
      *
      * @return Loader\Javascript
      */
@@ -144,7 +144,7 @@ abstract class AbstractView
     }
 
     /**
-     * Défini le loader de librairies css
+     * Défini le loader de librairies css.
      *
      * @param Loader\Css $css Loader de librairies css
      *
@@ -158,7 +158,7 @@ abstract class AbstractView
     }
 
     /**
-     * Renvoi le loader de librairies css
+     * Renvoi le loader de librairies css.
      *
      * @return Loader\Css
      */
@@ -168,7 +168,7 @@ abstract class AbstractView
     }
 
     /**
-     * Défini le loader d'image
+     * Défini le loader d'image.
      *
      * @param Loader\Img $img Loader de librairies css
      *
@@ -182,7 +182,7 @@ abstract class AbstractView
     }
 
     /**
-     * Renvoi le loader d'image
+     * Renvoi le loader d'image.
      *
      * @return Loader\Img
      */
@@ -192,13 +192,14 @@ abstract class AbstractView
     }
 
     /**
-     * Alias à l'utilisation de translate
+     * Alias à l'utilisation de translate.
      *
      * @param string $string Chaîne à traduire
      * @param string $aide   Texte permettant de situer l'emplacement de la
-     * chaîne à traduire, exemple : 'Situé sur le bas de page'
+     *                       chaîne à traduire, exemple : 'Situé sur le bas de page'
      *
      * @return string
+     *
      * @uses TranslateMysql
      */
     public function tr($string, $aide = '')
@@ -211,9 +212,9 @@ abstract class AbstractView
     }
 
     /**
-     * Activer ou désactiver la vue
+     * Activer ou désactiver la vue.
      *
-     * @param boolean $enable Vrai pour activer
+     * @param bool $enable Vrai pour activer
      *
      * @return void
      */
@@ -223,9 +224,9 @@ abstract class AbstractView
     }
 
     /**
-     * Test si la vue est active
+     * Test si la vue est active.
      *
-     * @return boolean
+     * @return bool
      */
     public function isEnabled()
     {
@@ -233,10 +234,10 @@ abstract class AbstractView
     }
 
     /**
-     * Affiche le contenu d'un fichier de template
+     * Affiche le contenu d'un fichier de template.
      *
-     * @param string  $path    Chemin du template à afficher
-     * @param boolean $useMain Utilise ou non le template de base
+     * @param string $path    Chemin du template à afficher
+     * @param bool   $useMain Utilise ou non le template de base
      *
      * @return void
      *
@@ -292,8 +293,17 @@ abstract class AbstractView
             case 'twig':
                 // Dans le cas de Twig, un loader se charge de gérer le chargement, on lui passe donc le chemin de base
                 $templatingPath = $path . $responseFormatExtension . '.' . $templatingRenderType;
-                /** @todo Petit hack pour ne pas avoir "view/" dans le chemin à améliorer */
+                /* @todo Petit hack pour ne pas avoir "view/" dans le chemin à améliorer */
                 $templatingPath = preg_replace('#^' . preg_quote($this->prefixPath) . '#', '', $templatingPath);
+
+                $twigDebug = Registry::get('envconfig')->get('twig', 'debug');
+                $this->templatingRender->setDebug($twigDebug);
+
+                $cacheDir = Registry::get('mainconfig')->get('cache', 'dir') . 'twig';
+                $this->templatingRender->setCacheDir($cacheDir);
+
+                $twigFormTemplate = Registry::get('mainconfig')->get('twig', 'form');
+                $this->templatingRender->setFormTemplate($twigFormTemplate);
                 break;
             default:
                 if ($this->mainPath !== false && $useMain) {
@@ -313,7 +323,7 @@ abstract class AbstractView
     }
 
     /**
-     * Affiche la vue
+     * Affiche la vue.
      *
      * @return void
      */
@@ -323,7 +333,7 @@ abstract class AbstractView
     }
 
     /**
-     * Renvoie la vue en html
+     * Renvoie la vue en html.
      *
      * @return void
      */
@@ -333,7 +343,7 @@ abstract class AbstractView
     }
 
     /**
-     * Affiche le contenu d'un fichier de template
+     * Affiche le contenu d'un fichier de template.
      *
      * @param string $path Chemin du fichier de template
      *
@@ -345,18 +355,20 @@ abstract class AbstractView
     }
 
     /**
-     * Enregistre le fichier de vue pour le contenu
+     * Enregistre le fichier de vue pour le contenu.
      *
      * @param string $strPath  Chemin vers le fichier de vue
      * @param bool   $noSearch Désactiver la recherche du fichier
      *
      * @return self
+     *
      * @uses Path pour contrôler le chemin
      */
     public function setMainPath($strPath, $noSearch = false)
     {
         if ($noSearch === true) {
             $this->mainPath = $this->prefixPath . $strPath;
+
             return $this;
         }
 
@@ -366,7 +378,7 @@ abstract class AbstractView
     }
 
     /**
-     * Annule l'utilisation du fichier "main"
+     * Annule l'utilisation du fichier "main".
      *
      * @return self
      */
@@ -378,11 +390,12 @@ abstract class AbstractView
     }
 
     /**
-     * Enregistre le chemin vers le fichier de vue
+     * Enregistre le chemin vers le fichier de vue.
      *
      * @param string $strPath Chemin vers le fichier de vue
      *
      * @return self
+     *
      * @uses Path pour contrôler le chemin
      */
     public function setViewPath($strPath)
@@ -394,7 +407,7 @@ abstract class AbstractView
     }
 
     /**
-     * Paramètre le préfixe des chemins pour les vues
+     * Paramètre le préfixe des chemins pour les vues.
      *
      * @param string $prefix Préfixe des chemins
      *

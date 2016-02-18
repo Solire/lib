@@ -1,6 +1,6 @@
 <?php
 /**
- * Extension de PDO
+ * Extension de PDO.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib;
 
 /**
- * Extension de PDO
+ * Extension de PDO.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -32,7 +32,7 @@ class MyPDO extends \PDO
         if (!$table) {
             return Format\String::urlSlug($string);
         }
-        /**
+        /*
          * Controle de l'existence du rewrit contenu dans le champ $Name
          * de la table $Table.
          */
@@ -45,7 +45,7 @@ class MyPDO extends \PDO
             }
             $rewrit = Format\String::urlSlug($temp, '-', 255);
 
-            $query  = 'SELECT COUNT(*)'
+            $query = 'SELECT COUNT(*)'
                     . ' FROM `' . $table . '`'
                     . ' WHERE `' . $name . '` = ' . $this->quote($rewrit)
                     . ' ' . $param;
@@ -57,7 +57,7 @@ class MyPDO extends \PDO
     }
 
     /**
-     * Renvoi toutes les lignes d'une table de la bdd
+     * Renvoi toutes les lignes d'une table de la bdd.
      *
      * @param string $table Nom de la table où il faudrait controller l'existence
      *
@@ -65,7 +65,7 @@ class MyPDO extends \PDO
      */
     public function listTable($table)
     {
-        $query  = 'SELECT *'
+        $query = 'SELECT *'
                 . ' FROM `' . $table . '`';
         $result = $this->query($query)->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -73,7 +73,7 @@ class MyPDO extends \PDO
     }
 
     /**
-     * Renvoi une ligne d'une table de la bdd
+     * Renvoi une ligne d'une table de la bdd.
      *
      * @param string $table   Nom de la table où il faudrait controller l'existence
      * @param int    $id      Valeur du champ
@@ -83,15 +83,16 @@ class MyPDO extends \PDO
      */
     public function getRowFromTable($table, $id, $fieldId = 'id')
     {
-        $query  = 'SELECT *'
+        $query = 'SELECT *'
                 . ' FROM `' . $table . '`'
                 . ' WHERE `' . $fieldId . '` = ' . $id;
         $result = $this->query($query)->fetch(\PDO::FETCH_ASSOC);
+
         return $result;
     }
 
     /**
-     * insertion de données dans MySQL
+     * insertion de données dans MySQL.
      *
      * @param string $table  Nom de la table où il faudrait controller l'existence
      * @param array  $values Tableau des valeurs à insérer
@@ -102,14 +103,15 @@ class MyPDO extends \PDO
     {
         $values = array_map([$this, 'quote'], (array) $values);
         $fieldNames = array_keys($values);
-        $query  = 'INSERT INTO `' . $table . '`'
+        $query = 'INSERT INTO `' . $table . '`'
                 . ' (`' . implode('`,`', $fieldNames) . '`)'
                 . ' VALUES(' . implode(',', $values) . ')';
+
         return $this->exec($query);
     }
 
     /**
-     * replace de données dans MySQL
+     * replace de données dans MySQL.
      *
      * @param string $table  Table sur laquelle remplacer les données
      * @param array  $values Valeurs à remplacer
@@ -120,14 +122,15 @@ class MyPDO extends \PDO
     {
         $values = array_map([$this, 'quote'], (array) $values);
         $fieldNames = array_keys($values);
-        $query  = 'REPLACE INTO `' . $table . '`'
+        $query = 'REPLACE INTO `' . $table . '`'
                 . ' (`' . implode('`,`', $fieldNames) . '`)'
                 . ' VALUES(' . implode(',', $values) . ')';
+
         return $this->exec($query);
     }
 
     /**
-     * sélection de données depuis MySQL
+     * sélection de données depuis MySQL.
      *
      * @param string $table      Table
      * @param array  $fields     Tableau des champs à récupérer
@@ -149,7 +152,7 @@ class MyPDO extends \PDO
             $where = ' WHERE ' . $where;
         }
 
-        $query  = 'SELECT ' . $result_size . ' ' . implode(', ', (array) $fields)
+        $query = 'SELECT ' . $result_size . ' ' . implode(', ', (array) $fields)
                 . ' FROM ' . '`' . $table . '`'
                 . $where . $order;
 
@@ -157,7 +160,7 @@ class MyPDO extends \PDO
     }
 
     /**
-     * tri des résultat d'une requête SELECT
+     * tri des résultat d'une requête SELECT.
      *
      * @param array  $fields Champs sur lesquels faire le tri
      * @param string $order  Ordre du tri
@@ -181,7 +184,7 @@ class MyPDO extends \PDO
     }
 
     /**
-     * limitation des résultats d'une requête SELECT
+     * limitation des résultats d'une requête SELECT.
      *
      * @param int $offset Premier paramètre de la limite
      * @param int $number Deuxième paramètre de la limite
@@ -198,7 +201,7 @@ class MyPDO extends \PDO
     }
 
     /**
-     * mis à jour de données de MySQL
+     * mis à jour de données de MySQL.
      *
      * @param string      $table  Nom de la table dans laquelle maj les données
      * @param array       $values Données à maj
@@ -223,7 +226,7 @@ class MyPDO extends \PDO
     }
 
     /**
-     * suppression de données de MySQL
+     * suppression de données de MySQL.
      *
      * @param string $table Nom de la table dans laquelle supprimer les données
      * @param string $where WHERE SQL pour délimiter la suppression
@@ -236,7 +239,7 @@ class MyPDO extends \PDO
     }
 
     /**
-     * Liste des valeurs d'un champ ENUM
+     * Liste des valeurs d'un champ ENUM.
      *
      * @param string $table Nom de la table où il faudrait controller l'existence
      * @param string $field Nom du champ enum
@@ -245,10 +248,10 @@ class MyPDO extends \PDO
      */
     public function getEnumValues($table, $field)
     {
-        $query  = 'SHOW FIELDS FROM `' . $table . '` LIKE \'' . $field . '\'';
-        $row    = $this->query($query)->fetch(\PDO::FETCH_ASSOC);
+        $query = 'SHOW FIELDS FROM `' . $table . '` LIKE \'' . $field . '\'';
+        $row = $this->query($query)->fetch(\PDO::FETCH_ASSOC);
 
-        $match  = [];
+        $match = [];
         if (!preg_match('`^enum\((.*?)\)$`ism', $row['Type'], $match)) {
             return null;
         }
@@ -259,7 +262,7 @@ class MyPDO extends \PDO
     }
 
     /**
-     * Creation d'une table
+     * Creation d'une table.
      *
      * @param string $table   Table
      * @param array  $columns Colonnes
@@ -273,12 +276,13 @@ class MyPDO extends \PDO
             $sql .= '`' . $columnName . '` VARCHAR(255),';
         }
         $sql = substr($sql, 0, -1) . ');';
+
         return $this->exec($sql);
     }
 
     /**
      * Retourne les éléments de tri (WHERE et ORDER BY) pour la requête de
-     * recherche en fonction d'un terme de recherche
+     * recherche en fonction d'un terme de recherche.
      *
      * @param string   $term    Mots de la recherche
      * @param string[] $columns Colonnes sur lesquelles faire la recherche
@@ -287,12 +291,12 @@ class MyPDO extends \PDO
      */
     public function search($term, $columns)
     {
-        /**
+        /*
          * Variable qui contient la chaine de recherche
          */
         $stringSearch = trim($term);
 
-        /**
+        /*
          * On divise en mots (séparé par des espace)
          */
         $words = preg_split('`\s+`', $stringSearch);
@@ -302,27 +306,27 @@ class MyPDO extends \PDO
         }
 
         $filterWords = [];
-        $orderBy     = [];
+        $orderBy = [];
         foreach ($words as $word) {
             foreach ($columns as $key => $value) {
                 if (is_numeric($value)) {
-                    $pond    = $value;
+                    $pond = $value;
                     $colName = $key;
                 } else {
-                    $pond    = 1;
+                    $pond = 1;
                     $colName = $value;
                 }
 
-                $filterWord     = $colName . ' LIKE '
+                $filterWord = $colName . ' LIKE '
                                 . $this->quote('%' . $word . '%');
-                $filterWords[]  = $filterWord;
-                $orderBy[]      = 'IF(' . $filterWord . ', ' . mb_strlen($word) * $pond . ', 0)';
+                $filterWords[] = $filterWord;
+                $orderBy[] = 'IF(' . $filterWord . ', ' . mb_strlen($word) * $pond . ', 0)';
             }
         }
 
         return [
-            'where'  => ' (' . implode(' OR ', $filterWords) . ')',
-            'order'  => ' ' . implode(' + ', $orderBy),
+            'where' => ' (' . implode(' OR ', $filterWords) . ')',
+            'order' => ' ' . implode(' + ', $orderBy),
         ];
     }
 }

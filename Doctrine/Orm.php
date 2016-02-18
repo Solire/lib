@@ -10,41 +10,40 @@ use Doctrine\ORM\Tools\Setup;
 use Solire\Lib\DB;
 
 /**
- * Classe instantiant un manager d'entité
+ * Classe instantiant un manager d'entité.
  *
  * @author  thansen <thansen@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 class Orm
 {
-
     /**
-     * Connection doctrine à la bdd
+     * Connection doctrine à la bdd.
      *
      * @var Connection
      */
     private $connection;
 
     /**
-     * ORM configuration
+     * ORM configuration.
      *
      * @var Configuration
      */
     private $config;
 
     /**
-     * Manager d'entité
+     * Manager d'entité.
      *
      * @var EntityManager
      */
     private $entityManager;
 
     /**
-     * Constructeur
+     * Constructeur.
      *
      * @param string $connectionName Nom de la connection
      * @param array  $entityDirs     Dossier contenant les fichiers de
-     * configuration yaml
+     *                               configuration yaml
      * @param string $proxyDir       Dossier contenant les classes Proxy
      */
     public function __construct($connectionName, array $entityDirs, $proxyDir)
@@ -57,7 +56,7 @@ class Orm
     }
 
     /**
-     * Retourne le Manager d'entité
+     * Retourne le Manager d'entité.
      *
      * @return EntityManager
      */
@@ -67,7 +66,7 @@ class Orm
     }
 
     /**
-     * Retourne la Connection doctrine à la bdd
+     * Retourne la Connection doctrine à la bdd.
      *
      * @return Connection
      */

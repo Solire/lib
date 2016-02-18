@@ -7,7 +7,7 @@ use Solire\Lib\MyPDO;
 use Solire\Lib\Registry;
 
 /**
- * DB Handler class providing the Handler structure
+ * DB Handler class providing the Handler structure.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -15,7 +15,7 @@ use Solire\Lib\Registry;
 class DbHandler extends AbstractHandler
 {
     /**
-     * The database connection
+     * The database connection.
      *
      * @var MyPDO
      */
@@ -49,7 +49,7 @@ class DbHandler extends AbstractHandler
         }
 
         $dateTimeC = $this->conf['datetime-column'];
-        $ipC       = $this->conf['ip-column'];
+        $ipC = $this->conf['ip-column'];
 
         $query = 'SELECT COUNT(*) FROM ' . $this->conf['table']
             . ' WHERE (' . implode(' OR ', $where) . ')'

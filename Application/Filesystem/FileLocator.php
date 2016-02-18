@@ -6,47 +6,47 @@ use Solire\Lib\Path;
 use Solire\Lib\Filesystem\AbstractFileLocator;
 
 /**
- * Classe permettant de chercher un fichier dans les applications
+ * Classe permettant de chercher un fichier dans les applications.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 class FileLocator extends AbstractFileLocator
 {
-    const TYPE_ALL              = 1;
+    const TYPE_ALL = 1;
     const TYPE_SOURCE_DIRECTORY = 2;
-    const TYPE_APPLICATION      = 3;
+    const TYPE_APPLICATION = 3;
 
     /**
-     * Liste des répertoires de sources
+     * Liste des répertoires de sources.
      *
      * @var array
      */
     protected $sourceDirectoriesDirs = [];
 
     /**
-     * Liste des répertoires de l'application courante
+     * Liste des répertoires de l'application courante.
      *
      * @var array
      */
     protected $applicationDirs = [];
 
     /**
-     * Liste des applications
+     * Liste des applications.
      *
      * @var array
      */
     protected $sourceDirectories = [];
 
     /**
-     * Nom de l'application courante
+     * Nom de l'application courante.
      *
      * @var array
      */
     protected $currentApplicationName = null;
 
     /**
-     * Constructeur
+     * Constructeur.
      *
      * @param array $sourceDirectories Tableau de répertoires de sources
      */
@@ -57,7 +57,7 @@ class FileLocator extends AbstractFileLocator
     }
 
     /**
-     * Paramètre la sous application courante
+     * Paramètre la sous application courante.
      *
      * @param string $currentApplicationName Nom de l'application courante
      *
@@ -72,10 +72,10 @@ class FileLocator extends AbstractFileLocator
     }
 
     /**
-     * Retourne la liste complète des répertoires
+     * Retourne la liste complète des répertoires.
      *
      * @param int    $type            Permet de retourner seulement les répertoires de sources ou de l'application
-     * courante
+     *                                courante
      * @param string $applicationName Nom de l'application
      *
      * @return array
@@ -106,13 +106,13 @@ class FileLocator extends AbstractFileLocator
     }
 
     /**
-     * Cherche un fichier
+     * Cherche un fichier.
      *
      * @param string $path            Chemin du dossier / fichier à chercher
      * @param int    $type            Permet de choisir les répertoires de recherche (sources / application)
      * @param string $applicationName Nom de l'application
      *
-     * @return string|boolean
+     * @return string|bool
      */
     public function locate($path, $type = self::TYPE_APPLICATION, $applicationName = null)
     {
@@ -128,7 +128,7 @@ class FileLocator extends AbstractFileLocator
     }
 
     /**
-     * Retourne la liste des répertoires pour une applocation
+     * Retourne la liste des répertoires pour une applocation.
      *
      * @param string $applicationName Nom de l'application
      *
@@ -144,7 +144,7 @@ class FileLocator extends AbstractFileLocator
     }
 
     /**
-     * Construit la liste des répertoires pour une applocation
+     * Construit la liste des répertoires pour une applocation.
      *
      * @param string $applicationName Nom de l'application
      *
@@ -172,7 +172,7 @@ class FileLocator extends AbstractFileLocator
     }
 
     /**
-     * Construit la liste des répertoires pour l'application courante
+     * Construit la liste des répertoires pour l'application courante.
      *
      * @return void
      */

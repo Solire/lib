@@ -1,11 +1,12 @@
 <?php
+
 namespace Solire\Lib\Loader;
 
 use Solire\Lib\Path;
 use Solire\Lib\Exception\Lib as LibException;
 
 /**
- * Gestionnaire des librairies css, js, css et génération d'un code
+ * Gestionnaire des librairies css, js, css et génération d'un code.
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -16,31 +17,31 @@ abstract class Loader
 {
     /**
      * Préfixe des chemins, cette partie ne sera pas renvoyé dans la méthode
-     * getPath()
+     * getPath().
      *
      * @var string
      */
     protected $root = '';
 
     /**
-     * Liste des chemins de dossiers à inspecter pour librairies
+     * Liste des chemins de dossiers à inspecter pour librairies.
      *
      * @var array
      */
     protected $dirs = [];
 
     /**
-     * Liste des librairies
+     * Liste des librairies.
      *
      * @var array
      */
     protected $librairies = [];
 
     /**
-     * Constructeur
+     * Constructeur.
      *
      * @param array  $dirs Liste des dossiers à inspecter dans l'ordre de
-     * préférence.
+     *                     préférence.
      * @param string $root Préfixe des dossiers
      *
      * @throws LibException
@@ -66,7 +67,7 @@ abstract class Loader
     }
 
     /**
-     * Renvois la liste des librairies css
+     * Renvois la liste des librairies css.
      *
      * @return array
      */
@@ -76,7 +77,7 @@ abstract class Loader
     }
 
     /**
-     * Ajout de librairie
+     * Ajout de librairie.
      *
      * @param string $url     Chemin de la librairie
      * @param array  $options Options de la librairie
@@ -100,7 +101,7 @@ abstract class Loader
 
     /**
      * Renvois le chemin vers la librairie en fonction des dossiers à
-     * inspecter $dirs)
+     * inspecter $dirs).
      *
      * @param string $filePath Chemin relatif de la librairie
      *
@@ -122,7 +123,7 @@ abstract class Loader
     }
 
     /**
-     * Template du code pour une librairie donnée
+     * Template du code pour une librairie donnée.
      *
      * @param string $url     Url de la librairie
      * @param string $realUrl Vraie url de la librairie
@@ -133,15 +134,16 @@ abstract class Loader
     abstract protected function template($url, $realUrl, array $options = []);
 
     /**
-     * Recherche la librairie et renvoi un code pour une librairie
+     * Recherche la librairie et renvoi un code pour une librairie.
      *
      * @param string $url     Url de la librairie
      * @param array  $options Options de la librairie
      * @param bool   $force   Si la librairie n'est pas trouvé, qu'on veut l'url
-     * donné sans traitement on met ce paramètre à vrai sinon la méthode
-     * errorNotFound() sera utilisé
+     *                        donné sans traitement on met ce paramètre à vrai sinon la méthode
+     *                        errorNotFound() sera utilisé
      *
      * @return string
+     *
      * @throws LibException si la librairie n'est pas trouvée
      */
     final public function output($url, array $options = [], $force = false)
@@ -167,11 +169,11 @@ abstract class Loader
 
     /**
      * Recherche chaque librairie ajouté et renvoi la concaténation de tous les
-     * codes correspondants
+     * codes correspondants.
      *
      * @param bool $force Si une librairie n'est pas trouvé, qu'on veut l'url
-     * donné sans traitement on met ce paramètre à vrai sinon la méthode
-     * errorNotFound() sera utilisé
+     *                    donné sans traitement on met ce paramètre à vrai sinon la méthode
+     *                    errorNotFound() sera utilisé
      *
      * @return string
      */
@@ -181,6 +183,7 @@ abstract class Loader
         foreach ($this->librairies as $url => $options) {
             $output .= $this->output($url, $options, $force);
         }
+
         return $output;
     }
 }

@@ -5,7 +5,7 @@ namespace Solire\Lib\Loader;
 use Solire\Lib\Exception\Lib as LibException;
 
 /**
- * Gestionnaire des scripts js pour requireJS
+ * Gestionnaire des scripts js pour requireJS.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -13,14 +13,14 @@ use Solire\Lib\Exception\Lib as LibException;
 class RequireJs extends Loader
 {
     /**
-     * Dossier contenant les modules
+     * Dossier contenant les modules.
      *
      * @var string
      */
     private $moduleDir;
 
     /**
-     * Ajout de librairie
+     * Ajout de librairie.
      *
      * @param string $url     Chemin de la librairie
      * @param array  $options Options de la librairie
@@ -42,7 +42,7 @@ class RequireJs extends Loader
     }
 
     /**
-     * Définir le dossier contenant les modules
+     * Définir le dossier contenant les modules.
      *
      * @param string $dir Dossier contenant les modules
      *
@@ -54,7 +54,7 @@ class RequireJs extends Loader
     }
 
     /**
-     * Ajout d'un module
+     * Ajout d'un module.
      *
      * @param string $path Chemin du module
      *
@@ -63,12 +63,12 @@ class RequireJs extends Loader
     public function addModule($path)
     {
         $this->addLibrary($this->moduleDir . '/' . $path . '.js',
-            array('name' => $path)
+            ['name' => $path]
         );
     }
 
     /**
-     * Ajout de plusieurs modules
+     * Ajout de plusieurs modules.
      *
      * @param array $path Chemins des modules
      *
@@ -82,18 +82,18 @@ class RequireJs extends Loader
     }
 
     /**
-     * Template du code html pour un script js
+     * Template du code html pour un script js.
      *
      * @param string $url     Url de la librairie
      * @param string $realUrl Vraie url de la librairie
      * @param array  $options Options de la librairie, ici attribut html de la
-     * baslie img
+     *                        baslie img
      *
      * @return string
      */
     protected function template($url, $realUrl, array $options = [])
     {
-        $lib = array();
+        $lib = [];
         if ($realUrl === null) {
             $lib['src'] = $url;
         } else {
@@ -107,11 +107,11 @@ class RequireJs extends Loader
 
     /**
      * Recherche chaque librairie ajouté et renvoi la concaténation de tous les
-     * codes correspondants
+     * codes correspondants.
      *
      * @param bool $force Si une librairie n'est pas trouvé, qu'on veut l'url
-     * donné sans traitement on met ce paramètre à vrai sinon la méthode
-     * errorNotFound() sera utilisé
+     *                    donné sans traitement on met ce paramètre à vrai sinon la méthode
+     *                    errorNotFound() sera utilisé
      *
      * @return string
      */
@@ -129,9 +129,9 @@ class RequireJs extends Loader
             );
 
             if (isset($options['deps'])) {
-                $requireJsDeps[$requireJsLib['name']] = array(
-                    'deps' => $options['deps']
-                );
+                $requireJsDeps[$requireJsLib['name']] = [
+                    'deps' => $options['deps'],
+                ];
             }
         }
 

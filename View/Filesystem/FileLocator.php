@@ -6,7 +6,7 @@ use Solire\Lib\Path;
 use Solire\Lib\Application\Filesystem\FileLocator as ApplicationFileLocator;
 
 /**
- * Classe permettant de chercher un fichier de templating dans les applications
+ * Classe permettant de chercher un fichier de templating dans les applications.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -14,7 +14,7 @@ use Solire\Lib\Application\Filesystem\FileLocator as ApplicationFileLocator;
 class FileLocator extends ApplicationFileLocator
 {
     /**
-     * Cherche un fichier de vues dans les applications
+     * Cherche un fichier de vues dans les applications.
      *
      * @param string $path       Chemin du dossier / fichier à chercher
      * @param int    $type       Permet de choisir les répertoires de recherche (sources / application)

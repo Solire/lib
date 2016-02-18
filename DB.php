@@ -1,6 +1,6 @@
 <?php
 /**
- * Gestionnaire de connexion à la base de données
+ * Gestionnaire de connexion à la base de données.
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,58 +9,56 @@
 namespace Solire\Lib;
 
 /**
- * Gestionnaire de connexion à la base de données
+ * Gestionnaire de connexion à la base de données.
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 class DB
 {
-
     /**
-     * Contient les objets PDO de connection
+     * Contient les objets PDO de connection.
      *
      * @var MyPDO[]
      */
-    static private $present;
+    private static $present;
 
     /**
-     * Paramétrage de base
+     * Paramétrage de base.
      *
      * @var array
      */
-    static private $config = [
+    private static $config = [
         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
     ];
 
     /**
-     * Inutilisé
+     * Inutilisé.
      *
      * @ignore
      */
     private function __construct()
     {
-
     }
 
     /**
      * Crée une connection à la base de données.
      *
      * @param array  $ini         Doit être sous la forme :<ul>
-     * <li>dsn => ''        // chaîne de connexion propre à pdo, par exemple :
-     * "mysql:dbname=%s;host=%s" ou "mysql:dbname=%s;host=%s;port=%s"</li>
-     * <li>host => ''       // host de la connexion à la bdd</li>
-     * <li>dbname => ''     // Nom de la base de données</li>
-     * <li>user => ''       // utilisateur mysql</li>
-     * <li>password => ''   // mot de passe</li>
-     * <li>port => ''       // [facultatif], port de la connexion</li>
-     * <li>utf8 => true     // [facultatif], activer encodage buffer sortie</li>
-     * <li>error => true    // [facultatif], activer les erreurs pdo</li>
-     * <li>profil => false  // [facultatif], activer le profiling</li>
-     * <li>nocache => false // [facultatif], désactiver le cache</li>
-     * </ul>
+     *                            <li>dsn => ''        // chaîne de connexion propre à pdo, par exemple :
+     *                            "mysql:dbname=%s;host=%s" ou "mysql:dbname=%s;host=%s;port=%s"</li>
+     *                            <li>host => ''       // host de la connexion à la bdd</li>
+     *                            <li>dbname => ''     // Nom de la base de données</li>
+     *                            <li>user => ''       // utilisateur mysql</li>
+     *                            <li>password => ''   // mot de passe</li>
+     *                            <li>port => ''       // [facultatif], port de la connexion</li>
+     *                            <li>utf8 => true     // [facultatif], activer encodage buffer sortie</li>
+     *                            <li>error => true    // [facultatif], activer les erreurs pdo</li>
+     *                            <li>profil => false  // [facultatif], activer le profiling</li>
+     *                            <li>nocache => false // [facultatif], désactiver le cache</li>
+     *                            </ul>
      * @param string $otherDbName Nom de la base de données dans le cas où l'on
-     * veut se connecter à une difference de celle présente dans $ini
+     *                            veut se connecter à une difference de celle présente dans $ini
      *
      * @return MyPDO
      */
@@ -73,7 +71,6 @@ class DB
         if (isset(self::$present[$ini['name']])) {
             return self::$present[$ini['name']];
         }
-
 
         $dsn = sprintf(
             $ini['dsn'],
@@ -89,8 +86,7 @@ class DB
             self::$config
         );
 
-
-        /**
+        /*
          * Option d'affichage des erreurs
          * Paramétrable dans le config.ini de la bdd
          */
@@ -101,12 +97,12 @@ class DB
             );
         }
 
-        /** Profiling */
+        /* Profiling */
         if (isset($ini['profil']) && $ini['profil'] == true) {
             self::$present[$ini['name']]->exec('SET profiling = 1;');
         }
 
-        /**
+        /*
          * Spécifique à mysql
          * Modifie l'encodage du buffer de sortie de la base qui est par
          * défaut en ISO pour être en accord avec l'encodage de la base.
@@ -115,7 +111,7 @@ class DB
             self::$present[$ini['name']]->exec('SET NAMES UTF8');
         }
 
-        /** Cache */
+        /* Cache */
         if (isset($ini['nocache']) && $ini['nocache'] == true) {
             self::$present[$ini['name']]->exec('SET SESSION query_cache_type = OFF;');
         }
@@ -124,11 +120,12 @@ class DB
     }
 
     /**
-     * Renvois la connexion à la base déjà paramétré
+     * Renvois la connexion à la base déjà paramétré.
      *
      * @param string $dbName Nom de la base de données
      *
      * @return MyPDO
+     *
      * @throws Exception\Lib
      */
     final public static function get($dbName)

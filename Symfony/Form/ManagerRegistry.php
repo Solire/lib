@@ -7,20 +7,18 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Description of ManagerRegistry
+ * Description of ManagerRegistry.
  *
  * @author thansen
  */
 class ManagerRegistry implements ManagerRegistryInterface
 {
     /**
-     *
      * @var EntityManager[]
      */
     private $managers;
 
     /**
-     *
      * @var Connection[]
      */
     private $connections;

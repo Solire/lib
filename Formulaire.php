@@ -1,6 +1,6 @@
 <?php
 /**
- * Module de gestion de formulaires
+ * Module de gestion de formulaires.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -11,7 +11,7 @@ namespace Solire\Lib;
 use Solire\Lib\Formulaire\PluginInterface;
 
 /**
- * Contrôle des formulaires
+ * Contrôle des formulaires.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -19,12 +19,12 @@ use Solire\Lib\Formulaire\PluginInterface;
 class Formulaire
 {
     /**
-     * Force le retour de run() sous forme d'une liste
+     * Force le retour de run() sous forme d'une liste.
      */
     const FORMAT_LIST = 2;
 
     /**
-     * Ordre dans lesquels les tableaux sont mergés
+     * Ordre dans lesquels les tableaux sont mergés.
      *
      * p pour $POST
      * g pour $GET
@@ -35,7 +35,7 @@ class Formulaire
     protected $ordre = 'cgp';
 
     /**
-     * Liste des plugins
+     * Liste des plugins.
      *
      * @var PluginInterface[]
      */
@@ -49,42 +49,42 @@ class Formulaire
     protected $architecture;
 
     /**
-     * valeur --config dans le fichier de configuration du formulaire
+     * valeur --config dans le fichier de configuration du formulaire.
      *
      * @var array
      */
     protected $config;
 
     /**
-     * Données du formulaire
+     * Données du formulaire.
      *
      * @var array
      */
     protected $data;
 
     /**
-     * toutes les données
+     * toutes les données.
      *
      * @var array
      */
     protected $fullData;
 
     /**
-     * Nom du champ en cours d'annalyse
+     * Nom du champ en cours d'annalyse.
      *
      * @var string
      */
     protected $target = '';
 
     /**
-     * Liste des noms des champs du formulaire
+     * Liste des noms des champs du formulaire.
      *
      * @var array
      */
     protected $inputNames = [];
 
     /**
-     * Charge un nouveau formulaire
+     * Charge un nouveau formulaire.
      *
      * Pour comprendre la configuration voici un exmple de .ini
      * ;; Configuration générale du formulaire
@@ -148,7 +148,7 @@ class Formulaire
      * egal = "code"
      *
      * @param array|string $iniPath  Array contenant l'architecture ou le chemin du .ini
-     * @param boolean      $complete Si le chemin est absolu
+     * @param bool         $complete Si le chemin est absolu
      *
      * @config main [dirs] "formulaire" Chemin du dossier des .ini d'architecture
      */
@@ -173,9 +173,9 @@ class Formulaire
 
     /**
      * Parcour l'architecture pour y trouver la configuration générale
-     * et sortir le cas d'exemple
+     * et sortir le cas d'exemple.
      *
-     * @return boolean
+     * @return bool
      */
     protected function parseArchi()
     {
@@ -188,7 +188,7 @@ class Formulaire
             $this->ordre = $this->config['ordre'];
         }
 
-        /** Récupération des plugin **/
+        /* Récupération des plugin **/
         if (isset($this->config['plugins'])) {
             $this->plugins = explode('|', $this->config['plugins']);
         }
@@ -203,13 +203,13 @@ class Formulaire
     }
 
     /**
-     * Supprime une option de l'architecture
+     * Supprime une option de l'architecture.
      *
      * Utile si l'on veut se servir que partiellement d'un .ini par exemple
      *
      * @param string $name Nom du champ à oublier
      *
-     * @return boolean Vrai si l'élément était présent
+     * @return bool Vrai si l'élément était présent
      */
     public function archiUnset($name)
     {
@@ -223,11 +223,11 @@ class Formulaire
     }
 
     /**
-     * Edition de la configuration du formulaire
+     * Edition de la configuration du formulaire.
      *
-     * @param array   $newConfig Tableau associatif de la nouvelle configuration
-     * @param boolean $replace   Si vrais, la nouvelle configuration remplace l'ancienne,
-     * sinon il y a un merge des deux tableaux
+     * @param array $newConfig Tableau associatif de la nouvelle configuration
+     * @param bool  $replace   Si vrais, la nouvelle configuration remplace l'ancienne,
+     *                         sinon il y a un merge des deux tableaux
      *
      * @return void
      */
@@ -241,7 +241,7 @@ class Formulaire
     }
 
     /**
-     * Traite le formulaire pour en renvoyer les données vérifiées
+     * Traite le formulaire pour en renvoyer les données vérifiées.
      *
      * @return array tableau des données du formulaire
      *
@@ -268,7 +268,6 @@ class Formulaire
             if (isset($regles['designe'])) {
                 $this->target = $regles['designe'];
             }
-
 
             if (isset($this->config['prefix'])) {
                 $this->target = $this->config['prefix'] . $target;
@@ -354,7 +353,7 @@ class Formulaire
     }
 
     /**
-     * Renvois les données collectées par le formulaire sous la forme d'un tableau
+     * Renvois les données collectées par le formulaire sous la forme d'un tableau.
      *
      * @return array Tableau non associatif des valeurs
      */
@@ -369,7 +368,7 @@ class Formulaire
     }
 
     /**
-     * Génère une requête SQL pour que le contenu du formulaire puisse être inséré en base
+     * Génère une requête SQL pour que le contenu du formulaire puisse être inséré en base.
      *
      * la table est à préciser pendant l'appel de la fonction ou dans le fichier
      * de configuration
@@ -402,7 +401,7 @@ class Formulaire
     }
 
     /**
-     * Envois l'exception de l'erreur
+     * Envois l'exception de l'erreur.
      *
      * Le type d'exception envoyé peut être paramétré à deux endroits, (voir le
      * fichier de configuration) au niveau du champ, ou au niveau du formulaire.
@@ -411,6 +410,7 @@ class Formulaire
      * @param array $regles Tableau associatif de règles pour la gestion d'erreurs
      *
      * @return void
+     *
      * @throws mixed
      * @throws Exception\User Si il y a une erreur dans le formulaire
      *
@@ -459,9 +459,10 @@ class Formulaire
     }
 
     /**
-     * Récupère les données GET POST COOKIE
+     * Récupère les données GET POST COOKIE.
      *
      * @return array
+     *
      * @uses Formulaire::$ordre
      */
     protected function catchData()
@@ -479,11 +480,12 @@ class Formulaire
                 $result = array_merge($result, $datas[$lettre]);
             }
         }
+
         return $result;
     }
 
     /**
-     * Renvois la liste des champs input du formulaire
+     * Renvois la liste des champs input du formulaire.
      *
      * @return array
      */
@@ -493,7 +495,7 @@ class Formulaire
     }
 
     /**
-     * Renvois le paramètre du nom $key sous la forme d'un objet Param
+     * Renvois le paramètre du nom $key sous la forme d'un objet Param.
      *
      * @param string $key Nom du paramètre
      *
@@ -508,10 +510,9 @@ class Formulaire
         }
     }
 
-
     /**
      * Renvois les données collectées par le formulaire sous la forme
-     * d'un tableau associatif
+     * d'un tableau associatif.
      *
      * @return array
      */
@@ -520,9 +521,8 @@ class Formulaire
         return $this->data;
     }
 
-
     /**
-     * __get() est sollicitée pour lire des données depuis des propriétés inaccessibles
+     * __get() est sollicitée pour lire des données depuis des propriétés inaccessibles.
      *
      * Cette focntion permet d'appeller les variables du formulaire directement par $obj->var
      *
@@ -541,13 +541,13 @@ class Formulaire
     }
 
     /**
-     * __isset() est sollicitée pour tester des données depuis des propriétés inaccessibles
+     * __isset() est sollicitée pour tester des données depuis des propriétés inaccessibles.
      *
      * Cette fonction permet de tester (isset()) les variables
      *
      * @param string $name Nom de la variable
      *
-     * @return boolean
+     * @return bool
      * @ignore
      */
     public function __isset($name)

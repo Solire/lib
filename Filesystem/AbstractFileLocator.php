@@ -5,23 +5,22 @@ namespace Solire\Lib\Filesystem;
 use Solire\Lib\Path;
 
 /**
- * Classe abstraite pour la recherche de fichier dans des répertoires
+ * Classe abstraite pour la recherche de fichier dans des répertoires.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 abstract class AbstractFileLocator
 {
-
     /**
-     * Liste des répertoires dans lesquels chercher
+     * Liste des répertoires dans lesquels chercher.
      *
      * @var array
      */
     protected $dirs = [];
 
     /**
-     * Constructeur
+     * Constructeur.
      *
      * @param array $dirs Liste des répertoires à utiliser
      */
@@ -31,11 +30,11 @@ abstract class AbstractFileLocator
     }
 
     /**
-     * Cherche un fichier dans les répertoires définis
+     * Cherche un fichier dans les répertoires définis.
      *
      * @param string $path Chemin du dossier / fichier à chercher dans les répertoires
      *
-     * @return string|boolean
+     * @return string|bool
      */
     public function locate($path)
     {
@@ -51,7 +50,7 @@ abstract class AbstractFileLocator
     }
 
     /**
-     * Retourne la liste complète des répertoires
+     * Retourne la liste complète des répertoires.
      *
      * @return array
      */

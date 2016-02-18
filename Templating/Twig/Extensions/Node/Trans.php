@@ -1,6 +1,6 @@
 <?php
 /**
- * Représente un noeud trans
+ * Représente un noeud trans.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,16 +9,15 @@
 namespace Solire\Lib\Templating\Twig\Extensions\Node;
 
 /**
- * Représente un noeud trans
+ * Représente un noeud trans.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 class Trans extends \Twig_Node
 {
-
     /**
-     * Constructeur
+     * Constructeur.
      *
      * @param \Twig_NodeInterface $body   Contenu du noeud
      * @param int                 $lineno Numéro de ligne
@@ -30,7 +29,7 @@ class Trans extends \Twig_Node
     }
 
     /**
-     * Compile le noeud en PHP
+     * Compile le noeud en PHP.
      *
      * @param \Twig_Compiler $compiler Une instance de Twig_Compiler
      *

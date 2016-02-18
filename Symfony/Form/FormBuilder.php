@@ -14,14 +14,14 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\Forms;
 
 /**
- * Description of FormBuilder
+ * Description of FormBuilder.
  *
  * @author thansen
  */
 class FormBuilder
 {
     /**
-     * Constructeur de formulaire
+     * Constructeur de formulaire.
      *
      * @var FormFactory
      */

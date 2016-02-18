@@ -14,23 +14,22 @@ use Solire\Lib\Application\Filesystem\FileLocator as ApplicationFileLocator;
 use Solire\Lib\View\Filesystem\FileLocator as ViewFileLocator;
 
 /**
- * Front controller
+ * Front controller.
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 class FrontController
 {
-
     /**
-     * Configuration principale du site
+     * Configuration principale du site.
      *
      * @var Config
      */
     public static $mainConfig;
 
     /**
-     * Configuration de l'environnement utilisé
+     * Configuration de l'environnement utilisé.
      *
      * @var Config
      */
@@ -38,97 +37,96 @@ class FrontController
 
     /**
      * Nom de l'application en cours d'utilisation (exemple "Front",
-     * "Catalogue")
+     * "Catalogue").
      *
      * @var string
      */
     public static $appName;
 
     /**
-     * Préfixe url pour l'application (exemple "catalogue")
+     * Préfixe url pour l'application (exemple "catalogue").
      *
      * @var string
      */
     public static $appUrl = '';
 
     /**
-     * Id api utilisé par page du front
+     * Id api utilisé par page du front.
+     *
      * @var int
      */
     public static $idApiRew = 1;
 
     /**
-     * Liste des répertoires app à utiliser
+     * Liste des répertoires app à utiliser.
      *
      * @var array
      */
     protected static $sourceDirectories = [];
 
     /**
-     * Liste des répertoires app à utiliser
+     * Liste des répertoires app à utiliser.
      *
      * @var array
      */
     public static $publicDirs = [];
 
     /**
-     * Nom du controller utilisé
+     * Nom du controller utilisé.
      *
      * @var string
      */
     public $controller = '';
 
     /**
-     * Nom de l'application utilisée
+     * Nom de l'application utilisée.
      *
      * @var string
      */
     public $application = '';
 
     /**
-     * Dossier de app utilisé. (source)
+     * Dossier de app utilisé. (source).
      *
      * @var string
      */
     public $source = '';
 
     /**
-     * Nom de l'action utilisée
+     * Nom de l'action utilisée.
      *
      * @var string
      */
     public $action = '';
 
     /**
-     * Tableau des éléments de rewriting présents dans l'url
+     * Tableau des éléments de rewriting présents dans l'url.
      *
      * @var array
      */
     protected $rewriting = [];
 
     /**
-     *
-     *
      * @var self
      */
     private static $singleton = null;
 
     /**
-     * Indicateur pour ne faire qu'une fois la configuration d'api
+     * Indicateur pour ne faire qu'une fois la configuration d'api.
      *
-     * @var boolean
+     * @var bool
      */
     private static $singleApi = false;
 
     /**
-     * Dossiers
+     * Dossiers.
      *
      * @var array
      */
     private $dirs = null;
 
     /**
-     * Format des chemins
+     * Format des chemins.
      *
      * @var array
      */
@@ -137,61 +135,61 @@ class FrontController
     /**
      * Mode debug activé ?
      *
-     * @var boolean
+     * @var bool
      */
     private $debug = null;
 
     /**
-     * Traduction des textes statiques
+     * Traduction des textes statiques.
      *
      * @var TranslateMysql
      */
     private $translate = false;
 
     /**
-     * Vue
+     * Vue.
      *
      * @var View
      */
     private $view = false;
 
     /**
-     * Loader des librairies javascript
+     * Loader des librairies javascript.
      *
      * @var Javascript
      */
     private $loaderJs = false;
 
     /**
-     * Loader des librairies css
+     * Loader des librairies css.
      *
      * @var Css
      */
     private $loaderCss = false;
 
     /**
-     * Loader des librairies img
+     * Loader des librairies img.
      *
      * @var Img
      */
     private $loaderImg = false;
 
     /**
-     * FileLocator
+     * FileLocator.
      *
      * @var ApplicationFileLocator
      */
     private $fileLocator = null;
 
     /**
-     * Représentation de la requête HTTP courante
+     * Représentation de la requête HTTP courante.
      *
      * @var Request
      */
     private $request = null;
 
     /**
-     * Instantiation du frontController
+     * Instantiation du frontController.
      */
     private function __construct()
     {
@@ -216,7 +214,7 @@ class FrontController
     }
 
     /**
-     * Renvois une instance du FrontController
+     * Renvois une instance du FrontController.
      *
      * @return self
      */
@@ -225,11 +223,12 @@ class FrontController
         if (!self::$singleton) {
             self::$singleton = new self();
         }
+
         return self::$singleton;
     }
 
     /**
-     * Renvois le tableau des répertoires app
+     * Renvois le tableau des répertoires app.
      *
      * @return array
      */
@@ -239,9 +238,10 @@ class FrontController
     }
 
     /**
-     * Initialise les données nécessaires pour FrontController
+     * Initialise les données nécessaires pour FrontController.
      *
      * @throws Exception\Lib
+     *
      * @return void
      */
     public static function init()
@@ -251,10 +251,10 @@ class FrontController
 
         /* Chargement de la configuration */
         $mainConfigFilePath = $configFileLocator->locate('config/main.yml');
-        $envConfigFilePath  = $configFileLocator->locate('config/local.yml');
+        $envConfigFilePath = $configFileLocator->locate('config/local.yml');
 
         $mainConfig = Loader::load($mainConfigFilePath);
-        $envConfig  = Loader::load($envConfigFilePath);
+        $envConfig = Loader::load($envConfigFilePath);
 
         /* Fichiers de configuration */
         Registry::set('mainconfig', $mainConfig);
@@ -275,7 +275,7 @@ class FrontController
 
         /* Chargement de la configuration */
         self::$mainConfig = Registry::get('mainconfig');
-        self::$envConfig  = Registry::get('envconfig');
+        self::$envConfig = Registry::get('envconfig');
 
         /* Base de données */
         try {
@@ -300,13 +300,14 @@ class FrontController
     }
 
     /**
-     * Ajoute une partie de rewriting
+     * Ajoute une partie de rewriting.
      *
      * @param string $rewriting Parte de rewriting à ajouter
      *
      * @return void
      *
      * @throws HttpError
+     *
      * @uses Solire\Lib\Controller->acceptRew Contrôle si le
      * rewriting est accepté
      */
@@ -323,7 +324,7 @@ class FrontController
     }
 
     /**
-     * Renvois le nom de la classe du controller
+     * Renvois le nom de la classe du controller.
      *
      * @param string $controller Nom du controller
      * @param string $app        Code du repertoire App à utiliser
@@ -348,7 +349,7 @@ class FrontController
     }
 
     /**
-     * Lecture de l'url pour en extraire les données
+     * Lecture de l'url pour en extraire les données.
      *
      * @return void
      */
@@ -444,7 +445,6 @@ class FrontController
             }
         }
 
-
         if ($controller === false) {
             $this->controller = $this->getDefault('controller');
             $this->classExists($this->controller);
@@ -473,15 +473,15 @@ class FrontController
     }
 
     /**
-     * Cherche un fichier dans les applications
+     * Cherche un fichier dans les applications.
      *
-     * @param string         $path    Chemin Chemin du dossier / fichier à chercher dans
-     * les applications
-     * @param string|boolean $appName Soit le nom de l'application, soit true
-     * pour Utiliser le nom de l'application courante soit false pour ne pas
-     * chercher dans une application
+     * @param string      $path    Chemin Chemin du dossier / fichier à chercher dans
+     *                             les applications
+     * @param string|bool $appName Soit le nom de l'application, soit true
+     *                             pour Utiliser le nom de l'application courante soit false pour ne pas
+     *                             chercher dans une application
      *
-     * @return string|boolean
+     * @return string|bool
      */
     final public static function search($path, $appName = true)
     {
@@ -501,12 +501,12 @@ class FrontController
     }
 
     /**
-     * Cherche une classe
+     * Cherche une classe.
      *
      * @param string $className Nom de la classe, avec les namespace, qui sera
-     * préfixé par le nom de l'app
+     *                          préfixé par le nom de l'app
      *
-     * @return string|boolean
+     * @return string|bool
      */
     final public static function searchClass($className)
     {
@@ -522,10 +522,10 @@ class FrontController
     }
 
     /**
-     * Charge la configuration relative à l'application
+     * Charge la configuration relative à l'application.
      *
      * @param string $appName Le nom de l'application, ne pas renseigner si
-     * c'est l'application courante
+     *                        c'est l'application courante
      *
      * @return \Solire\Lib\Config|null
      */
@@ -549,12 +549,12 @@ class FrontController
     }
 
     /**
-     * Test si le morceau d'url est une application
+     * Test si le morceau d'url est une application.
      *
      * @param string $ctrl Morceau d'url
      *
-     * @return boolean|string false si ce n'est pas une application, sinon
-     * renvoi le dir App
+     * @return bool|string false si ce n'est pas une application, sinon
+     *                     renvoi le dir App
      */
     private function testApp($ctrl)
     {
@@ -574,11 +574,11 @@ class FrontController
     }
 
     /**
-     * Contrôle l'existence d'une classe controller
+     * Contrôle l'existence d'une classe controller.
      *
      * @param string $ctrl Nom de la classe
      *
-     * @return boolean
+     * @return bool
      */
     protected function classExists($ctrl)
     {
@@ -586,18 +586,22 @@ class FrontController
             $class = $this->getClassName(ucfirst($ctrl), $source['namespace']);
             if (class_exists($class)) {
                 $this->source = $source;
+
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * Lance l'affichage de la page
+     * Lance l'affichage de la page.
      *
      * @param string $controller Nom du controller à lancer
      * @param string $action     Nom de l'action à lancer
+     *
      * @return bool
+     *
      * @throws Exception\Lib
      * @throws HttpError
      * @throws \Exception
@@ -680,11 +684,12 @@ class FrontController
             $instance->shutdown();
             $front->view->display();
         }
+
         return true;
     }
 
     /**
-     * Chargement de la classe de traduction
+     * Chargement de la classe de traduction.
      *
      * @return \Solire\Lib\TranslateMysql
      */
@@ -702,7 +707,7 @@ class FrontController
     }
 
     /**
-     * Chargement de la vue
+     * Chargement de la vue.
      *
      * @return View
      *
@@ -744,7 +749,7 @@ class FrontController
     }
 
     /**
-     * Chargement des librairies Javascript
+     * Chargement des librairies Javascript.
      *
      * @return Javascript
      */
@@ -760,7 +765,7 @@ class FrontController
     }
 
     /**
-     * Chargement des librairies Css
+     * Chargement des librairies Css.
      *
      * @return Css
      */
@@ -776,7 +781,7 @@ class FrontController
     }
 
     /**
-     * Chargement des librairies Img
+     * Chargement des librairies Img.
      *
      * @return Img
      */
@@ -792,12 +797,12 @@ class FrontController
     }
 
     /**
-     * Charge la configuration de l'application utilisée
+     * Charge la configuration de l'application utilisée.
      *
      * Place le fichier de configuration dans le Registre, à 'appconfig'
      * Paramètre le basehref pour prendre en compte l'application si besoin
      *
-     * @return boolean
+     * @return bool
      *
      * @uses Registry
      */
@@ -836,12 +841,12 @@ class FrontController
     }
 
     /**
-     * Défini la version en cours de l'application
+     * Défini la version en cours de l'application.
      *
      * Défini la constante ID_VERSION et SUF_VERSION
      * Paramètre le basehref
      *
-     * @return boolean
+     * @return bool
      *
      * @uses Registry
      */
@@ -918,7 +923,7 @@ class FrontController
     }
 
     /**
-     * Enregistre un nouveau répertoire de sources
+     * Enregistre un nouveau répertoire de sources.
      *
      * @param array $sourceDirectory Configuration du répertoire de sources
      *
@@ -926,10 +931,10 @@ class FrontController
      */
     public static function addSourceDirectory($sourceDirectory)
     {
-        $name      = $sourceDirectory['name'];
+        $name = $sourceDirectory['name'];
         $namespace = $sourceDirectory['namespace'];
-        $dir       = $sourceDirectory['dir'];
-        $public    = $sourceDirectory['public'];
+        $dir = $sourceDirectory['dir'];
+        $public = $sourceDirectory['public'];
 
         self::$sourceDirectories[] = [
             'name' => $name,
@@ -940,7 +945,7 @@ class FrontController
     }
 
     /**
-     * Définie les répertoires de sources
+     * Définie les répertoires de sources.
      *
      * @param array $sourceDirectories Configuration des répertoire de sources
      *
@@ -955,7 +960,7 @@ class FrontController
     }
 
     /**
-     * Renvois les valeurs par défaut propre à l'application
+     * Renvois les valeurs par défaut propre à l'application.
      *
      * @param string $key Identifiant de la configuration demandé
      *
@@ -964,11 +969,12 @@ class FrontController
     public function getDefault($key)
     {
         $conf = Registry::get('appconfig');
+
         return $conf->get('default', $key);
     }
 
     /**
-     * Renvois les chemins vers les dossiers configurés
+     * Renvois les chemins vers les dossiers configurés.
      *
      * @param string $key Identifiant du dossier
      *
@@ -979,11 +985,12 @@ class FrontController
         if (isset($this->dirs[$key])) {
             return $this->dirs[$key];
         }
+
         return '';
     }
 
     /**
-     * Renvois les formats des noms
+     * Renvois les formats des noms.
      *
      * @param string $key Nom du format
      *
@@ -994,11 +1001,12 @@ class FrontController
         if (isset($this->format[$key])) {
             return $this->format[$key];
         }
+
         return '';
     }
 
     /**
-     * Renvoi l'url complète de la page courante
+     * Renvoi l'url complète de la page courante.
      *
      * @return string
      */
@@ -1021,7 +1029,7 @@ class FrontController
 
         // On ajoute enfin la fin de l'url
         $currentURL .= $_SERVER['REQUEST_URI'];
+
         return $currentURL;
     }
-
 }

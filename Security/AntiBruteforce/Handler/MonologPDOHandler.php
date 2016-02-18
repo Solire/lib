@@ -7,7 +7,7 @@ use Solire\Lib\MyPDO;
 use Solire\Lib\Registry;
 
 /**
- * Monolog PDO Handler class
+ * Monolog PDO Handler class.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -15,7 +15,7 @@ use Solire\Lib\Registry;
 class MonologPDOHandler extends AbstractHandler
 {
     /**
-     * The database connection
+     * The database connection.
      *
      * @var MyPDO
      */
@@ -49,7 +49,7 @@ class MonologPDOHandler extends AbstractHandler
         }
 
         $dateTimeC = $this->conf['datetime-column'];
-        $ipC       = $this->conf['ip-column'];
+        $ipC = $this->conf['ip-column'];
 
         $query = 'SELECT COUNT(*) FROM ' . $this->conf['table']
             . ' WHERE (' . implode(' OR ', $where) . ')'
@@ -60,8 +60,8 @@ class MonologPDOHandler extends AbstractHandler
         if (isset($this->conf['channel-column'])
             && isset($this->conf['channel'])
         ) {
-            $channelC  = $this->conf['channel-column'];
-            $channel   = $this->conf['channel'];
+            $channelC = $this->conf['channel-column'];
+            $channel = $this->conf['channel'];
             $query .= ' AND ' . $channelC . ' = ' . $this->connection->quote($channel);
         }
 

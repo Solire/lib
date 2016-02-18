@@ -1,6 +1,6 @@
 <?php
 /**
- * Interface des plugins formulaire
+ * Interface des plugins formulaire.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,11 +9,11 @@
 namespace Solire\Lib\Formulaire;
 
 use Solire\Lib\Config;
-use \Solire\Lib\FrontController;
-use \Solire\Lib\Formulaire;
+use Solire\Lib\FrontController;
+use Solire\Lib\Formulaire;
 
 /**
- * Interface des plugins formulaire
+ * Interface des plugins formulaire.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -21,7 +21,7 @@ use \Solire\Lib\Formulaire;
 trait InstanceTrait
 {
     /**
-     * Charge un formulaire
+     * Charge un formulaire.
      *
      * Le formulaire est juste instancié à partir du fichier présent dans
      * <app>/config/form/
@@ -40,7 +40,7 @@ trait InstanceTrait
     }
 
     /**
-     * Charge un fichier de config formulaire
+     * Charge un fichier de config formulaire.
      *
      * @param string $name Nom du fichier de configuration du formulaire
      *

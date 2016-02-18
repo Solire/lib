@@ -3,7 +3,6 @@
 namespace Solire\Lib\tests\unit\Loader;
 
 use mageekguy\atoum as Atoum;
-use Solire\Lib\Loader\RequireJs as testedClass;
 
 /**
  * Test class for RequireJs loader.
@@ -103,7 +102,7 @@ class RequireJs extends Atoum
     public function testConstruct1()
     {
         $this
-            ->exception(function(){
+            ->exception(function () {
                 $this->newTestedInstance([]);
             })
                 ->isInstanceOf('\Solire\Lib\Exception\Lib')
@@ -112,7 +111,6 @@ class RequireJs extends Atoum
     }
 
     /**
-     *
      * @return \Solire\Lib\Loader\RequireJs
      */
     public function testConstruct2()
@@ -129,25 +127,25 @@ class RequireJs extends Atoum
         $t = $this->testConstruct2();
 
         $this
-            ->exception(function()use($t){
+            ->exception(function () use ($t) {
                 $t->addLibrary('', []);
             })
                 ->hasMessage('L\'option "name" est obligatoire.')
         ;
 
         $this
-            ->exception(function()use($t){
+            ->exception(function () use ($t) {
                 $t->addLibrary('', [
-                    'name' => ''
+                    'name' => '',
                 ]);
             })
                 ->hasMessage('L\'option "name" est obligatoire.')
         ;
 
         $this
-            ->exception(function()use($t){
+            ->exception(function () use ($t) {
                 $t->addLibrary('', [
-                    'name' => '01'
+                    'name' => '01',
                 ]);
             })
                 ->hasMessage('L\'url de la librairie ajouté doit être une chaîne non vide')
@@ -161,10 +159,10 @@ class RequireJs extends Atoum
         $this
             ->if(
                 $t->addLibrary('yyy', [
-                    'name' => 'xxx'
+                    'name' => 'xxx',
                 ])
             )
-            ->exception(function()use($t){
+            ->exception(function () use ($t) {
                 $t->outputAll();
             })
                 ->hasMessage(
@@ -215,7 +213,7 @@ class RequireJs extends Atoum
                     'name' => '03',
                     'deps' => [
                         '01',
-                    ]
+                    ],
                 ])
             )
             ->string(
@@ -284,16 +282,16 @@ class RequireJs extends Atoum
                 ->isEqualTo(
                     [
                         'back/js/modules01.js' => [
-                            'name' => 'modules01'
+                            'name' => 'modules01',
                         ],
                         'back/js/modules02.js' => [
-                            'name' => 'modules02'
+                            'name' => 'modules02',
                         ],
                         'back/js/modules03.js' => [
-                            'name' => 'modules03'
+                            'name' => 'modules03',
                         ],
                         'back/js/modules04.js' => [
-                            'name' => 'modules04'
+                            'name' => 'modules04',
                         ],
                     ]
                 )

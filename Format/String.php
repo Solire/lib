@@ -1,6 +1,6 @@
 <?php
 /**
- * Formatage de chaines de caractères
+ * Formatage de chaines de caractères.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib\Format;
 
 /**
- * Formatage de chaines de caractères
+ * Formatage de chaines de caractères.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -23,11 +23,11 @@ class String
     const RANDOM_ALPHAUPPER = 5;
 
     /**
-     * Tableau de translitération linguistique
+     * Tableau de translitération linguistique.
      *
      * @var array
      */
-    static protected $charMap = [
+    protected static $charMap = [
         // Latin
         'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A',
         'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
@@ -118,7 +118,7 @@ class String
         'š' => 's', 'ū' => 'u', 'ž' => 'z',
         // Japanese
         'Ā' => 'A', 'Ū' => 'U', 'Ē' => 'E', 'Ō' => 'O',
-        'ā' => 'a', 'ū' => 'u', 'ē' => 'e', 'ō' => 'o'
+        'ā' => 'a', 'ū' => 'u', 'ē' => 'e', 'ō' => 'o',
     ];
 
     /**
@@ -126,10 +126,12 @@ class String
      *
      * @param int $strLen Longueur de la chaîne
      * @param int $type   [optional] <p>
-     * Type de caractères utilisés dans la chaîne générée. Doit être
-     * une des constantes the String::RANDOM_*.
-     * </p>
+     *                    Type de caractères utilisés dans la chaîne générée. Doit être
+     *                    une des constantes the String::RANDOM_*.
+     *                    </p>
+     *
      * @return string
+     *
      * @deprecated deprecated since version 6.0
      */
     public static function random($strLen, $type = self::RANDOM_ALL)
@@ -169,12 +171,13 @@ class String
     }
 
     /**
-     * Construit une url propre à partir d'une chaine de caractere,
+     * Construit une url propre à partir d'une chaine de caractere,.
      *
      * @param string $string          La chaine de base à transformer.
      * @param string $charReplacement Caractere de remplacement.
      *
      * @return string La chaine transfomée.
+     *
      * @deprecated since version 4.1.0
      */
     public static function friendlyURL($string, $charReplacement = '-')
@@ -189,11 +192,12 @@ class String
             $charReplacement,
             $string
         );
+
         return strtolower(trim($string, $charReplacement));
     }
 
     /**
-     * Remplace les lettres accentués par les lettres sans accents
+     * Remplace les lettres accentués par les lettres sans accents.
      *
      * @param string $str Chaine à éditer
      *
@@ -201,7 +205,7 @@ class String
      */
     public static function replaceAccent($str)
     {
-        /**
+        /*
          * On transforme les caractères spéciaux en caractères simples
          */
         $str = str_replace(array_keys(self::$charMap), self::$charMap, $str);
@@ -210,7 +214,7 @@ class String
     }
 
     /**
-     * Construit une url propre à partir d'une chaine de caractere
+     * Construit une url propre à partir d'une chaine de caractere.
      *
      * @param string $str       Chaine à transformer
      * @param string $delimiter Délimiteur
@@ -222,29 +226,29 @@ class String
     {
         $str = self::replaceAccent($str);
 
-        /**
+        /*
          * On remplace tous les caractères non alpha numériques par le délimiteur
          */
         $str = preg_replace('/[^\p{L}\p{Nd}]+/u', $delimiter, $str);
 
-        /**
+        /*
          * On supprime les délimiteurs en double
          */
         $str = preg_replace('/(' . preg_quote($delimiter, '/') . '){2,}/', '$1', $str);
 
-        /**
+        /*
          * Si on a une limite, on coupe la chaine
          */
         if ($limit !== null) {
             $str = mb_substr($str, 0, $limit, 'UTF-8');
         }
 
-        /**
+        /*
          * On supprime les délimiteurs en debut et en fin de chaîne
          */
         $str = trim($str, $delimiter);
 
-        /**
+        /*
          * On met en minuscule la chaine de caractère
          */
         $str = mb_strtolower($str, 'UTF-8');
@@ -253,10 +257,10 @@ class String
     }
 
     /**
-     * Coupe une chaîne de caractères à N caractères
+     * Coupe une chaîne de caractères à N caractères.
      *
-     * @param string $string    Chaine à couper
-     * @param string $length    Longueur maximum
+     * @param string $string Chaine à couper
+     * @param string $length Longueur maximum
      *
      * @return string
      */
