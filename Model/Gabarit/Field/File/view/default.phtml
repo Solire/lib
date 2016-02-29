@@ -5,7 +5,7 @@
 
     <div class="col-sm-9 field-file <?php echo $this->value == '' ? 'hidden' : ''; ?>">
         <?php
-        $style = $src = $minSrc = $size = $href = '';
+        $style = $src = $minSrc = $size = $href = $filepoids = '';
         if ($this->value == '') {
             $style = ' display:none;';
         } else {
@@ -24,8 +24,9 @@
                 }
                 $sizes  = getimagesize($path);
                 $size   = $sizes[0] . ' x ' . $sizes[1];
+                $filepoids   = \Solire\Lib\Format\Number::formatSize(filesize($path));
             } else {
-                $size   = \Solire\Lib\Format\Number::formatSize(filesize($path));
+                $filepoids   = \Solire\Lib\Format\Number::formatSize(filesize($path));
                 $minSrc = 'public/default/back/img/filetype/' . $ext . '.png';
             }
         }
@@ -44,6 +45,9 @@
 
                     <dt>Taille</dt>
                     <dd class="field-file-size"><?php echo $size; ?></dd>
+
+                    <dt>Poids</dt>
+                    <dd class="field-file-poids"><?php echo $filepoids; ?></dd>
 
                     <dt><label for="<?php echo $this->id; ?>_alt" class="control-label">Texte alternatif</label></dt>
                     <dd>
