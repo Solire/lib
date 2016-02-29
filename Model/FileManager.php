@@ -417,6 +417,7 @@ class FileManager extends manager
                 $width = $sizes[0];
                 $height = $sizes[1];
                 $jsonrpc['taille'] = $sizes[0] . ' x ' . $sizes[1];
+                $jsonrpc['taille_desc'] = $sizes[0] . 'px de large x ' . $sizes[1] . 'px de haut';
 
                 /* Création de la vignette  */
                 $largeurmax = self::$vignette['max-width'];
@@ -448,7 +449,7 @@ class FileManager extends manager
             } else {
                 $width = 0;
                 $height = 0;
-                $jsonrpc['taille'] = Number::formatSize($size);
+                $jsonrpc['poids'] = Number::formatSize($size);
             }
 
             /* Ajout d'informations utiles (ou pas) */
@@ -618,13 +619,14 @@ class FileManager extends manager
         $height = $sizes[1];
 
         $json = [
-            'taille' => $sizes[0] . ' x ' . $sizes[1],
-            'filename' => $fileNameNew,
-            'size' => $size,
-            'width' => $width,
-            'height' => $height,
-            'path' => $targetDir . Path::DS . $fileNameNew,
-            'date' => date('d/m/Y H:i:s'),
+            'taille'      => $sizes[0] . ' x ' . $sizes[1],
+            'taille_desc' => $sizes[0] . 'px de large x ' . $sizes[1] . 'px de haut',
+            'filename'    => $fileNameNew,
+            'size'        => $size,
+            'width'       => $width,
+            'height'      => $height,
+            'path'        => $targetDir . Path::DS . $fileNameNew,
+            'date'        => date('d/m/Y H:i:s'),
         ];
 
         /* On créé la vignette */

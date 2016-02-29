@@ -35,6 +35,7 @@ class FileField extends GabaritField
             (isset($this->params['CROP.HEIGHT.MIN']) && intval($this->params['CROP.HEIGHT.MIN']) > 0)
         ) {
             $this->champ['aide'] .= '<div>';
+            $this->champ['aide'] .= '<h4>Taille minimum attendue</h4>';
             if (
                 isset($this->params['CROP.WIDTH.MIN'])
                 && intval($this->params['CROP.WIDTH.MIN']) > 0
