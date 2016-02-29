@@ -23,7 +23,7 @@
                     $minSrc = $this->uploadConfig->get('prefixUrl') . '/' . $minSrc;
                 }
                 $sizes  = getimagesize($path);
-                $size   = $sizes[0] . ' x ' . $sizes[1];
+                $size   = $sizes[0] . 'px de large x ' . $sizes[1] . 'px de haut';
                 $filepoids   = \Solire\Lib\Format\Number::formatSize(filesize($path));
             } else {
                 $filepoids   = \Solire\Lib\Format\Number::formatSize(filesize($path));
