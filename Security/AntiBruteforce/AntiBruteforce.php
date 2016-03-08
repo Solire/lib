@@ -1,4 +1,5 @@
 <?php
+
 namespace Solire\Lib\Security\AntiBruteforce;
 
 use Solire\Conf\Conf;
@@ -9,7 +10,7 @@ use Solire\Lib\Security\AntiBruteforce\Handler\AbstractHandler;
 
 /**
  * Gestionnaire de blocages des attacks par bruteforce
- * (Privilégié fail2ban sur les serveurs dédiés)
+ * (Privilégié fail2ban sur les serveurs dédiés).
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -17,28 +18,28 @@ use Solire\Lib\Security\AntiBruteforce\Handler\AbstractHandler;
 class AntiBruteforce
 {
     /**
-     * La configuration
+     * La configuration.
      *
      * @var Conf|array[]
      */
     protected $conf = null;
 
     /**
-     * L'ip courante testée
+     * L'ip courante testée.
      *
      * @var string
      */
     protected $ip = null;
 
     /**
-     * La connexion à la base de données
+     * La connexion à la base de données.
      *
      * @var MyPDO
      */
     protected $connection = null;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param Conf|array[] $conf La configuration
      * @param null|string  $ip   L'ip à tester, si null, l'ip du client
@@ -47,7 +48,7 @@ class AntiBruteforce
      */
     public function __construct($conf, $ip = null)
     {
-        $this->conf       = $conf;
+        $this->conf = $conf;
         $this->connection = Registry::get('db');
 
         if ($ip === null) {
@@ -61,11 +62,11 @@ class AntiBruteforce
 
     /**
      * Cherche en fonction des filtres, les tentatives dans l'historique et si
-     * le nombre de tentatives max est atteint, bloque l'ip
+     * le nombre de tentatives max est atteint, bloque l'ip.
      *
      * @param string $ip L'ip a testé
      *
-     * @return boolean False en cas de blockage
+     * @return bool False en cas de blockage
      *
      * @throws InvalidIpException Ip invalide
      */
@@ -98,6 +99,7 @@ class AntiBruteforce
                     // Limite atteinte
                     if ($countFailed >= $filter['maxretry']) {
                         $this->blockIp($this->ip, $this->conf['bantime']);
+
                         return false;
                     }
                 }
@@ -108,11 +110,11 @@ class AntiBruteforce
     }
 
     /**
-     * Teste si une IP est bloquée ou non
+     * Teste si une IP est bloquée ou non.
      *
      * @param string $ip L'ip a testé
      *
-     * @return boolean True si l'ip est bloquée
+     * @return bool True si l'ip est bloquée
      *
      * @throws InvalidIpException Ip invalide
      */
@@ -134,7 +136,7 @@ class AntiBruteforce
 
         $statement = $this->connection->query($query);
         if ($statement !== false) {
-            $result  = $statement->fetchColumn();
+            $result = $statement->fetchColumn();
             $blocked = $result == 0 ? false : true;
         }
 
@@ -142,7 +144,7 @@ class AntiBruteforce
     }
 
     /**
-     * Renvoi le nombre de secondes à attendre lors d'un blockage
+     * Renvoi le nombre de secondes à attendre lors d'un blockage.
      *
      * @param string $ip L'ip a testé
      *
@@ -166,25 +168,24 @@ class AntiBruteforce
             . '     AND endDate >= NOW()';
 
         $statement = $this->connection->query($query);
-        $result    = $statement->fetchColumn();
+        $result = $statement->fetchColumn();
 
         return $result;
     }
 
     /**
-     * Permet de blocker une ip pendant un temps donné
+     * Permet de blocker une ip pendant un temps donné.
      *
      * @param string $ip      Ip à bloquer
      * @param int    $banTime Temps de bannissement en secondes
      *
-     * @return boolean True si la requête s'est bien exécutée
+     * @return bool True si la requête s'est bien exécutée
      *
      * @todo gérer des handlers différents pour le stockage des ips
      * bloquées, un peu comme les handlers pour la lecture des logs
      */
     protected function blockIp($ip, $banTime)
     {
-
         $date = date('Y-m-d H:i:s', time() + $banTime);
 
         // Insertion de l'ip dans la table de ban

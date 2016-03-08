@@ -1,6 +1,6 @@
 <?php
 /**
- * Exception class quand la plage de caractères est vide pour la génération d'un random
+ * Exception class quand la plage de caractères est vide pour la génération d'un random.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib\Security\Util\Exception;
 
 /**
- * Exception class quand la plage de caractères est vide pour la génération d'un random
+ * Exception class quand la plage de caractères est vide pour la génération d'un random.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/

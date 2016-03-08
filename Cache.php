@@ -1,6 +1,6 @@
 <?php
 /**
- * Gestion du cache scripté
+ * Gestion du cache scripté.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -10,7 +10,7 @@ namespace Solire\Lib;
 
 /**
  * Gestion du cache scripté
- * Ce cache se fait en enregistrant le contenu du chache dans un fichier
+ * Ce cache se fait en enregistrant le contenu du chache dans un fichier.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -18,14 +18,14 @@ namespace Solire\Lib;
 class Cache
 {
     /**
-     * Chemin vers le dossier de cache
+     * Chemin vers le dossier de cache.
      *
      * @var string cache directory
      */
     private $dir = null;
 
     /**
-     * Instantie le cache
+     * Instantie le cache.
      *
      * @param array $ini Contenu du fichier de config pour le cache
      */
@@ -35,7 +35,7 @@ class Cache
     }
 
     /**
-     * Mise en cache
+     * Mise en cache.
      *
      * @param string $key   Nom / code de le l'élément à mettre en cache
      * @param mixed  $value Valeur à mettre en cache
@@ -48,7 +48,7 @@ class Cache
     }
 
     /**
-     * Récupère le cache
+     * Récupère le cache.
      *
      * @param string $key Nom / code de l'élement en cache
      *

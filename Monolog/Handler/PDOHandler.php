@@ -7,7 +7,7 @@ use Monolog\Handler\AbstractProcessingHandler;
 use Solire\Lib\Registry;
 
 /**
- * Classe PDO Handler pour Monolog
+ * Classe PDO Handler pour Monolog.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -27,7 +27,7 @@ class PDOHandler extends AbstractProcessingHandler
     private $statement;
 
     /**
-     * Constructeur
+     * Constructeur.
      *
      * @param \PDO      $pdo    Object PDO
      * @param bool|int  $level  Le niveau de journalisation minimale à laquelle ce gestionnaire sera déclenché
@@ -40,7 +40,7 @@ class PDOHandler extends AbstractProcessingHandler
     }
 
     /**
-     * Écrit le log en base de données
+     * Écrit le log en base de données.
      *
      * @param array $record L'enregistrement à écrire
      *
@@ -58,16 +58,16 @@ class PDOHandler extends AbstractProcessingHandler
         $datetime = $record['datetime'];
 
         $this->statement->execute([
-            'channel'  => $record['channel'],
-            'level'    => $record['level'],
-            'message'  => $record['formatted'],
-            'time'     => $datetime->format('U'),
-            'remoteip' => $remoteIp
+            'channel' => $record['channel'],
+            'level' => $record['level'],
+            'message' => $record['formatted'],
+            'time' => $datetime->format('U'),
+            'remoteip' => $remoteIp,
         ]);
     }
 
     /**
-     * Initialisation
+     * Initialisation.
      *
      * @return void
      */

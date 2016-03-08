@@ -1,8 +1,9 @@
 <?php
+
 namespace Solire\Lib\Loader;
 
 /**
- * Gestionnaire des scripts css pour le html
+ * Gestionnaire des scripts css pour le html.
  *
  * @author  thansen <thansen@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -10,12 +11,12 @@ namespace Solire\Lib\Loader;
 class Css extends Loader
 {
     /**
-     * Template du code html pour un script css
+     * Template du code html pour un script css.
      *
      * @param string $url     Url de la librairie
      * @param string $realUrl Vraie url de la librairie
      * @param array  $options Options de la librairie, ici attribut html de la
-     * balise link
+     *                        balise link
      *
      * @return string
      */

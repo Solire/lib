@@ -1,9 +1,7 @@
 <?php
 /**
- * Erreur HTTP
+ * Erreur HTTP.
  *
- * @package    Library
- * @subpackage Error
  * @author     Dev <dev@solire.fr>
  * @license    Solire http://www.solire.fr/
  */
@@ -11,18 +9,15 @@
 namespace Solire\Lib\Exception;
 
 /**
- * Erreur HTTP
+ * Erreur HTTP.
  *
- * @package    Library
- * @subpackage Error
  * @author     Dev <dev@solire.fr>
  * @license    Solire http://www.solire.fr/
  */
 class Log extends \Exception
 {
-
     /**
-     * "constructeur de mon expetion"
+     * "constructeur de mon expetion".
      *
      * @param string $strErrorMsg Message d'erreur à afficher.
      */
@@ -32,7 +27,7 @@ class Log extends \Exception
     }
 
     /**
-     * affiche l'erreur et stop l'éxecution du script
+     * affiche l'erreur et stop l'éxecution du script.
      *
      * @return void
      */
@@ -53,7 +48,7 @@ class Log extends \Exception
     }
 
     /**
-     * retourne l'objet sous forme de chaine
+     * retourne l'objet sous forme de chaine.
      *
      * @return string
      * @ignore

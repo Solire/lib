@@ -1,6 +1,6 @@
 <?php
 /**
- * Gestionnaire des hooks
+ * Gestionnaire des hooks.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -11,45 +11,45 @@ namespace Solire\Lib;
 use Solire\Lib\Exception\Lib as LibException;
 
 /**
- * Gestionnaire des hooks
+ * Gestionnaire des hooks.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
+ *
  * @see     http://solire-02/wiki/index.php/Hook Documentation
  */
 class Hook
 {
     /**
-     * Données d'environnement
+     * Données d'environnement.
      *
      * @var array
      */
     private $data = [];
 
     /**
-     * Répertoires dans lesquels se trouve les hooks
+     * Répertoires dans lesquels se trouve les hooks.
      *
      * @var array
      */
     private $dirs = [];
 
     /**
-     * Sous dossier dans lequel est rangé les hooks
+     * Sous dossier dans lequel est rangé les hooks.
      *
      * @var string
      */
     private $subDir = '';
 
     /**
-     * Nom du hook
+     * Nom du hook.
      *
      * @var string
      */
     protected $codeName;
 
     /**
-     * Chargement du gestionnaire de hook
-     *
+     * Chargement du gestionnaire de hook.
      */
     public function __construct()
     {
@@ -57,7 +57,7 @@ class Hook
     }
 
     /**
-     * Chargement de la liste des répertoires dans lesqueslles se trouve les hooks
+     * Chargement de la liste des répertoires dans lesqueslles se trouve les hooks.
      *
      * Utilisé principalement dans le cadre des tests, les répertoires des App
      * sont chargés par défaut lors de la construction de l'objet.
@@ -65,6 +65,7 @@ class Hook
      * @param array $dirs Liste des répertoires avec le plus bas niveau en premier
      *
      * @return void
+     *
      * @link http://solire-02/wiki/index.php/Hook#Organisation
      */
     public function setDirs(array $dirs)
@@ -73,7 +74,7 @@ class Hook
     }
 
     /**
-     * Enregistre le nom du sous dossier
+     * Enregistre le nom du sous dossier.
      *
      * @param string $subDir Chemin du sous dossier
      *
@@ -85,12 +86,14 @@ class Hook
     }
 
     /**
-     * Execution d'un hook
+     * Execution d'un hook.
      *
      * @param string $codeName Identifiant du hook
      *
      * @return void
+     *
      * @uses Path Contrôle du chemin du fichier
+     *
      * @throws Exception\lib En cas de problème de configuration
      */
     public function exec($codeName)
@@ -108,7 +111,7 @@ class Hook
             $baseDir = '';
         }
 
-        /** Chargement des hooks dispo **/
+        /* Chargement des hooks dispo **/
         $baseDir .= $this->codeName;
         $hooks = [];
         foreach ($this->dirs as $dirInfo) {
@@ -145,7 +148,7 @@ class Hook
         // Trie les hooks par nom de fichier
         ksort($hooks);
 
-        /** Lancement des hooks **/
+        /* Lancement des hooks **/
         foreach ($hooks as $hook) {
             if (!class_exists($hook['className'])) {
                 include $hook['path'];
@@ -160,14 +163,13 @@ class Hook
             }
 
             /** @var HookInterface $foo */
-            $foo = new $hook['className'];
+            $foo = new $hook['className']();
             $foo->run($this);
-
         }
     }
 
     /**
-     * Enregistrement des variables d'environnement
+     * Enregistrement des variables d'environnement.
      *
      * @param string $name  Nom de la variable
      * @param mixed  $value Contenu de la variable
@@ -180,7 +182,7 @@ class Hook
     }
 
     /**
-     * Renvois la valeur de la variable de l'environnement
+     * Renvois la valeur de la variable de l'environnement.
      *
      * @param string $name Nom de la variable
      *
@@ -193,11 +195,11 @@ class Hook
     }
 
     /**
-     * Test l'existence d'une variable de l'environnement
+     * Test l'existence d'une variable de l'environnement.
      *
      * @param string $name Nom de la variable
      *
-     * @return boolean
+     * @return bool
      * @ignore
      */
     public function __isset($name)

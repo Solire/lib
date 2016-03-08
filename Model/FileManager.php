@@ -163,7 +163,7 @@ class FileManager extends manager
                . 'FROM `' . $this->mediaTableName . '` '
                . 'LEFT JOIN media_fichier_utilise '
                . 'ON `' . $this->mediaTableName . '`.rewriting = media_fichier_utilise.rewriting '
-               . 'WHERE `suppr` = 0'
+               . 'WHERE `suppr` = 0 OR `suppr` IS NULL'
         ;
 
         if ($idGabPage) {

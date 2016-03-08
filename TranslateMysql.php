@@ -1,6 +1,6 @@
 <?php
 /**
- * Traduction des textes statiques
+ * Traduction des textes statiques.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib;
 
 /**
- * Traduction des textes statiques
+ * Traduction des textes statiques.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -18,49 +18,49 @@ class TranslateMysql
 {
     /**
      * Instance (pour pouvoir utiliser la classe partout) avec la méthode
-     * statique TranslateMysql::trad()
+     * statique TranslateMysql::trad().
      *
      * @var TranslateMysql
      */
     protected static $self;
 
     /**
-     * Tableau des traductions
+     * Tableau des traductions.
      *
      * @var array
      */
     protected $translate = [];
 
     /**
-     * Identifiant de la version
+     * Identifiant de la version.
      *
      * @var int
      */
     protected $locale = false;
 
     /**
-     * Identifiant de l'api courante
+     * Identifiant de l'api courante.
      *
      * @var int
      */
     protected $api = 1;
 
     /**
-     * Tableau des identifiants de versions
+     * Tableau des identifiants de versions.
      *
      * @var int[]
      */
     protected $versions = [];
 
     /**
-     * Connection à la bdd
+     * Connection à la bdd.
      *
      * @var MyPDO
      */
     protected $db = null;
 
     /**
-     * Module de traduction
+     * Module de traduction.
      *
      * @param string $locale Identifiant de la langue
      * @param int    $idApi  Id API
@@ -76,11 +76,12 @@ class TranslateMysql
     }
 
     /**
-     * Traduit un message
+     * Traduit un message.
      *
      * @param string $message Message à traduire
      *
      * @return string message traduit
+     *
      * @throws Exception\Lib Si aucune instance de TranslateMysql n'est active
      */
     public static function trad($message)
@@ -93,7 +94,7 @@ class TranslateMysql
     }
 
     /**
-     * Traduit un message
+     * Traduit un message.
      *
      * @param string $string Message à traduire
      * @param string $aide   Aide supplémentaire
@@ -156,7 +157,7 @@ class TranslateMysql
     }
 
     /**
-     * charge les translations de la base
+     * charge les translations de la base.
      *
      * @return void
      */
@@ -166,7 +167,7 @@ class TranslateMysql
     }
 
     /**
-     * Chargement des traductions d'une version donnée
+     * Chargement des traductions d'une version donnée.
      *
      * @param int $locale Identifiant de la version
      *

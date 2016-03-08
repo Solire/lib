@@ -1,6 +1,6 @@
 <?php
 /**
- * Tools
+ * Tools.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib;
 
 /**
- * Tools
+ * Tools.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -17,7 +17,7 @@ namespace Solire\Lib;
 class Tools
 {
     /**
-     * Coupe une chaine à une longueur donnée
+     * Coupe une chaine à une longueur donnée.
      *
      * @param string $text       Chaine à couper
      * @param int    $nbCharsMax Longueur maximal
@@ -30,7 +30,7 @@ class Tools
     }
 
     /**
-     * Formate un poids en octet
+     * Formate un poids en octet.
      *
      * @param int $valeur Poids en octet
      *
@@ -66,12 +66,12 @@ class Tools
     }
 
     /**
-     * Recherche dans un array multidim
+     * Recherche dans un array multidim.
      *
      * @param array $parents  Tableau dans lequel faire la recherche
      * @param array $searched Valeur recherché
      *
-     * @return boolean
+     * @return bool
      */
     public static function multidimensionalSearch($parents, $searched)
     {
@@ -93,7 +93,7 @@ class Tools
     }
 
     /**
-     * Remplace les accents par des lettres sans accents
+     * Remplace les accents par des lettres sans accents.
      *
      * @param string $chaine Chaine à vider de ses accents
      *
@@ -105,24 +105,25 @@ class Tools
         mb_regex_encoding('UTF-8');
         $accent = ['a', 'à', 'á', 'â', 'ã', 'ä', 'å', 'c', 'ç', 'e', 'è', 'é',
             'ê', 'ë', 'i', 'ì', 'í', 'î', 'ï', 'o', 'ð', 'ò', 'ó', 'ô', 'õ',
-            'ö', 'u', 'ù', 'ú', 'û', 'ü', 'y', 'ý', 'ý', 'ÿ'];
+            'ö', 'u', 'ù', 'ú', 'û', 'ü', 'y', 'ý', 'ý', 'ÿ', ];
         $inter = ['%01', '%02', '%03', '%04', '%05', '%06', '%07', '%08', '%09',
             '%10', '%11', '%12', '%13', '%14', '%15', '%16', '%17', '%18',
             '%19', '%20', '%21', '%22', '%23', '%24', '%25', '%26', '%27',
-            '%28', '%29', '%30', '%31', '%32', '%33', '%34', '%35'];
+            '%28', '%29', '%30', '%31', '%32', '%33', '%34', '%35', ];
         $regex = ['[aàáâãäå]', '[aàáâãäå]', '[aàáâãäå]', '[aàáâãäå]', '[aàáâãäå]',
             '[aàáâãäå]', '[aàáâãäå]', '[cç]', '[cç]', '[eèéêë]', '[eèéêë]',
             '[eèéêë]', '[eèéêë]', '[eèéêë]', '[iìíîï]', '[iìíîï]', '[iìíîï]',
             '[iìíîï]', '[iìíîï]', '[oðòóôõö]', '[oðòóôõö]', '[oðòóôõö]',
             '[oðòóôõö]', '[oðòóôõö]', '[oðòóôõö]', '[oðòóôõö]', '[uùúûü]',
-            '[uùúûü]', '[uùúûü]', '[uùúûü]', '[yýýÿ]', '[yýýÿ]', '[yýýÿ]', '[yýýÿ]'];
+            '[uùúûü]', '[uùúûü]', '[uùúûü]', '[yýýÿ]', '[yýýÿ]', '[yýýÿ]', '[yýýÿ]', ];
         $chaine = str_ireplace($accent, $inter, $chaine);
         $chaine = str_replace($inter, $regex, $chaine);
+
         return $chaine;
     }
 
     /**
-     * Met en exergue des mots clés dans une chaîne
+     * Met en exergue des mots clés dans une chaîne.
      *
      * @param string $chaine   Chaîne
      * @param string $keywords Mots clés
@@ -150,6 +151,7 @@ class Tools
             $chaine = preg_replace($keywords, '<¤>$1</¤>', $chaine);
             $chaine = str_replace(['<¤>', '</¤>'], ['<strong>', '</strong>'], $chaine);
         }
+
         return $chaine;
     }
 }

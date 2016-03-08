@@ -1,10 +1,11 @@
 <?php
+
 namespace Solire\Lib\Security\Util;
 
 use Solire\Lib\Security\Util\Exception\InvalidRandomRangeException;
 
 /**
- * Generate secure random string
+ * Generate secure random string.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -18,17 +19,18 @@ final class SecureRandom
     const RANDOM_ALL = 15;
 
     /**
-     * Generate a random string
+     * Generate a random string.
      *
      * @param int $length Length of random string
      * @param int $type   Range type to generate random string
      *
      * @return null|string
+     *
      * @throws InvalidRandomRangeException
      */
     public function generate($length, $type = self::RANDOM_ALL)
     {
-        $range        = null;
+        $range = null;
         $randomString = null;
 
         if ($type & self::RANDOM_NUMERIC) {

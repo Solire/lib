@@ -4,27 +4,16 @@
   "description": "",
   "keywords": [""],
   "license": "CC by-nc",
-  "require-dev": {
-    "m6web/coke": "~2.1",
-    "siwayll/phpcs-norme-dpsi": "~3.2",
-    "atoum/atoum": "~2.2",
-    "phploc/phploc": "~2.1",
-    "pdepend/pdepend": "~2.1",
-    "phpmd/phpmd": "~2.2",
-    "squizlabs/php_codesniffer": "~2.3",
-    "sebastian/phpcpd": "~2.0",
-    "phpdocumentor/phpdocumentor": "~2.8",
-    "mayflower/php-codebrowser": "~1.1"
-  },
   "require": {
     "php": ">=5.5.0",
     "ensepar/html2pdf": "1.0.1",
     "zendframework/zend-mail": "2.2.5",
     "solire/conf": "2.4.*",
+    "solire/conf": "^2.4",
     "monolog/monolog": "~1.16",
     "twig/twig": "~1.0",
     "easybook/geshi": "1.0.8.12",
-    "solire/trieur": "~2.3",
+    "solire/trieur": "^2.4",
     "solire/form": "~1.0"
   },
   "require-dev": {

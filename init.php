@@ -1,15 +1,16 @@
 <?php
 /**
- * Gestionnaire des fichiers de configurations
+ * Gestionnaire des fichiers de configurations.
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
+
 namespace Solire\Lib;
 
 header('Content-Type: text/html; charset=utf-8');
 
-/** Session PHP */
+/* Session PHP */
 session_name();
 session_start();
 

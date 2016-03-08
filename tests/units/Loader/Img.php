@@ -78,36 +78,37 @@ class Img extends Atoum
     }
 
     /**
-     * Instanciate a loader
+     * Instanciate a loader.
      *
      * @return TestClass
      */
     protected function instanciate()
     {
         $loader = new TestClass($this->dirs, $this->dirRoot);
+
         return $loader;
     }
 
     /**
-     * Contrôle du constructeur
+     * Contrôle du constructeur.
      *
      * @return void
      */
     public function testConstruct()
     {
         $this
-            ->exception(function(){
+            ->exception(function () {
                 new TestClass([]);
             })
                 ->isInstanceOf('\Solire\Lib\Exception\Lib')
                 ->hasMessage('Le loader ne doit pas être instancié avec une liste de dossier vide')
         ;
 
-       $this
+        $this
             ->object(new TestClass($this->dirs))
         ;
 
-       $this
+        $this
             ->object(new TestClass($this->dirs, $this->dirRoot . DIRECTORY_SEPARATOR))
         ;
 
@@ -120,7 +121,7 @@ class Img extends Atoum
     }
 
     /**
-     * Contrôle ajout d'une librairie
+     * Contrôle ajout d'une librairie.
      *
      * @return void
      */
@@ -129,7 +130,7 @@ class Img extends Atoum
         $imgLoader = $this->instanciate();
 
         $this
-            ->exception(function()use($imgLoader){
+            ->exception(function () use ($imgLoader) {
                 $imgLoader->addLibrary('');
             })
                 ->isInstanceOf('\Solire\Lib\Exception\Lib')
@@ -146,7 +147,7 @@ class Img extends Atoum
                 ->isEqualTo([
                     '01.jpg' => [],
                     '02.jpg' => [
-                        'class' => 'css-img'
+                        'class' => 'css-img',
                     ],
                 ])
         ;
@@ -158,15 +159,15 @@ class Img extends Atoum
 
         $this
             ->string($imgLoader->output('03.jpg', [
-                'class' => 'css-img'
+                'class' => 'css-img',
             ]))
                 ->isEqualTo('<img class="css-img" src="b/03.jpg">')
         ;
 
         $this
-            ->exception(function()use($imgLoader){
+            ->exception(function () use ($imgLoader) {
                 $s = $imgLoader->output('100.jpg', [
-                    'class' => 'css-img'
+                    'class' => 'css-img',
                 ]);
             })
                 ->isInstanceOf('Solire\Lib\Exception\Lib')
@@ -174,7 +175,7 @@ class Img extends Atoum
 
         $this
             ->if($s = $imgLoader->output('00.jpg', [
-                'class' => 'css-img'
+                'class' => 'css-img',
             ], true))
             ->string($s)
                 ->isEqualTo('<img class="css-img" src="00.jpg">')
@@ -189,10 +190,10 @@ class Img extends Atoum
         $this
             ->if($imgLoader->addLibrary('01.jpg'))
             ->and($imgLoader->addLibrary('02.jpg', [
-                'class' => 'css-img'
+                'class' => 'css-img',
             ]))
             ->and($imgLoader->addLibrary('03.jpg', [
-                'class' => 'css-img'
+                'class' => 'css-img',
             ]))
             ->and($imgLoader->addLibrary('05.jpg', [
                 'class' => 'css-img',

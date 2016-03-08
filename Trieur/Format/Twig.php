@@ -8,7 +8,7 @@ use Solire\Lib\Templating\Twig\Twig as TemplatingTwig;
 use Solire\Trieur\AbstractFormat;
 
 /**
- * Description of TwigSolire
+ * Description of TwigSolire.
  *
  * @author thansen
  */
