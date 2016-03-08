@@ -1,6 +1,6 @@
 <?php
 /**
- * Classe de rendu des templates Php
+ * Classe de rendu des templates Php.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -11,25 +11,24 @@ namespace Solire\Lib\Templating\Php;
 use Solire\Lib\Templating\Templating;
 
 /**
- * Classe de rendu des templates Php
+ * Classe de rendu des templates Php.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 class Php extends Templating
 {
-
     /**
-     * Chemin vers la vue "main"
+     * Chemin vers la vue "main".
      *
-     * @var boolean|string
+     * @var bool|string
      */
     private $mainPath = false;
 
     /**
-     * Chemin vers la vue "content"
+     * Chemin vers la vue "content".
      *
-     * @var boolean|string
+     * @var bool|string
      */
     private $contentPath = false;
 
@@ -43,7 +42,7 @@ class Php extends Templating
 
     /**
      * @param bool|string $mainPath Chemin vers le template de base
-     * ou false pour le désactiver
+     *                              ou false pour le désactiver
      *
      * @return mixed|void
      */
@@ -71,11 +70,12 @@ class Php extends Templating
         }
 
         ob_start();
-            if ($this->mainPath !== false) {
-                include $this->mainPath;
-            } else {
-                $this->content();
-            }
+        if ($this->mainPath !== false) {
+            include $this->mainPath;
+        } else {
+            $this->content();
+        }
+
         return ob_get_clean();
     }
 
@@ -105,7 +105,7 @@ class Php extends Templating
     }
 
     /**
-     * Inclus le template demandé dans le template de base
+     * Inclus le template demandé dans le template de base.
      *
      * @return void
      */
@@ -115,7 +115,7 @@ class Php extends Templating
     }
 
     /**
-     * Inclus un fichier de template
+     * Inclus un fichier de template.
      *
      * @param string $templatingFilePath Chemin du fichier de template
      *

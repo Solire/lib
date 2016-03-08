@@ -1,6 +1,6 @@
 <?php
 /**
- * Extensions pour TWIG permettant de traduire des textes statiques
+ * Extensions pour TWIG permettant de traduire des textes statiques.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -13,7 +13,7 @@ use Solire\Lib\Templating\Twig\Extensions\TokenParser\Trans as TransTokenParser;
 use Solire\Lib\TranslateMysql;
 
 /**
- * Extensions pour TWIG permettant de traduire des textes statiques
+ * Extensions pour TWIG permettant de traduire des textes statiques.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -26,7 +26,7 @@ class I18n extends \Twig_Extension
     protected $translator = null;
 
     /**
-     * Construct
+     * Construct.
      */
     public function __construct()
     {
@@ -68,7 +68,7 @@ class I18n extends \Twig_Extension
     }
 
     /**
-     * Retourne le nom de l'extension
+     * Retourne le nom de l'extension.
      *
      * @return string Le nom de l'extension
      */

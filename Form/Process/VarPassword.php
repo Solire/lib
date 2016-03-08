@@ -1,6 +1,6 @@
 <?php
 /**
- * Contrôle de variables
+ * Contrôle de variables.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license MIT http://mit-license.org/
@@ -12,7 +12,7 @@ use Solire\Form\ValidateInterface;
 use ZxcvbnPhp\Zxcvbn;
 
 /**
- * Contrôle de variables
+ * Contrôle de variables.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license MIT http://mit-license.org/
@@ -25,7 +25,7 @@ class VarPassword implements ValidateInterface
      * @param mixed $data  Valeur à tester
      * @param mixed $param
      *
-     * @return boolean
+     * @return bool
      */
     public static function validate($data, $param = null)
     {

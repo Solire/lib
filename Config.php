@@ -1,6 +1,6 @@
 <?php
 /**
- * Gestionnaire des fichiers de configurations
+ * Gestionnaire des fichiers de configurations.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib;
 
 /**
- * Gestionnaire des fichiers de configurations
+ * Gestionnaire des fichiers de configurations.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -17,31 +17,31 @@ namespace Solire\Lib;
 class Config
 {
     /**
-     * Nom de la section de configuration du .ini
+     * Nom de la section de configuration du .ini.
      */
     const KEY_CONF = '__config';
 
     /**
-     * Format des variables
+     * Format des variables.
      */
     const VAR_FORMAT = '#{%([a-z0-9_:]+)}#i';
 
     /**
-     * Contenu du fichier de config
+     * Contenu du fichier de config.
      *
      * @var array
      */
     protected $config = null;
 
     /**
-     * Tableau de paramétrage du fichier de configuration
+     * Tableau de paramétrage du fichier de configuration.
      *
      * @var array
      */
     private $headerConfig;
 
     /**
-     * Charge un nouveau fichier de configuration
+     * Charge un nouveau fichier de configuration.
      *
      * @param string $iniFile Chemin vers le fichier de configuration
      *
@@ -55,7 +55,7 @@ class Config
         $this->headerConfig = $config = $this->get(self::KEY_CONF);
         unset($this->config[self::KEY_CONF]);
 
-        /** Extends **/
+        /* Extends **/
         if (isset($config['extends'])) {
             $extends = $config['extends'];
             if (!is_array($extends)) {
@@ -71,7 +71,7 @@ class Config
     }
 
     /**
-     * Renvois la section de configuration du .ini
+     * Renvois la section de configuration du .ini.
      *
      * @return array
      */
@@ -97,7 +97,7 @@ class Config
     }
 
     /**
-     * Merge les tableaux en replaçants les clés identiques
+     * Merge les tableaux en replaçants les clés identiques.
      *
      * @param array $array1 Tableau à merge
      * @param array $array2 Tableau à merge
@@ -122,7 +122,7 @@ class Config
     }
 
     /**
-     * Application des variables
+     * Application des variables.
      *
      * @return void
      */
@@ -167,7 +167,7 @@ class Config
                     if (preg_match_all(self::VAR_FORMAT, $valueLine, $matches)) {
                         for ($i = 0; $i < count($matches[0]); $i++) {
                             $id = $matches[1][$i];
-                            /**
+                            /*
                              * Si il y a un : dans le nom de la variable c'est
                              * qu'elle pointe sur un autre bloc sinon on prend
                              * le bloc en cours
@@ -179,7 +179,7 @@ class Config
                                 $val = $this->get($divName, $id);
                             }
 
-                            /**
+                            /*
                              * On replace la valeur de la variable dans le champ
                              */
                             $valueLine = str_replace(
@@ -201,7 +201,7 @@ class Config
     }
 
     /**
-     * Renvois le contenu du fichier de configuration
+     * Renvois le contenu du fichier de configuration.
      *
      * @return array Tableau de la configuration
      */
@@ -211,7 +211,7 @@ class Config
     }
 
     /**
-     * Renvois la valeur d'un parametre de configuration
+     * Renvois la valeur d'un parametre de configuration.
      *
      * @param string $section Code de la section
      * @param string $key     Nom de la clé de configuration
@@ -224,7 +224,6 @@ class Config
             if (isset($this->config[$section][$key])) {
                 return $this->config[$section][$key];
             }
-
         } else {
             if (isset($this->config[$section])) {
                 return $this->config[$section];
@@ -235,7 +234,7 @@ class Config
     }
 
     /**
-     * Enregistre la valeur
+     * Enregistre la valeur.
      *
      * @param mixed  $value   Valeur à mettre dans la configuration
      * @param string $section Code de la section
@@ -247,6 +246,7 @@ class Config
     {
         if (!empty($key)) {
             $this->config[$section][$key] = $value;
+
             return $this;
         } else {
             $this->config[$section] = $value;
@@ -256,7 +256,7 @@ class Config
     }
 
     /**
-     * Supprime un parametre de configuration
+     * Supprime un parametre de configuration.
      *
      * @param string $section Code de la section
      * @param string $key     Nom de la clé de configuration
@@ -269,12 +269,12 @@ class Config
             if (isset($this->config[$section][$key])) {
                 unset($this->config[$section][$key]);
             }
-
         } else {
             if (isset($this->config[$section])) {
                 unset($this->config[$section]);
             }
         }
+
         return $this;
     }
 }

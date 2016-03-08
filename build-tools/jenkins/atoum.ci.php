@@ -29,7 +29,6 @@ $cloverWriter = new \mageekguy\atoum\writers\file($basedir . '/build/logs/clover
 $cloverReport = new atoum\reports\asynchronous\clover();
 $cloverReport->addWriter($cloverWriter);
 
-
 /*
  * Html coverage
  */

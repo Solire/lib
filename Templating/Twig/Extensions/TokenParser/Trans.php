@@ -1,6 +1,6 @@
 <?php
 /**
- * Analyseur de token pour la traduction de texte
+ * Analyseur de token pour la traduction de texte.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -11,7 +11,7 @@ namespace Solire\Lib\Templating\Twig\Extensions\TokenParser;
 use Solire\Lib\Templating\Twig\Extensions\Node\Trans as TransNode;
 
 /**
- * Analyseur de token pour la traduction de texte
+ * Analyseur de token pour la traduction de texte.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -19,7 +19,7 @@ use Solire\Lib\Templating\Twig\Extensions\Node\Trans as TransNode;
 class Trans extends \Twig_TokenParser
 {
     /**
-     * Analyse un token et retourne un noeud
+     * Analyse un token et retourne un noeud.
      *
      * @param \Twig_Token $token Une instance Twig_Token
      *
@@ -39,7 +39,7 @@ class Trans extends \Twig_TokenParser
     }
 
     /**
-     * Test si la balise de fermeture a été atteinte
+     * Test si la balise de fermeture a été atteinte.
      *
      * @param \Twig_Token $token Le token
      *

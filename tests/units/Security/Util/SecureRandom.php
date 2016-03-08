@@ -20,7 +20,7 @@ use Solire\Lib\Security\Util\SecureRandom as testedClass;
 class SecureRandom extends Atoum
 {
     /**
-     * Test construct
+     * Test construct.
      *
      * @return void
      */
@@ -35,7 +35,7 @@ class SecureRandom extends Atoum
     }
 
     /**
-     * Test generate method
+     * Test generate method.
      *
      * @return void
      */

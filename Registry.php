@@ -1,6 +1,6 @@
 <?php
 /**
- * Registre
+ * Registre.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib;
 
 /**
- * Registre
+ * Registre.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -17,14 +17,14 @@ namespace Solire\Lib;
 class Registry
 {
     /**
-     * Contenu du registre
+     * Contenu du registre.
      *
      * @var array
      */
     private static $maps;
 
     /**
-     * Instancie le registre (jamais utilisé)
+     * Instancie le registre (jamais utilisé).
      *
      * @ignore
      */
@@ -33,7 +33,7 @@ class Registry
     }
 
     /**
-     * Enregistre une variable dans le registre
+     * Enregistre une variable dans le registre.
      *
      * @param string $key   Nom/Code de l'élement à stocker
      * @param mixed  $value Valeur de l'élément à stocker
@@ -46,7 +46,7 @@ class Registry
     }
 
     /**
-     * Récupère une valeur du registre
+     * Récupère une valeur du registre.
      *
      * @param string $key Nom/Code de l'élement stocké
      *

@@ -3,7 +3,7 @@
 namespace Solire\Lib\Http;
 
 /**
- * Classe qui représente une requête HTTP
+ * Classe qui représente une requête HTTP.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -16,7 +16,7 @@ class Request
     protected $clientIp = null;
 
     /**
-     * Retourne l'adresse IP du client
+     * Retourne l'adresse IP du client.
      *
      * @return string L'adresse IP du client
      */
@@ -30,7 +30,7 @@ class Request
     }
 
     /**
-     * Retourne l'adresse IP du client
+     * Retourne l'adresse IP du client.
      *
      * @return string L'adresse IP du client
      */

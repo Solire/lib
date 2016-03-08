@@ -1,6 +1,6 @@
 <?php
 /**
- * Exception pour que Marvin la prenne en charge
+ * Exception pour que Marvin la prenne en charge.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib\Exception;
 
 /**
- * Les MarvinException seront traités par la classe Marvin
+ * Les MarvinException seront traités par la classe Marvin.
  *
  * Une MarvinException entrainera un arret du script et l'envois d'un rapport
  * Marvin
@@ -20,13 +20,14 @@ namespace Solire\Lib\Exception;
 class Marvin extends \Exception
 {
     /**
-     * Titre du message d'erreur
+     * Titre du message d'erreur.
+     *
      * @var string
      */
     private $title = 'Erreur';
 
     /**
-     * Instancie une erreur qui fera l'objet d'un rapport
+     * Instancie une erreur qui fera l'objet d'un rapport.
      *
      * @param \Exception $exc   Exception qui fait l'objet d'un rapport
      * @param string     $title Facultatif Titre de l'erreur
@@ -41,7 +42,7 @@ class Marvin extends \Exception
     }
 
     /**
-     * Ajoute un titre au rapport
+     * Ajoute un titre au rapport.
      *
      * @param string $string Titre du rapport
      *
@@ -53,7 +54,7 @@ class Marvin extends \Exception
     }
 
     /**
-     * Renvois le titre du rapport
+     * Renvois le titre du rapport.
      *
      * @return string
      */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Exception class quand une ip n'est pas valide
+ * Exception class quand une ip n'est pas valide.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib\Security\AntiBruteforce\Exception;
 
 /**
- * Exception class quand une ip n'est pas valide
+ * Exception class quand une ip n'est pas valide.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/

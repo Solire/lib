@@ -1,6 +1,6 @@
 <?php
 /**
- * Contrôle de variables
+ * Contrôle de variables.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -11,7 +11,7 @@ namespace Solire\Lib;
 /** @todo faire la présentation du code */
 
 /**
- * Contrôle de variables
+ * Contrôle de variables.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -19,14 +19,14 @@ namespace Solire\Lib;
 class Param
 {
     /**
-     * Variable
+     * Variable.
      *
      * @var mixed
      */
     private $foo = null;
 
     /**
-     * Charge une nouvelle variable
+     * Charge une nouvelle variable.
      *
      * @param mixed $param Valeur de la variable à tester
      */
@@ -46,11 +46,12 @@ class Param
     }
 
     /**
-     * Envois d'une erreur
+     * Envois d'une erreur.
      *
      * @param string $message Message d'erreur
      *
      * @return void
+     *
      * @throws Exception\Lib
      */
     private function error($message)
@@ -59,11 +60,11 @@ class Param
     }
 
     /**
-     * Permet d'effectuer differents tests sur la variable
+     * Permet d'effectuer differents tests sur la variable.
      *
      * @param array $options Tableau de tests à effectuer
      *
-     * @return boolean
+     * @return bool
      */
     public function tests($options)
     {
@@ -92,76 +93,80 @@ class Param
         return true;
     }
 
-
     /**
      * Test si le parametre n'est pas vide.
      *
-     * @return boolean
+     * @return bool
      */
     public function testNotEmpty()
     {
         if (empty($this->foo)) {
             return false;
         }
+
         return true;
     }
 
     /**
-     * Test si le parametre est un entier
+     * Test si le parametre est un entier.
      *
-     * @return boolean
+     * @return bool
      */
     public function testIsInt()
     {
         if ((string) ((int) $this->foo) == (string) $this->foo) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Test si le parametre est un boolean
+     * Test si le parametre est un boolean.
      *
-     * @return boolean
+     * @return bool
      */
     public function testIsBoolean()
     {
         if ($this->foo == 0 || $this->foo == 1) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Test si le parametre est positif
+     * Test si le parametre est positif.
      *
-     * @return boolean
+     * @return bool
      */
     public function testIsPositive()
     {
         if ($this->foo > 0) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Test si le parametre est un float
+     * Test si le parametre est un float.
      *
-     * @return boolean
+     * @return bool
      */
     public function testIsFloat()
     {
         if ((string) ((float) $this->foo) == (string) $this->foo) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Test si le parametre est un mail
+     * Test si le parametre est un mail.
      *
-     * @return boolean
+     * @return bool
      */
     public function testIsMail()
     {
@@ -169,55 +174,58 @@ class Param
         if (preg_match($mask, $this->foo)) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Test si le parametre est un tableau
+     * Test si le parametre est un tableau.
      *
-     * @return boolean
+     * @return bool
      */
     public function testIsArray()
     {
         if (is_array($this->foo)) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Test si le parametre est une chaine
+     * Test si le parametre est une chaine.
      *
-     * @return boolean
+     * @return bool
      */
     public function testIsString()
     {
         if ((string) $this->foo === $this->foo) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Test si le parametre est un numéro de téléphone
+     * Test si le parametre est un numéro de téléphone.
      *
-     * @return boolean
+     * @return bool
      */
     public function testIsPhone()
     {
         if (preg_match('#^0[1-9]([-. ]?[0-9]{2}){4}$#', $this->foo)) {
             return true;
         }
+
         return false;
     }
 
-
     /**
-     * Test la longueur en nombre de charactères d'une chaine
+     * Test la longueur en nombre de charactères d'une chaine.
      *
      * @param int $length Chaine au formatage spéciale, voir .ini
      *
-     * @return boolean
+     * @return bool
      */
     public function testLength($length)
     {
@@ -257,9 +265,9 @@ class Param
     }
 
     /**
-     * Test si le parametre ne contient que des chiffres
+     * Test si le parametre ne contient que des chiffres.
      *
-     * @return boolean
+     * @return bool
      */
     public function testOnlyNumber()
     {
@@ -272,11 +280,11 @@ class Param
     }
 
     /**
-     * Test si le paramètre n'est pas une valeur de blocage
+     * Test si le paramètre n'est pas une valeur de blocage.
      *
      * @param string $value Valeur de blocage
      *
-     * @return boolean
+     * @return bool
      */
     public function testNot($value)
     {

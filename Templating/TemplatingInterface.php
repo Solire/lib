@@ -1,6 +1,6 @@
 <?php
 /**
- * Interface des rendus
+ * Interface des rendus.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -11,7 +11,7 @@ namespace Solire\Lib\Templating;
 use Solire\Lib\View\Filesystem\FileLocator;
 
 /**
- * Interface des rendus
+ * Interface des rendus.
  *
  * @author  Stéphane <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -19,15 +19,14 @@ use Solire\Lib\View\Filesystem\FileLocator;
 interface TemplatingInterface
 {
     /**
-     * Constructeur
+     * Constructeur.
      *
      * @param FileLocator $viewFileLocator Résolveur de chemin de fichier
-     *
      */
     public function __construct(FileLocator $viewFileLocator);
 
     /**
-     * Traitement et affichage du template
+     * Traitement et affichage du template.
      *
      * @param string $templatingFilePath Chemin du template
      * @param array  $variables          Variables à inclure dans le scope du template
@@ -37,7 +36,7 @@ interface TemplatingInterface
     public function display($templatingFilePath, $variables = []);
 
     /**
-     * Traitement du template et retourne le html généré
+     * Traitement du template et retourne le html généré.
      *
      * @param string $templatingFilePath Chemin du template
      * @param array  $variables          Variables à inclure dans le scope du template
@@ -47,7 +46,7 @@ interface TemplatingInterface
     public function render($templatingFilePath, $variables = []);
 
     /**
-     * Permet de définir le chemin du template de base à utiliser
+     * Permet de définir le chemin du template de base à utiliser.
      *
      * @param string $mainPath Chemin du template de base à utiliser
      *

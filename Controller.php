@@ -1,6 +1,6 @@
 <?php
 /**
- * Base controller
+ * Base controller.
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -8,109 +8,99 @@
 
 namespace Solire\Lib;
 
+use PDO;
 use Solire\Lib\Exception\HttpError;
-use \PDO;
 use Solire\Lib\View\View;
 
 /**
- * Base controller
+ * Base controller.
  *
  * @author  dev <dev@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
 class Controller
 {
-
     protected $request = null;
 
     /**
      * Url absolue du site
-     * Elle sera enregistrée sous le nom $Url dans l'objet View
+     * Elle sera enregistrée sous le nom $Url dans l'objet View.
+     *
      * @var string
+     *
      * @uses View::$Url
      */
     protected $url = null;
     protected $root = null;
 
     /**
-     *
      * @var Config
      */
     protected $mainConfig = null;
 
     /**
-     *
      * @var Config
      */
     protected $appConfig = null;
 
     /**
-     *
      * @var Config
      */
     protected $envConfig = null;
 
     /**
-     *
      * @var View
      */
     public $view = null;
 
     /**
-     *
      * @var MyPDO
      */
     public $db = null;
 
     /**
-     *
      * @var bool
      */
     public $ajax = false;
 
     /**
-     *
      * @var Seo
      */
     public $seo;
 
     /**
-     * Traduction des textes statiques
+     * Traduction des textes statiques.
      *
      * @var TranslateMysql
      */
     protected $translate = null;
 
     /**
-     * Informations de rewriting
+     * Informations de rewriting.
      *
-     * @var \stdClass
+     * @var array
      */
     protected $rew;
 
     /**
-     * Accepte ou non les rewritings
+     * Accepte ou non les rewritings.
      *
-     * @var boolean
+     * @var bool
      */
     public $acceptRew = false;
 
     /**
-     *
-     *
      * @var Loader\Css
      */
     public $css = null;
 
     /**
-     *
-     *
      * @var Loader\Javascript
      */
     public $javascript = null;
 
     /**
-     * Chargement du controller
+     * Chargement du controller.
      */
     public function __construct()
     {
@@ -121,17 +111,17 @@ class Controller
         }
 
         $this->mainConfig = Registry::get('mainconfig');
-        $this->appConfig  = Registry::get('appconfig');
-        $this->envConfig  = Registry::get('envconfig');
+        $this->appConfig = Registry::get('appconfig');
+        $this->envConfig = Registry::get('envconfig');
 
         $this->request = $_REQUEST;
-        $this->url     = Registry::get('basehref');
-        $this->root    = Registry::get('baseroot');
-        $this->db      = Registry::get('db');
+        $this->url = Registry::get('basehref');
+        $this->root = Registry::get('baseroot');
+        $this->db = Registry::get('db');
     }
 
     /**
-     * Méthode exécutée avant l'execution de la fonction relative à la page en cours
+     * Méthode exécutée avant l'execution de la fonction relative à la page en cours.
      *
      * @return void
      */
@@ -140,17 +130,17 @@ class Controller
         $this->seo = new Seo();
 
         $this->view->mainConfig = Registry::get('mainconfig');
-        $this->view->appConfig  = Registry::get('appconfig');
-        $this->view->envConfig  = Registry::get('envconfig');
-        $this->view->css        = $this->css;
+        $this->view->appConfig = Registry::get('appconfig');
+        $this->view->envConfig = Registry::get('envconfig');
+        $this->view->css = $this->css;
         $this->view->javascript = $this->javascript;
-        $this->view->ajax       = $this->ajax;
-        $this->view->seo        = $this->seo;
+        $this->view->ajax = $this->ajax;
+        $this->view->seo = $this->seo;
         $this->view->currentUrl = FrontController::getCurrentUrl();
     }
 
     /**
-     * Méthode exécutée après l'execution de la fonction relative à la page en cours
+     * Méthode exécutée après l'execution de la fonction relative à la page en cours.
      *
      * @return void
      */
@@ -160,7 +150,7 @@ class Controller
     }
 
     /**
-     * Définit la vue
+     * Définit la vue.
      *
      * @param View $view Vue à utiliser
      *
@@ -170,14 +160,14 @@ class Controller
     {
         $this->view = $view;
 
-        $this->css        = $this->view->getCssLoader();
+        $this->css = $this->view->getCssLoader();
         $this->javascript = $this->view->getJsLoader();
 
         return $this;
     }
 
     /**
-     * Renvois la vue
+     * Renvois la vue.
      *
      * @return View
      */
@@ -187,7 +177,7 @@ class Controller
     }
 
     /**
-     * Chargement de la classe de traduction
+     * Chargement de la classe de traduction.
      *
      * @param TranslateMysql $translate Outils de traduction
      *
@@ -201,7 +191,7 @@ class Controller
     }
 
     /**
-     * Renvoi l'objet de traduction
+     * Renvoi l'objet de traduction.
      *
      * @return TranslateMysql
      */
@@ -211,15 +201,14 @@ class Controller
     }
 
     /**
-     * Redirection vers une autre action d'un controller
+     * Redirection vers une autre action d'un controller.
      *
-     * @param string  $controller Nom du controller
-     * @param string  $action     Nom de l'action
-     * @param array   $params     Paramètres à faire passer en plus
-     * @param boolean $teardown   Supprimer les anciens paramètres oui / non
+     * @param string $controller Nom du controller
+     * @param string $action     Nom de l'action
+     * @param array  $params     Paramètres à faire passer en plus
+     * @param bool   $teardown   Supprimer les anciens paramètres oui / non
      *
      * @return void
-     *
      */
     public function redirect($controller, $action, $params = null, $teardown = true)
     {
@@ -238,7 +227,7 @@ class Controller
     }
 
     /**
-     * Redirection vers une url
+     * Redirection vers une url.
      *
      * @param string $url      Url vers laquelle renvoyer l'utilisateur
      * @param bool   $relative Url relative ?
@@ -257,9 +246,9 @@ class Controller
     }
 
     /**
-     * Detect les redirection 301 et renvoi l'url si une existe
+     * Detect les redirection 301 et renvoi l'url si une existe.
      *
-     * @return boolean|string
+     * @return bool|string
      */
     public function check301()
     {
@@ -270,12 +259,12 @@ class Controller
 
         $urlsToTest = [];
 
-        $mask     = '`'
+        $mask = '`'
             . '^/'
             . FrontController::$envConfig->get('base', 'root')
             . $appUrl
             . '`';
-        $url      = preg_replace($mask, '', $_SERVER['REQUEST_URI']);
+        $url = preg_replace($mask, '', $_SERVER['REQUEST_URI']);
         $urlParts = explode('/', $url);
 
         if (substr($url, -1) == '/') {
@@ -297,19 +286,19 @@ class Controller
 
             $urlsToTest[] = [
                 $url,
-                $urlFollowing
+                $urlFollowing,
             ];
         } while (!empty($urlParts));
 
         // On ajoute aussi l'url entière à tester
         $urlsToTest[] = [
             FrontController::getCurrentURL(),
-            ''
+            '',
         ];
 
         $urlsToTest = array_reverse($urlsToTest);
 
-        $redirection301  = false;
+        $redirection301 = false;
         foreach ($urlsToTest as $key => $row) {
             list($urlToTest, $urlFollowing) = $row;
 
@@ -341,14 +330,14 @@ class Controller
     }
 
     /**
-     * Transforme la page en cour en une erreur 301 ou 404
+     * Transforme la page en cour en une erreur 301 ou 404.
      *
      * @return void
+     *
      * @uses ActionController::redirectError() 301 / 404
      */
     final public function pageNotFound()
     {
-
         $urlRedirect301 = $this->check301();
 
         if ($urlRedirect301) {
@@ -359,7 +348,7 @@ class Controller
     }
 
     /**
-     * Transforme la page en une erreur HTTP
+     * Transforme la page en une erreur HTTP.
      *
      * @param string $codeError Code erreur HTTP
      * @param string $url       Url vers laquelle rediriger l'utilisateur
@@ -367,6 +356,7 @@ class Controller
      * @return void
      *
      * @throws HttpError
+     *
      * @uses Solire\Lib\Exception\HttpError marque l'erreur HTTP
      */
     final public function redirectError($codeError = null, $url = null)
@@ -380,7 +370,7 @@ class Controller
     }
 
     /**
-     * La page est en ajax
+     * La page est en ajax.
      *
      * Désactive la vue et contrôle le fait que l'appel soit bien de l'ajax
      *
@@ -395,12 +385,11 @@ class Controller
     }
 
     /**
-     * Enregistrement des paramètres de rewriting
+     * Enregistrement des paramètres de rewriting.
      *
      * @param array $rew Rewriting contenu dans les "/"
      *
      * @return self
-     *
      */
     final public function setRewriting(array $rew)
     {
@@ -410,7 +399,7 @@ class Controller
     }
 
     /**
-     * Renvois les informations de rewriting courante
+     * Renvois les informations de rewriting courante.
      *
      * @return array
      */
@@ -420,11 +409,12 @@ class Controller
     }
 
     /**
-     * Test si les valeurs du tableau sont dans les paramètres de la page
+     * Test si les valeurs du tableau sont dans les paramètres de la page.
      *
      * @param array $inputs Liste des valeurs à contrôler
      *
      * @return bool
+     *
      * @deprecated
      */
     public function issetAndNotEmpty($inputs)
@@ -439,13 +429,14 @@ class Controller
     }
 
     /**
-     * Alias à l'utilisation de translate
+     * Alias à l'utilisation de translate.
      *
      * @param string $string Chaîne à traduire
      * @param string $aide   Texte permettant de situer l'emplacement de la
      *                       chaîne à traduire, exemple : 'Situé sur le bas de page'
      *
      * @return string
+     *
      * @uses TranslateMysql
      */
     public function tr($string, $aide = '')

@@ -20,7 +20,7 @@ use Solire\Lib\Path as TestClass;
 class Path extends Atoum
 {
     /**
-     * Contrôle ajout de dossiers dans l'include_path
+     * Contrôle ajout de dossiers dans l'include_path.
      *
      * @return void
      */
@@ -82,7 +82,7 @@ class Path extends Atoum
     }
 
     /**
-     * Contrôle test présence fichier
+     * Contrôle test présence fichier.
      *
      * @return void
      */
@@ -107,7 +107,7 @@ class Path extends Atoum
     }
 
     /**
-     * Contrôle convertion chaine de la classe
+     * Contrôle convertion chaine de la classe.
      *
      * @return void
      */

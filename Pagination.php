@@ -1,16 +1,17 @@
 <?php
 /**
- * Gestionnaire de pagination
+ * Gestionnaire de pagination.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
  */
+
 namespace Solire\Lib;
 
 use JsonSerializable;
 
 /**
- * Gestionnaire de pagination
+ * Gestionnaire de pagination.
  *
  * @author  smonnot <smonnot@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -18,86 +19,99 @@ use JsonSerializable;
 class Pagination implements JsonSerializable
 {
     /**
-     * Numéro de la page courante
+     * Numéro de la page courante.
+     *
      * @var int
      */
     protected $currentPage = 1;
 
     /**
-     * Requete sans le SELECT
+     * Requete sans le SELECT.
+     *
      * @var string
      */
     protected $queryWithoutSelect;
 
     /**
-     * Partie SELECT de la requete
+     * Partie SELECT de la requete.
+     *
      * @var string
      */
     protected $queryGetField;
 
     /**
-     * Nombre de résultats
+     * Nombre de résultats.
+     *
      * @var int
      */
     protected $countResults;
 
     /**
-     * Tableau contenant les résultats
+     * Tableau contenant les résultats.
+     *
      * @var array
      */
     protected $results;
 
     /**
-     * Nombre d'éléments à afficher par page
+     * Nombre d'éléments à afficher par page.
+     *
      * @var int
      */
     protected $nbElemsByPage;
 
     /**
-     * Nombre de pages
+     * Nombre de pages.
+     *
      * @var int
      */
     protected $nbPages;
 
     /**
-     * Limites de récupération
+     * Limites de récupération.
+     *
      * @var array
      */
     protected $limit;
 
     /**
-     * Html/Text du lien page précédente (Vide pour desactiver)
+     * Html/Text du lien page précédente (Vide pour desactiver).
+     *
      * @var string
      */
     protected $prevHtml = '&lsaquo;';
 
     /**
-     * Html/Text du lien page suivante  (Vide pour desactiver)
+     * Html/Text du lien page suivante  (Vide pour desactiver).
+     *
      * @var string
      */
     protected $nextHtml = '&rsaquo;';
 
     /**
      * Permet de limiter l'affichage des pages à N pages avant et après la page
-     * courante (-1 pour la liste complete des pages)
+     * courante (-1 pour la liste complete des pages).
+     *
      * @var int
      */
     protected $delta = 1;
 
     /**
-     * Html/Text à afficher lorsqu'un delta est paramétré
+     * Html/Text à afficher lorsqu'un delta est paramétré.
+     *
      * @var string
      */
     protected $deltaHtml = '&#8230;';
 
     /**
-     * Accès base de données
+     * Accès base de données.
+     *
      * @var MyPDO
      */
     private $db = null;
 
     /**
-     * Constructeur de Pagination
+     * Constructeur de Pagination.
      *
      * @param MyPDO  $myPdo              Connection MyPDO
      * @param string $queryWithoutSelect Requete sans la clause SELECT
@@ -128,7 +142,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Renvoie le numéro de la page courante
+     * Renvoie le numéro de la page courante.
      *
      * @return int
      */
@@ -138,7 +152,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Renvoie le nombre d'éléments par page
+     * Renvoie le nombre d'éléments par page.
      *
      * @return int
      */
@@ -148,7 +162,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Définit le numéro de la page courante
+     * Définit le numéro de la page courante.
      *
      * @param int $currentPage Numéro de la page courante
      *
@@ -171,7 +185,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Renvoie un tableau avec toutes les pages disponibles
+     * Renvoie un tableau avec toutes les pages disponibles.
      *
      * @return array
      */
@@ -182,10 +196,10 @@ class Pagination implements JsonSerializable
         /* Lien page précédente */
         if ($this->prevHtml && $this->currentPage > 1) {
             $pages[] = [
-                'text'    => $this->prevHtml,
-                'num'     => $this->currentPage - 1,
+                'text' => $this->prevHtml,
+                'num' => $this->currentPage - 1,
                 'current' => false,
-                'link'    => true
+                'link' => true,
             ];
         }
 
@@ -194,10 +208,10 @@ class Pagination implements JsonSerializable
             //Si il s'agit de la page actuelle
             if ($i == $this->currentPage) {
                 $pages[] = [
-                    'text'    => $i,
-                    'num'     => $i,
+                    'text' => $i,
+                    'num' => $i,
                     'current' => true,
-                    'link'    => false
+                    'link' => false,
                 ];
             } else {
                 /* Si première page
@@ -213,10 +227,10 @@ class Pagination implements JsonSerializable
                     && ($i - $this->delta) <= $this->currentPage
                 ) {
                     $pages[] = [
-                        'text'    => $i,
-                        'num'     => $i,
+                        'text' => $i,
+                        'num' => $i,
                         'current' => false,
-                        'link'    => true
+                        'link' => true,
                     ];
                 } elseif ($i < $this->currentPage
                     && ($i + $this->delta + 1) == $this->currentPage
@@ -224,10 +238,10 @@ class Pagination implements JsonSerializable
                     && ($i - $this->delta - 1) == $this->currentPage
                 ) {
                     $pages[] = [
-                        'text'    => $this->deltaHtml,
-                        'num'     => $this->deltaHtml,
+                        'text' => $this->deltaHtml,
+                        'num' => $this->deltaHtml,
                         'current' => false,
-                        'link'    => false
+                        'link' => false,
                     ];
                 }
             }
@@ -236,10 +250,10 @@ class Pagination implements JsonSerializable
         /* Lien page suivante*/
         if ($this->nextHtml && $this->currentPage < $this->nbPages) {
             $pages[] = [
-                'text'    => $this->nextHtml,
-                'num'     => $this->currentPage + 1,
+                'text' => $this->nextHtml,
+                'num' => $this->currentPage + 1,
                 'current' => false,
-                'link'    => true
+                'link' => true,
             ];
         }
 
@@ -247,7 +261,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Renvoie la page suivante
+     * Renvoie la page suivante.
      *
      * @return array|bool Renvoie false si aucune page suivante
      */
@@ -257,10 +271,10 @@ class Pagination implements JsonSerializable
         /* Lien page suivante*/
         if ($this->nextHtml && $this->currentPage < $this->nbPages) {
             $page = [
-                'text'    => $this->nextHtml,
-                'num'     => $this->currentPage + 1,
+                'text' => $this->nextHtml,
+                'num' => $this->currentPage + 1,
                 'current' => false,
-                'link'    => true
+                'link' => true,
             ];
         }
 
@@ -268,7 +282,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Renvoie la page précédente
+     * Renvoie la page précédente.
      *
      * @return array|bool Renvoie false si aucune page precedente
      */
@@ -278,10 +292,10 @@ class Pagination implements JsonSerializable
         /* Lien page precedente*/
         if ($this->prevHtml && $this->currentPage > 1) {
             $page = [
-                'text'    => $this->prevHtml,
-                'num'     => $this->currentPage -  1,
+                'text' => $this->prevHtml,
+                'num' => $this->currentPage -  1,
                 'current' => false,
-                'link'    => true
+                'link' => true,
             ];
         }
 
@@ -289,7 +303,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Renvoie le tableau des résultats de la page courante
+     * Renvoie le tableau des résultats de la page courante.
      *
      * @return array
      */
@@ -299,7 +313,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Définit les résultats
+     * Définit les résultats.
      *
      * @param array $results Tableau de résultats
      *
@@ -311,7 +325,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Execute la requete de récupération du nombre total d'éléments
+     * Execute la requete de récupération du nombre total d'éléments.
      *
      * @return void
      */
@@ -324,7 +338,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Execute la requete de récupération des éléments de la page courante
+     * Execute la requete de récupération des éléments de la page courante.
      *
      * @return void
      */
@@ -340,7 +354,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Calcule des limites de la requete à executer
+     * Calcule des limites de la requete à executer.
      *
      * @return void
      */
@@ -353,7 +367,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Renvoie la clause LIMIT de la requête à exécuter
+     * Renvoie la clause LIMIT de la requête à exécuter.
      *
      * @return string
      */
@@ -374,7 +388,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Calcule le nombre de page total
+     * Calcule le nombre de page total.
      *
      * @return void
      */
@@ -398,9 +412,10 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Convertit l'instance de l'objet en JSON
+     * Convertit l'instance de l'objet en JSON.
      *
-     * @param  int  $options Options de la fonction json_encode
+     * @param int $options Options de la fonction json_encode
+     *
      * @return string
      */
     public function toJson($options = 0)
@@ -409,7 +424,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Convertit l'objet en tableau serializable en JSON
+     * Convertit l'objet en tableau serializable en JSON.
      *
      * @return array
      */
@@ -419,7 +434,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Convertit l'instance de l'objet en tableau
+     * Convertit l'instance de l'objet en tableau.
      *
      * @return array
      */
@@ -431,7 +446,7 @@ class Pagination implements JsonSerializable
     }
 
     /**
-     * Convertit les attributs de l'objet en tableau
+     * Convertit les attributs de l'objet en tableau.
      *
      * @return array
      */
@@ -453,6 +468,7 @@ class Pagination implements JsonSerializable
         }
         echo '<pre>' . print_r($attributes, true) . '</pre>';
         exit();
+
         return $attributes;
     }
 }

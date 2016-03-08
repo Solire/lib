@@ -1,8 +1,9 @@
 <?php
+
 namespace Solire\Lib\Loader;
 
 /**
- * Gestionnaire des images pour le html
+ * Gestionnaire des images pour le html.
  *
  * @author  thansen <thansen@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -10,12 +11,12 @@ namespace Solire\Lib\Loader;
 class Img extends Loader
 {
     /**
-     * Template du code html pour une image
+     * Template du code html pour une image.
      *
      * @param string $url     Url de la librairie
      * @param string $realUrl Vraie url de la librairie
      * @param array  $options Options de la librairie, ici attribut html de la
-     * balise img
+     *                        balise img
      *
      * @return string
      */

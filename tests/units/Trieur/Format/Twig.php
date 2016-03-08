@@ -6,7 +6,6 @@ use mageekguy\atoum as Atoum;
 use Solire\Conf\Loader;
 use Solire\Lib\View\Filesystem\FileLocator;
 use Solire\Lib\Registry;
-use Solire\Lib\Trieur\Format\Twig as testedClass;
 
 /**
  * Test class for path.
@@ -26,7 +25,7 @@ class Twig extends Atoum
         file_put_contents(TEST_TMP_DIR . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . self::FILENAME, $content);
 
         $content = '{{ titre }}'
-                 . PHP_EOL .  'rawName : {{ row.nom }}'
+                 . PHP_EOL . 'rawName : {{ row.nom }}'
                  . PHP_EOL . 'rawFirstName : {{ row.prenom }}'
                  . PHP_EOL . 'formatedName : {{ cell }}';
         file_put_contents(TEST_TMP_DIR . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR . self::FILENAME2, $content);
@@ -47,7 +46,7 @@ class Twig extends Atoum
               'name' => 'Common',
               'dir' => TEST_TMP_DIR,
               'namespace' => 'Common',
-            ]
+            ],
         ]);
         $viewFileLocator->setCurrentApplicationName('front');
         Registry::set('viewFileLocator', $viewFileLocator);
@@ -55,12 +54,12 @@ class Twig extends Atoum
         $conf = Loader::load([]);
         $row = [
             'nom' => ' SOLIRE ',
-            'prenom' => 'Développeur'
+            'prenom' => 'Développeur',
         ];
         $cell = 'Solire';
 
         $this
-            ->exception(function()use($conf, $row, $cell){
+            ->exception(function () use ($conf, $row, $cell) {
                 $t = $this->newTestedInstance($conf, $row, $cell);
             })
                 ->hasMessage('Missing filename for the Solire\Trieur twig format conf')
@@ -74,7 +73,7 @@ class Twig extends Atoum
               'name' => 'Common',
               'dir' => TEST_TMP_DIR,
               'namespace' => 'Common',
-            ]
+            ],
         ]);
         $viewFileLocator->setCurrentApplicationName('front');
         Registry::set('viewFileLocator', $viewFileLocator);
@@ -84,7 +83,7 @@ class Twig extends Atoum
         ]);
         $row = [
             'nom' => ' SOLIRE ',
-            'prenom' => 'Développeur'
+            'prenom' => 'Développeur',
         ];
         $cell = 'Solire';
 
@@ -110,7 +109,6 @@ class Twig extends Atoum
                 . PHP_EOL . 'formatedName : Solire'
             )
         ;
-
     }
 
     public function testConstructor03()
@@ -120,7 +118,7 @@ class Twig extends Atoum
               'name' => 'Common',
               'dir' => TEST_TMP_DIR,
               'namespace' => 'Common',
-            ]
+            ],
         ]);
         $viewFileLocator->setCurrentApplicationName('front');
         Registry::set('viewFileLocator', $viewFileLocator);
@@ -129,11 +127,11 @@ class Twig extends Atoum
             'fileName' => self::FILENAME2,
             'context' => [
                 'titre' => 'Hello World',
-            ]
+            ],
         ]);
         $row = [
             'nom' => ' SOLIRE ',
-            'prenom' => 'Développeur'
+            'prenom' => 'Développeur',
         ];
         $cell = 'Solire';
 
@@ -159,6 +157,5 @@ class Twig extends Atoum
                 . PHP_EOL . 'formatedName : Solire'
             )
         ;
-
     }
 }

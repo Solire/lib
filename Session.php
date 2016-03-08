@@ -1,6 +1,6 @@
 <?php
 /**
- * Gestionnaire des sessions
+ * Gestionnaire des sessions.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -9,7 +9,7 @@
 namespace Solire\Lib;
 
 /**
- * Gestionnaire des sessions
+ * Gestionnaire des sessions.
  *
  * @author  Adrien <aimbert@solire.fr>
  * @license CC by-nc http://creativecommons.org/licenses/by-nc/3.0/fr/
@@ -17,43 +17,44 @@ namespace Solire\Lib;
 class Session
 {
     /**
-     * Informations sur le compte lié à la session
+     * Informations sur le compte lié à la session.
      *
      * @var array
      */
-    private $user;
+    protected $user;
 
     /**
-     * Nom du cookie
+     * Nom du cookie.
      *
      * @var string
      */
-    private $cookieName;
+    protected $cookieName;
 
     /**
-     * Etat de la connexion
+     * Etat de la connexion.
      *
      * @var bool
      */
-    private $connected = false;
+    protected $connected = false;
 
     /**
-     * Configuration de la session
+     * Configuration de la session.
      *
      * @var array
      */
-    private $config;
+    protected $config;
 
     /**
-     * Initialise une session de type $sessionCode
+     * Initialise une session de type $sessionCode.
      *
      * @param string $sessionCode Code d'identification du type de sessions
      * @param string $appName     Nom de l'application ayant le fichier de
-     * configuration de la sessions, laisser vide pour prendre l'application
-     * courante
+     *                            configuration de la sessions, laisser vide pour prendre l'application
+     *                            courante
      *
      * @throws Exception\Lib
      * @config main [format] session Format du bloc session dans la config main
+     *
      * @uses Session->regen()
      */
     public function __construct($sessionCode, $appName = true)
@@ -76,6 +77,7 @@ class Session
         }
 
         $conf = new Config($path);
+
         $this->config = $conf->get('core');
         $this->cookieName = $this->config['cookie'];
         unset($conf);
@@ -98,6 +100,7 @@ class Session
                     $this->user = $this->presentVars($user);
                     $this->oldData = $user;
                     $this->regen();
+
                     return;
                 }
             }
@@ -107,7 +110,7 @@ class Session
     }
 
     /**
-     * Renvois les informations sur la session en cours
+     * Renvois les informations sur la session en cours.
      *
      * @param string $key Nom de la variable à renvoyer
      *
@@ -118,12 +121,13 @@ class Session
         if ($key != null) {
             return $this->user[$key];
         }
+
         return $this->user;
     }
 
     /**
      * Test si il y a une connection en cours
-     * Renvois vrai si c'est le cas
+     * Renvois vrai si c'est le cas.
      *
      * @return bool
      */
@@ -133,11 +137,11 @@ class Session
     }
 
     /**
-     * Génère le token de la session à partir des paramètres
+     * Génère le token de la session à partir des paramètres.
      *
      * @return string
      */
-    private function makeToken()
+    protected function makeToken()
     {
         $foo = func_get_args();
         $token = implode(', ', $foo);
@@ -147,11 +151,11 @@ class Session
     }
 
     /**
-     * Relance le temps de garde de la session
+     * Relance le temps de garde de la session.
      *
      * @return void
      */
-    private function regen()
+    protected function regen()
     {
         if (isset($_COOKIE[$this->cookieName]) && !empty($_COOKIE[$this->cookieName])) {
             $life = time() + $this->config['duration'];
@@ -165,7 +169,7 @@ class Session
     }
 
     /**
-     * Génère un mot de passe
+     * Génère un mot de passe.
      *
      * @param int $longueur Longueur du mot de passe
      *
@@ -180,11 +184,12 @@ class Session
         for ($i = 1; $i < $longueur; $i++) {
             $mdp .= substr($caractere, rand(0, $long), 1);
         }
+
         return $mdp;
     }
 
     /**
-     * "Sale" et fait un sha256 du mot de passe
+     * "Sale" et fait un sha256 du mot de passe.
      *
      * @param string $mdp Mot de passe du client
      *
@@ -196,7 +201,7 @@ class Session
     }
 
     /**
-     * Format le nom des variable pour qu'il soit compatible avec la notation camel
+     * Format le nom des variable pour qu'il soit compatible avec la notation camel.
      *
      * @param array $array Tableau de valeurs sortie de la bdd
      *
@@ -230,12 +235,13 @@ class Session
     }
 
     /**
-     * Crée une session à partir du couple Courriel / Mot de passe
+     * Crée une session à partir du couple Courriel / Mot de passe.
      *
      * @param string $login    Courriel de la session
      * @param string $password Mot de passe de la session
      *
      * @return bool
+     *
      * @throws Exception\Lib
      * @throws Exception\User
      */
@@ -256,7 +262,6 @@ class Session
         $query->execute();
         $user = $query->fetch(\PDO::FETCH_ASSOC);
 
-
         if (password_verify($password, $user['pass']) !== true) {
             throw new Exception\User('Couple Courriel / Mot de passe incorrect');
         }
@@ -276,7 +281,7 @@ class Session
     }
 
     /**
-     * Désactive la session
+     * Désactive la session.
      *
      * @return void
      */
@@ -287,27 +292,29 @@ class Session
     }
 
     /**
-     * Contrôle d'existence d'une variable de la session
+     * Contrôle d'existence d'une variable de la session.
      *
      * @param string $name Nom de la variable
      *
-     * @return boolean
+     * @return bool
      */
     public function __isset($name)
     {
         if (isset($this->user[$name]) && !empty($this->user[$name])) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Récupération des variables de la session
-     * Fonction présente pour rétro compatibilité, ne pas s'en servir
+     * Fonction présente pour rétro compatibilité, ne pas s'en servir.
      *
      * @param string $name Nom de la variable
      *
      * @return mixed
+     *
      * @deprecated
      */
     public function get($name)
@@ -320,7 +327,7 @@ class Session
     }
 
     /**
-     * Récupération des variables de la session
+     * Récupération des variables de la session.
      *
      * @param string $name Nom de la variable
      *
@@ -332,11 +339,11 @@ class Session
     }
 
     /**
-     * Met à jour une clé de sécurité en BDD et la renvoi
+     * Met à jour une clé de sécurité en BDD et la renvoi.
      *
      * @param string $login Identifiant de l'utilisateur
      *
-     * @return boolean|string false si l'identifiant n'existe pas en BDD.
+     * @return bool|string false si l'identifiant n'existe pas en BDD.
      */
     public function genKey($login)
     {
@@ -349,7 +356,7 @@ class Session
         $user = $query->fetch(\PDO::FETCH_ASSOC);
 
         if ($user) {
-            $cle    = self::makePass(32);
+            $cle = self::makePass(32);
             $cleBdd = openssl_digest($cle, 'sha512');
 
             $query = $db->prepare($this->config['queryNewKey']);
@@ -364,13 +371,13 @@ class Session
     }
 
     /**
-     * Vérifie la clé de sécurité et génère un nouveau mot de passe qui est renvoyé
+     * Vérifie la clé de sécurité et génère un nouveau mot de passe qui est renvoyé.
      *
      * @param string $cle   Clé de vérification
      * @param string $login Identifiant de l'utilisateur
      *
-     * @return boolean|string false si le couple clé / identifiant ne fonctionne pas
-     * sinon le nouveau mot de passe
+     * @return bool|string false si le couple clé / identifiant ne fonctionne pas
+     *                     sinon le nouveau mot de passe
      */
     public function newPassword($cle, $login)
     {
@@ -384,7 +391,7 @@ class Session
         $user = $query->fetch(\PDO::FETCH_ASSOC);
 
         if ($user) {
-            $mdp    = self::makePass(8);
+            $mdp = self::makePass(8);
             $mdpBdd = self::prepareMdp($mdp);
 
             $query = $db->prepare($this->config['queryNewPass']);
@@ -399,13 +406,13 @@ class Session
     }
 
     /**
-     * Vérifie la clé de sécurité
+     * Vérifie la clé de sécurité.
      *
      * @param string $cle   Clé de vérification
      * @param string $login Identifiant de l'utilisateur
      *
-     * @return boolean false si le couple clé / identifiant ne fonctionne pas
-     * sinon true
+     * @return bool false si le couple clé / identifiant ne fonctionne pas
+     *              sinon true
      */
     public function checkKey($cle, $login)
     {
