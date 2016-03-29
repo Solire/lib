@@ -36,7 +36,7 @@
                         <div style="float:left; margin-left:8px;">
                             <div class="btn-toolbar">
                                 <div class="btn-group btn-bloc-action">
-                                    <button href="#" class="btn btn-sm btn-info block-to-sort-handle" <?php echo ( count($this->values) > 1 ? '' : ' disabled="true"' ) ?> title="Déplacer" <?php echo ( count($this->values) > 1 ? '' : ' style="display: inline-bloc;"' ) ?>><i class="fa fa-retweet"></i></button>
+                                    <a href="#" class="btn btn-sm btn-info block-to-sort-handle<?php echo ( count($this->values) > 1 ? '' : ' disabled' ) ?>" title="Déplacer" <?php echo ( count($this->values) > 1 ? '' : ' style="display: inline-bloc;"' ) ?>><i class="fa fa-retweet"></i></a>
                                     <a href="#" class="btn btn-sm exec-onclick-togglevisible<?php echo $visible ? ' btn-success' : ' btn-default'; ?>" title="Visible sur le site"><i class="fa <?php echo $visible ? 'fa-eye' : 'fa-eye-slash'; ?>"></i></a>
                                     <button type="button" class="btn btn-sm btn-warning exec-onclick-removeblock" title="Supprimer" <?php echo ( count($this->values) > 1 ? '' : ' disabled="true"' ) ?>><i class="fa fa-trash"></i></button>
                                 </div>
