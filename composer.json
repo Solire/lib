@@ -6,7 +6,6 @@
   "license": "CC by-nc",
   "require": {
     "php": ">=5.5.0",
-    "ensepar/html2pdf": "1.0.1",
     "zendframework/zend-mail": "2.2.5",
     "solire/conf": "2.4.*",
     "solire/conf": "^2.4",
