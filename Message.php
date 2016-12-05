@@ -127,16 +127,10 @@ class Message
      */
     private function displayJson()
     {
-        $data = [];
-        foreach ($this as $key => $value) {
-            if (strpos($key, '_') === 0) {
-                continue;
-            }
-
-            $data[$key] = $value;
-        }
-
-        echo json_encode($data);
+        echo json_encode([
+            'status' => $this->etat,
+            'message' => $this->message,
+        ]);
     }
 
     /**
