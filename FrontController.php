@@ -954,6 +954,8 @@ class FrontController
     public static function setSourceDirectories($sourceDirectories)
     {
         self::$sourceDirectories = [];
+        self::$publicDirs = [];
+
         foreach ($sourceDirectories as $sourceDirectory) {
             self::addSourceDirectory($sourceDirectory);
         }
