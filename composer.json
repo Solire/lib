@@ -4,6 +4,12 @@
   "description": "",
   "keywords": [""],
   "license": "CC by-nc",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://satis.solire.fr/"
+    }
+  ],
   "require": {
     "php": ">=5.5.0",
     "zendframework/zend-mail": "2.2.5",
