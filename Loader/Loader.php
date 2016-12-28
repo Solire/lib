@@ -186,4 +186,14 @@ abstract class Loader
 
         return $output;
     }
+
+    /**
+     * Supprime les librairies
+     *
+     * @return void
+     */
+    public function resetLibraries()
+    {
+        $this->libraries = [];
+    }
 }
