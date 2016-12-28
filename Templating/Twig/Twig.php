@@ -3,6 +3,7 @@
 namespace Solire\Lib\Templating\Twig;
 
 use Solire\Lib\Exception\Lib as Exception;
+use Solire\Lib\FrontController;
 use Solire\Lib\Path;
 use Solire\Lib\Templating\Templating;
 use Solire\Lib\Templating\Twig\Extensions\Extension\I18n;
@@ -134,6 +135,9 @@ class Twig extends Templating
 
         $twig->addExtension(new I18n());
         $twig->addExtension(new Twig_Extension_Debug());
+
+        $twig->addGlobal('javascript', FrontController::getInstance()->loadJsLoader());
+        $twig->addGlobal('css', FrontController::getInstance()->loadCssLoader());
 
         return $twig->render($templatingFilePath, $variables);
     }
