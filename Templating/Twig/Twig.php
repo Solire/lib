@@ -9,6 +9,7 @@ use Solire\Lib\Templating\Templating;
 use Solire\Lib\Templating\Twig\Extensions\Extension\I18n;
 use Twig_Environment;
 use Twig_Extension_Debug;
+use Twig_Extensions_Extension_Text;
 use Twig_Loader_Filesystem;
 
 /**
@@ -135,6 +136,7 @@ class Twig extends Templating
 
         $twig->addExtension(new I18n());
         $twig->addExtension(new Twig_Extension_Debug());
+        $twig->addExtension(new Twig_Extensions_Extension_Text());
 
         $twig->addGlobal('javascript', FrontController::getInstance()->loadJsLoader());
         $twig->addGlobal('css', FrontController::getInstance()->loadCssLoader());

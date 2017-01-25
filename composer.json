@@ -17,6 +17,7 @@
     "solire/conf": "^2.4",
     "monolog/monolog": "~1.16",
     "twig/twig": "~1.0",
+    "twig/extensions": "~1.0",
     "easybook/geshi": "1.0.8.12",
     "solire/trieur": "^2.4",
     "solire/form": "~1.0"
