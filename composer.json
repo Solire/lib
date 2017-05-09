@@ -2,19 +2,11 @@
   "name": "solire/lib",
   "type": "library",
   "description": "",
-  "keywords": [""],
-  "license": "CC by-nc",
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://satis.solire.fr/"
-    }
-  ],
+  "license": "proprietary",
   "require": {
     "php": ">=5.5.0",
     "zendframework/zend-mail": "2.2.5",
     "solire/conf": "2.4.*",
-    "solire/conf": "^2.4",
     "monolog/monolog": "~1.16",
     "twig/twig": "~1.0",
     "twig/extensions": "~1.0",
